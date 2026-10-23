@@ -655,26 +655,34 @@ function adminNote_(b) {
   });
 }
 var SETTING_RULES = {
-  open: 'bool', allowEnglish: 'bool', announce: 'text300', latest: 'sem', pending: 'sem0',
+  open: 'bool', allowEnglish: 'bool', announce: 'text300', year: 'year', latest: 'sem', pending: 'sem0',
   photoDays: 'int1-30', workMin: 'int1-30', workMax: 'int1-30', autoCloseDays: 'int3-90',
   holidays: 'text4000', staffName: 'text80', registrarName: 'text80', approverName: 'text80', approverTitle: 'text80'
 };
 function adminSaveSettings_(b) {
   var me = needAdmin_(b), patch = b.patch || {};
   return lock_(function () {
-    var changed = [];
+    var changed = [], nv = {};
     Object.keys(patch).forEach(function (k) {
       var rule = SETTING_RULES[k];
       if (!rule) return;
       var v = patch[k];
-      if (rule === 'bool') v = v === true || String(v).toUpperCase() === 'TRUE' ? 'TRUE' : 'FALSE';
+      if (rule === 'year') { v = String(v || '').replace(/\D/g, ''); if (!/^25[6-9]\d$/.test(v)) throw userErr_('ปีการศึกษาต้องเป็นตัวเลข 4 หลัก เช่น 2570'); }
+      else if (rule === 'bool') v = v === true || String(v).toUpperCase() === 'TRUE' ? 'TRUE' : 'FALSE';
       else if (rule === 'sem') { v = str_(v, 10); if (!semKey_(v)) throw userErr_('ภาคเรียนต้องอยู่ในรูปแบบ ภาค/ปี เช่น 2/2568'); }
       else if (rule === 'sem0') { v = str_(v, 10); if (v && !semKey_(v)) throw userErr_('ภาคเรียนต้องอยู่ในรูปแบบ ภาค/ปี เช่น 1/2569 หรือเว้นว่าง'); }
       else if (rule.indexOf('int') === 0) { var m = rule.match(/int(\d+)-(\d+)/); v = String(clampInt_(v, +m[1], +m[2])); }
       else if (rule === 'holidays' || rule === 'text4000') v = String(v || '').slice(0, 4000);
       else { var mx = +rule.replace('text', ''); v = k === 'announce' ? String(v || '').trim().slice(0, mx) : str_(v, mx); }
-      if (sv_(k) !== v) { setSv_(k, v); changed.push(k); }
+      nv[k] = v;
     });
+    // ภาคเรียนล่าสุด/ที่รอผล ต้องไม่อยู่ในปีการศึกษาที่ใหม่กว่าปีการศึกษาปัจจุบัน (ใช้คำนวณช่วงชั้นของ ปพ.6 และ ปพ.1)
+    var yNew = parseInt('year' in nv ? nv.year : sv_('year'), 10) || 0;
+    ['latest', 'pending'].forEach(function (k) {
+      var v = k in nv ? nv[k] : sv_(k), m = String(v || '').match(/^\d\/(\d{4})$/);
+      if (m && +m[1] > yNew) throw userErr_('ภาคเรียน ' + v + ' อยู่ในปีการศึกษาที่ใหม่กว่าปีการศึกษาปัจจุบัน (' + yNew + ') กรุณาแก้ช่อง "ปีการศึกษาปัจจุบัน" ด้วย');
+    });
+    Object.keys(nv).forEach(function (k) { if (sv_(k) !== nv[k]) { setSv_(k, nv[k]); changed.push(k); } });
     var released = 0;
     if (changed.indexOf('latest') > -1) {
       var logs = [];
@@ -707,7 +715,7 @@ function adminCreate_(b) {
     manual = { sid: sid, prefix: str_(m.prefix, 20), fname: str_(m.fname, 60), lname: str_(m.lname, 60), level: str_(m.level, 2), room: str_(m.room, 3) };
     if (PREFIXES.indexOf(manual.prefix) < 0 || !manual.fname || !manual.lname || !/^[1-6]$/.test(manual.level) || !/^\d{1,2}$/.test(manual.room)) throw userErr_('ไม่พบรหัสนี้ในทะเบียน กรุณากรอกคำนำหน้า ชื่อ นามสกุล ชั้น และห้องให้ครบ');
   }
-  var v = validateReq_(b.req || {}, s);
+  var v = validateReq_(b.req || {}, s || manual);
   var r = lock_(function () { return newRequest_(s, v, 'paper', me.displayName, manual); });
   return { request: adminReq_(r) };
 }

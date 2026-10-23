@@ -502,7 +502,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     function sw(k, label) { var on = String(S[k]).toUpperCase() === 'TRUE'; return '<label class="sw"><input type="checkbox" data-set="' + k + '"' + (on ? ' checked' : '') + '><span>' + label + '</span></label>'; }
     return '<div class="panel"><h3>การรับคำร้อง</h3>' + sw('open', 'เปิดรับคำร้องออนไลน์') + sw('allowEnglish', 'ให้เลือกขอ ปพ.1 ฉบับภาษาอังกฤษ') +
       '<div><label class="lbl" for="s-announce">ข้อความประกาศหน้าแรกของนักเรียน (เว้นว่างได้)</label><textarea class="inp" id="s-announce" data-set="announce">' + esc(S.announce) + '</textarea></div></div>' +
-      '<div class="panel"><h3>ผลการเรียนใน SGS</h3><div class="grid2">' + txt('latest', 'ภาคเรียนล่าสุดที่ผลการเรียนเข้า SGS แล้ว', 'รูปแบบ ภาค/ปี เช่น 2/2568 เมื่อเปลี่ยนแล้ว คำร้องที่รอผลการเรียนจะเดินต่อพร้อมกัน') + txt('pending', 'ภาคเรียนปัจจุบันที่ยังรอผลการเรียน', 'เช่น 1/2569 เว้นว่างถ้าไม่มี') + '</div></div>' +
+      '<div class="panel"><h3>ปีการศึกษาและผลการเรียนใน SGS</h3><div class="grid3">' + txt('year', 'ปีการศึกษาปัจจุบัน', 'เปลี่ยนเมื่อขึ้นปีการศึกษาใหม่ พร้อมนำเข้ารายชื่อนักเรียนชั้นใหม่จาก SGS ใช้คำนวณภาคเรียนที่ขอ ปพ.6 ได้') + txt('latest', 'ภาคเรียนล่าสุดที่ผลการเรียนเข้า SGS แล้ว', 'รูปแบบ ภาค/ปี เช่น 2/2568 เมื่อเปลี่ยนแล้ว คำร้องที่รอผลการเรียนจะเดินต่อพร้อมกัน') + txt('pending', 'ภาคเรียนปัจจุบันที่ยังรอผลการเรียน', 'เช่น 1/2569 เว้นว่างถ้าไม่มี') + '</div></div>' +
       '<div class="panel"><h3>ระยะเวลา</h3><div class="grid3">' + txt('photoDays', 'วันให้ส่งรูปหลังยื่นคำร้อง') + txt('workMin', 'วันทำการขั้นต่ำที่คาดว่าเสร็จ') + txt('workMax', 'วันทำการสูงสุดที่คาดว่าเสร็จ') + txt('autoCloseDays', 'ปิดคำร้องเองเมื่อพร้อมรับเกิน (วัน)') + '</div>' +
       '<div><label class="lbl" for="s-holidays">วันหยุดที่ไม่นับเป็นวันทำการ (บรรทัดละ 1 วัน รูปแบบ ปปปป-ดด-วว ชื่อวันหยุด ใช้ปี ค.ศ.)</label><textarea class="inp num" id="s-holidays" data-set="holidays" style="min-height:180px">' + esc(S.holidays) + '</textarea></div></div>' +
       '<div class="panel"><h3>ชื่อในใบคำร้องที่พิมพ์</h3><div class="grid2">' + txt('staffName', 'เจ้าหน้าที่') + txt('registrarName', 'นายทะเบียน') + txt('approverName', 'ผู้ลงนามเห็นควร') + txt('approverTitle', 'ตำแหน่งผู้ลงนามเห็นควร') + '</div></div>' +
@@ -570,7 +570,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     var sid = (A.man.sid || '').replace(/\D/g, '');
     if (!/^\d{5}$/.test(sid)) return PP.toast('รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก');
     apiAdmin('adminFindStudent', { sid: sid }).then(function (r) {
-      A.man.looked = true; A.man.student = r.student; A.man.openNos = r.open || []; A.man.err = '';
+      A.man.looked = true; A.man.student = r.student; A.man.openNos = r.open || []; A.man.err = ''; A.man.pp6Sems = [];
       var opts = PP.scopeOpts(A.cfg, r.student ? r.student.level : A.man.m.level); A.man.scope = opts[0].v;
       renderBody();
     }).catch(function (e) { if (e.code !== 'AUTH') PP.toast(e.message); });
@@ -606,7 +606,15 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     if (k === 'man6') { var L6 = A.man.pp6Sems, i6 = L6.indexOf(t.value); if (t.checked && i6 < 0) L6.push(t.value); if (!t.checked && i6 > -1) L6.splice(i6, 1); L6.sort(function (x, y) { return PP.semKey(x) - PP.semKey(y); }); }
     else if (k === 'all') { A.list.filter(function (r) { return match(r, A.filter) && searchOk(r); }).forEach(function (r) { A.sel[r.no] = t.checked; }); renderBody(); }
     else if (k === 'fix-r') { A.fixIdx = Number(t.value); A.keepScroll = true; renderDrawer(); }
-    if (t.dataset && t.dataset.man && t.tagName === 'SELECT') { setMan(t); if (t.dataset.man === 'm.level') renderBody(); }
+    if (t.dataset && t.dataset.man && t.tagName === 'SELECT') {
+      setMan(t);
+      if (t.dataset.man === 'm.level') {
+        // ภาคเรียน ปพ.6 ที่เลือกไว้ต้องอยู่ในช่วงชั้นใหม่ด้วย
+        var ok6 = [].concat.apply([], PP.pp6Opts(A.cfg, A.man.m.level).map(function (g) { return g.sems; }));
+        A.man.pp6Sems = A.man.pp6Sems.filter(function (v) { return ok6.indexOf(v) > -1; });
+        renderBody();
+      }
+    }
   });
   function setMan(t) { var p = t.dataset.man.split('.'); if (p.length === 2) A.man[p[0]][p[1]] = t.value; else A.man[p[0]] = t.value; }
   document.addEventListener('input', function (e) {
