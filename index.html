@@ -5,28 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ขอใบเกรด ปพ.1 / ปพ.7 · งานทะเบียน พรตพิทยพยัต</title>
 <meta name="description" content="ยื่นคำร้องขอ ปพ.1 และ ปพ.7 ออนไลน์ และติดตามสถานะเอกสาร งานทะเบียน โรงเรียนพรตพิทยพยัต">
-<meta name="theme-color" content="#142B4D">
+<meta name="theme-color" content="#3A1468">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <style>
 .app{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
-@media (min-width:560px){body{background:var(--grey-soft)}.app{box-shadow:var(--shadow)}}
-.top{position:sticky;top:0;z-index:20;background:var(--navy);color:var(--navy-ink);padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:10px}
-.brand{display:grid;line-height:1.35;min-width:0}
-.brand span{font:600 11px/1.4 var(--f-label);letter-spacing:.12em;color:var(--cyan)}
-.brand b{font:600 15px/1.4 var(--f-head)}
-.top-btn{background:rgba(255,255,255,.12);border:0;color:var(--navy-ink);border-radius:7px;padding:6px 11px;font:600 13px var(--f-head);cursor:pointer;flex:none}
-.stripe{height:4px;background:linear-gradient(90deg,var(--teal) 0 70%,var(--amber) 70% 100%)}
+@media (min-width:560px){body{background:radial-gradient(1200px 600px at 50% -200px,#DCCDF3,transparent 70%),var(--grey-soft)}.app{box-shadow:var(--shadow)}}
+@media (min-width:560px) and (prefers-color-scheme: dark){body{background:radial-gradient(1200px 600px at 50% -200px,#2B1650,transparent 70%),var(--bg)}}
+.top{position:sticky;top:0;z-index:20;background:linear-gradient(120deg,var(--navy),var(--navy-2));color:var(--navy-ink);padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-emb{height:40px;width:auto;flex:none}
+.brand div{display:grid;line-height:1.3;min-width:0}
+.brand b{font:600 15.5px/1.35 var(--f-head)}
+.brand span{font:500 12px/1.35 var(--f-head);color:var(--band-sub)}
+.top-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:var(--navy-ink);border-radius:7px;padding:6px 11px;font:600 13px var(--f-head);cursor:pointer;flex:none}
+.stripe{height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-2) 50%,var(--gold))}
+.is-home .top,.is-home .stripe{display:none}
 .steps{background:var(--surface);border-bottom:1px solid var(--line);padding:9px 16px 10px;display:grid;gap:6px;font:500 12.5px/1.4 var(--f-head);color:var(--ink-2)}
 .steps-bar{height:4px;background:var(--grey-soft);border-radius:2px;overflow:hidden}
 .steps-bar i{display:block;height:100%;background:var(--teal);border-radius:2px}
 .body{flex:1;padding:18px max(16px,env(safe-area-inset-left,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
-.hero{display:grid;gap:6px;padding:2px 0}
+.hero{position:relative;overflow:hidden;isolation:isolate;margin:-18px calc(-1 * max(16px,env(safe-area-inset-right,0px))) 4px calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:calc(30px + env(safe-area-inset-top,0px)) 22px 26px;background:radial-gradient(130% 85% at 50% 0%,#6E3BBB 0%,#3A1468 52%,#22083D 100%);color:#fff;text-align:center;border-radius:0 0 26px 26px}
+.hero-fx{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.rays{position:absolute;left:50%;top:112px;width:960px;height:960px;margin:-480px 0 0 -480px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,213,79,.16) 0deg 4deg,rgba(255,213,79,0) 4deg 12deg);-webkit-mask:radial-gradient(circle,#000 0 12%,rgba(0,0,0,.55) 32%,transparent 62%);mask:radial-gradient(circle,#000 0 12%,rgba(0,0,0,.55) 32%,transparent 62%);animation:rays 120s linear infinite}
+.orb{position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,40,.32),rgba(255,200,40,0) 66%);animation:drift 18s ease-in-out infinite alternate}
+.o1{left:-120px;top:250px}
+.o2{right:-130px;top:-30px;background:radial-gradient(circle,rgba(176,128,255,.5),rgba(176,128,255,0) 66%);animation-duration:23s}
+.o3{left:35%;bottom:-170px;animation-duration:27s;background:radial-gradient(circle,rgba(255,213,79,.22),rgba(255,213,79,0) 66%)}
+@keyframes rays{to{transform:rotate(360deg)}}
+@keyframes drift{to{transform:translate3d(46px,-34px,0) scale(1.18)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-in{display:grid;justify-items:center}
+.hero-in>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.hero-in>:nth-child(2){animation-delay:.08s}.hero-in>:nth-child(3){animation-delay:.14s}.hero-in>:nth-child(4){animation-delay:.2s}.hero-in>:nth-child(5){animation-delay:.26s}.hero-in>:nth-child(6){animation-delay:.32s}.hero-in>:nth-child(7){animation-delay:.38s}
+.hero-emb{width:118px;height:auto;filter:drop-shadow(0 8px 26px rgba(255,190,40,.38))}
+.hero-sch{display:grid;margin-top:14px;line-height:1.3}
+.hero-sch b{font:700 22px/1.3 var(--f-head);letter-spacing:.01em}
+.hero-sch span{font:600 11.5px/1.6 var(--f-label);letter-spacing:.3em;color:var(--gold-2);margin-top:2px}
+.hero-line{width:58px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold-2));margin:14px 0 12px}
+.hero-ey{font:600 13px/1.4 var(--f-head);color:#E5D9FA;letter-spacing:.03em}
+.hero h1{font-size:25px;line-height:1.38;font-weight:700;color:#fff;margin-top:4px}
+.hero p{color:#DCD0F2;font-size:15px;line-height:1.65;margin-top:8px;max-width:400px}
+.hero-acts{display:grid;gap:10px;width:100%;margin-top:20px}
+.btn-gold{background:linear-gradient(180deg,#FFDA63,#F5B700);color:var(--gold-ink);box-shadow:0 8px 20px rgba(245,183,0,.32),inset 0 1px 0 rgba(255,255,255,.5);font-size:16px;padding:12px 16px}
+.btn-gold:hover{filter:brightness(1.05)}
+.btn-glass{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.38);padding:11px 16px}
+.btn-glass:hover{background:rgba(255,255,255,.14)}
+.hero .who-in{margin-top:14px;font-size:13.5px;color:#E5D9FA}
+.hero .who-in button{color:var(--gold-2);font:600 13.5px var(--f-head);background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0 0 0 6px}
+@media (prefers-reduced-motion: reduce){.rays,.orb,.hero-in>*{animation:none}}
 .eyebrow{font:600 12.5px/1.4 var(--f-label);letter-spacing:.06em;color:var(--teal-ink)}
-.hero h1{font-size:23px;line-height:1.4;font-weight:700}
-.hero p,.p{color:var(--ink-2);font-size:15px}
+.p{color:var(--ink-2);font-size:15px}
+.olx{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:10px}
+.olx li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:14.5px;line-height:1.55;color:var(--ink-2);align-items:start}
+.olx li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--teal-soft);color:var(--teal-ink);font:700 14px/28px var(--f-label);text-align:center}
+.olx b{color:var(--ink)}
+.tel{display:inline-flex;align-items:center;justify-self:start;margin-top:6px;font:600 14px/1.4 var(--f-head);color:var(--teal-ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--surface)}
+.tel:hover{border-color:var(--teal)}
+.sfoot{display:grid;justify-items:center;text-align:center;gap:2px;padding:16px 0 4px;border-top:1px solid var(--line);margin-top:6px;font-size:12.5px;color:var(--ink-3);line-height:1.55}
+.sfoot img{width:42px;height:auto;margin-bottom:4px}
+.sfoot b{font:600 14px var(--f-head);color:var(--ink)}
+.sfoot a,.small a{color:var(--teal-ink);font-weight:600}
+.sfoot .en{font:600 10.5px var(--f-label);letter-spacing:.22em;color:var(--teal-ink)}
 .h{font-size:19px;font-weight:700;line-height:1.45}
 .small{font-size:13.5px;color:var(--ink-3)}
 .foot{font-size:13px;color:var(--ink-3);text-align:center;margin-top:auto;padding-top:8px}
@@ -95,8 +139,8 @@
 <script src="assets/common.js"></script>
 </head>
 <body>
-<div class="app">
-  <header class="top"><div class="brand"><span>PROT PITTAYAPAYAT · งานทะเบียน</span><b>คำร้องขอ ปพ.1 / ปพ.7</b></div><button class="top-btn" id="btn-home" data-act="home" hidden>หน้าแรก</button></header>
+<div class="app" id="app">
+  <header class="top"><div class="brand"><img class="brand-emb" src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="33" height="40"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · คำร้อง ปพ.1 / ปพ.7</span></div></div><button class="top-btn" id="btn-home" data-act="home" hidden>หน้าแรก</button></header>
   <div class="stripe"></div>
   <div class="steps" id="steps" hidden></div>
   <main class="body" id="view"><div class="center"><span class="spin"></span><span>กำลังเชื่อมต่อระบบ</span></div></main>
@@ -126,6 +170,7 @@
   }
   function render() {
     $('btn-home').hidden = P.screen === 'home' || P.screen === 'loading' || P.screen === 'error';
+    $('app').classList.toggle('is-home', P.screen === 'home');
     stepsBar();
     var html = (S[P.screen] || S.home)();
     $('view').innerHTML = html;
@@ -135,25 +180,34 @@
   function busyBtn(label) { return P.busy ? '<span class="spin"></span> กำลังส่งข้อมูล' : label; }
   function errNote(m) { return m ? '<div class="note n-alert" role="alert"><span>' + esc(m) + '</span></div>' : ''; }
   function contact() {
-    return '<div class="contact"><img src="assets/prangthong.jpg" alt="ครูปรางทอง จันทคาม" width="48" height="78"><div><b>ครูปรางทอง จันทคาม</b><span>เจ้าหน้าที่งานทะเบียน</span><span>ติดต่อได้ที่หน้าห้องสำนักงานวิชาการ</span></div></div>';
+    return '<div class="contact"><img src="assets/prangthong.jpg" alt="ครูปรางทอง จันทคาม" width="48" height="78"><div><b>ครูปรางทอง จันทคาม</b><span>เจ้าหน้าที่งานทะเบียน</span><span>ติดต่อได้ที่หน้าห้องสำนักงานวิชาการ</span><a class="tel" href="tel:023264050">สำนักงานวิชาการ โทร. 0-2326-4050</a></div></div>';
   }
 
   var S = {};
   S.loading = function () { return '<div class="center"><span class="spin"></span><span>กำลังเชื่อมต่อระบบ</span></div>'; };
   S.error = function () {
     return '<div class="note n-alert"><b>เชื่อมต่อระบบไม่ได้</b><span>' + esc(P.err || 'กรุณาลองใหม่อีกครั้ง') + '</span></div><button class="btn btn-pri btn-blk" data-act="retry">ลองใหม่</button>' +
-      '<p class="small">ถ้ายังใช้ไม่ได้ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 หน้าห้องสำนักงานวิชาการได้ตามเดิม</p>';
+      '<p class="small">ถ้ายังใช้ไม่ได้ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 หน้าห้องสำนักงานวิชาการได้ตามเดิม หรือโทร. <a href="tel:023264050">0-2326-4050</a></p>';
   };
   S.home = function () {
     var c = P.cfg || {};
-    return '<div class="hero"><div class="eyebrow">คำร้องออนไลน์</div><h1>ขอใบเกรด ปพ.1 และใบรับรอง ปพ.7</h1><p>กรอกคำร้องบนมือถือ ส่งรูปถ่ายที่ตู้ลิ้นชัก และดูได้ว่าเอกสารของตนเองถึงขั้นไหนแล้ว</p></div>' +
+    return '<section class="hero"><div class="hero-fx" aria-hidden="true"><i class="rays"></i><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div><div class="hero-in">' +
+      '<img class="hero-emb" src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="118" height="144">' +
+      '<div class="hero-sch"><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span></div>' +
+      '<div class="hero-line"></div>' +
+      '<span class="hero-ey">งานทะเบียน สำนักงานวิชาการ</span>' +
+      '<h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7 ออนไลน์</h1>' +
+      '<p>กรอกคำร้องบนมือถือ ส่งรูปถ่ายที่ตู้ลิ้นชัก และดูได้ว่าเอกสารของตนเองถึงขั้นไหนแล้ว</p>' +
+      '<div class="hero-acts"><button class="btn btn-gold btn-blk" data-act="start"' + (c.open ? '' : ' disabled') + '>ยื่นคำร้องใหม่</button><button class="btn btn-glass btn-blk" data-act="track">ติดตามคำร้อง</button></div>' +
+      (P.student ? '<div class="who-in">เข้าสู่ระบบเป็น ' + esc(PP.fullName(P.student)) + '<button data-act="list">คำร้องของฉัน</button></div>' : '') +
+      '</div></section>' +
       (c.announce ? '<div class="note n-wait"><b>ประกาศจากงานทะเบียน</b><span>' + esc(c.announce) + '</span></div>' : '') +
       (c.open ? '' : '<div class="note n-alert"><b>ปิดรับคำร้องออนไลน์ชั่วคราว</b><span>ยังติดตามคำร้องเดิมได้ตามปกติ</span></div>') +
-      (P.student ? '<div class="who"><span>เข้าสู่ระบบเป็น <b>' + esc(PP.fullName(P.student)) + '</b></span><button class="link" data-act="list">คำร้องของฉัน</button></div>' : '') +
-      '<button class="btn btn-pri btn-blk" data-act="start"' + (c.open ? '' : ' disabled') + '>ยื่นคำร้องใหม่</button>' +
-      '<button class="btn btn-sec btn-blk" data-act="track">ติดตามคำร้อง</button>' +
-      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="ol"><li>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</li><li>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียนเลขคำร้องและลงชื่อ เสียบรูปถ่าย 1.5 นิ้ว แล้วใส่ลิ้นชักที่ 2</li><li>ติดตามสถานะในหน้านี้</li><li>รับเอกสารที่ลิ้นชักระดับชั้นของตนเอง แล้วกดยืนยันรับ</li></ol></div>' +
-      '<p class="foot">ไม่มีมือถือ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 ได้ตามเดิม<br>ข้อมูลใช้เพื่อจัดทำเอกสารของงานทะเบียนเท่านั้น</p>';
+      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="olx"><li><span>กรอกคำร้องในระบบ ได้<b>เลขคำร้อง 4 หลัก</b></span></li><li><span>หยิบ<b>ใบนำส่งรูปถ่าย</b>จากลิ้นชักที่ 1 กรอกและลงชื่อ หนีบรูปถ่าย 1.5 นิ้ว แล้วใส่<b>ลิ้นชักที่ 2</b></span></li><li><span>ติดตามสถานะในหน้านี้</span></li><li><span>รับเอกสารที่<b>ลิ้นชักระดับชั้น</b>ของตนเอง แล้วกดยืนยันรับ</span></li></ol></div>' +
+      contact() +
+      '<p class="foot">ไม่มีมือถือ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 ได้ตามเดิม<br>ข้อมูลใช้เพื่อจัดทำเอกสารของงานทะเบียนเท่านั้น</p>' +
+      '<footer class="sfoot"><picture><source srcset="assets/emblem-gold.png" media="(prefers-color-scheme: dark)"><img src="assets/emblem-purple.png" alt="" width="42" height="51"></picture>' +
+      '<b>โรงเรียนพรตพิทยพยัต</b><span class="en">PROT PITTAYAPAYAT SCHOOL</span><span>4 ถนนหลวงพรต แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520</span><span>งานทะเบียน สำนักงานวิชาการ โทร. <a href="tel:023264050">0-2326-4050</a></span></footer>';
   };
   S.verify = function () {
     return '<h2 class="h">' + (P.mode === 'new' ? 'ยืนยันตัวตนก่อนยื่นคำร้อง' : 'ยืนยันตัวตนเพื่อดูคำร้อง') + '</h2>' +

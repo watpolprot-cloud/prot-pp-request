@@ -1,16 +1,19 @@
 /* ระบบคำร้อง ปพ. งานทะเบียน โรงเรียนพรตพิทยพยัต — สไตล์ร่วม */
+/* สีประจำโรงเรียน ม่วง-เหลือง: --navy = ม่วงเข้ม (แถบหัว) · --teal = ม่วงหลัก (ปุ่ม/ลิงก์) · --amber/--gold = เหลืองทอง */
 :root{
-  --bg:#F1F4F8; --surface:#FFFFFF; --surface-2:#F6F8FB; --ink:#13213A; --ink-2:#4B5B73; --ink-3:#6F7E94;
-  --line:#D7DFEA; --line-2:#E6EBF2;
-  --navy:#142B4D; --navy-ink:#FFFFFF; --band-sub:#BFCBE0; --cyan:#7FD3D9;
-  --teal:#12808A; --teal-ink:#0D6870; --teal-soft:#E0F0F1;
-  --amber:#D99A0B; --amber-ink:#875C00; --amber-soft:#FCF1D8;
-  --blue:#2D5DA0; --blue-soft:#E4EBF7;
+  --bg:#F5F3F9; --surface:#FFFFFF; --surface-2:#F9F7FC; --ink:#1F1633; --ink-2:#4E4566; --ink-3:#6F6687;
+  --line:#E0DAEB; --line-2:#ECE8F3;
+  --navy:#3A1468; --navy-2:#5B2A9E; --navy-ink:#FFFFFF; --band-sub:#D9CCF0; --cyan:#FFD54F;
+  --teal:#5B2A9E; --teal-ink:#4A2287; --teal-soft:#EFE8FA;
+  --amber:#E2A800; --amber-ink:#7A5600; --amber-soft:#FFF4CF;
+  --gold:#F5B700; --gold-2:#FFD54F; --gold-ink:#2A1300;
+  --blue:#3D58AE; --blue-soft:#E8ECF8;
+  --green:#1D7A4A; --green-soft:#E2F3E9;
   --red:#B5362E; --red-soft:#FBE8E6;
-  --grey-soft:#ECEFF4;
-  --btn-bg:#12808A; --btn-ink:#FFFFFF;
-  --overlay:rgba(16,28,48,.42);
-  --shadow:0 1px 2px rgba(19,33,58,.06), 0 10px 28px rgba(19,33,58,.08);
+  --grey-soft:#EFECF4;
+  --btn-bg:#5B2A9E; --btn-ink:#FFFFFF;
+  --overlay:rgba(30,16,52,.45);
+  --shadow:0 1px 2px rgba(31,22,51,.06), 0 10px 28px rgba(31,22,51,.09);
   --f-head:"IBM Plex Sans Thai","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;
   --f-body:"IBM Plex Sans Thai Looped","IBM Plex Sans Thai","Noto Sans Thai Looped","Leelawadee UI",Tahoma,sans-serif;
   --f-label:"Chakra Petch","IBM Plex Sans Thai",Tahoma,sans-serif;
@@ -19,15 +22,16 @@
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#0C1524; --surface:#13203A; --surface-2:#172743; --ink:#E5EBF4; --ink-2:#A8B6CB; --ink-3:#8796AE;
-    --line:#2A3C5E; --line-2:#21324F;
-    --navy:#12284A; --navy-ink:#F2F6FC; --band-sub:#A4B5D0;
-    --teal:#3DB5BE; --teal-ink:#6CCBD2; --teal-soft:#10353A;
-    --amber:#E7B03A; --amber-ink:#F1C664; --amber-soft:#3A2D10;
-    --blue:#86A9E0; --blue-soft:#1B2D4E;
-    --red:#F28A80; --red-soft:#3F1F1F;
-    --grey-soft:#1C2A45;
-    --btn-bg:#3DB5BE; --btn-ink:#06232A;
+    --bg:#120C1E; --surface:#1B1430; --surface-2:#211938; --ink:#ECE7F6; --ink-2:#BBB0D2; --ink-3:#978CB0;
+    --line:#352A52; --line-2:#2A2144;
+    --navy:#2A0E4F; --navy-2:#45207C; --navy-ink:#F6F2FC; --band-sub:#CBBCE8;
+    --teal:#B79AF0; --teal-ink:#CDB6F7; --teal-soft:#2C2148;
+    --amber:#F2C94C; --amber-ink:#F5D67A; --amber-soft:#3A2E0E;
+    --blue:#97ADEB; --blue-soft:#1F2846;
+    --green:#7FD3A4; --green-soft:#15352A;
+    --red:#F28A80; --red-soft:#3F1F24;
+    --grey-soft:#231B3A;
+    --btn-bg:#B79AF0; --btn-ink:#1B0F33;
     --overlay:rgba(0,0,0,.55);
     --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 28px rgba(0,0,0,.3);
     color-scheme:dark;
@@ -70,7 +74,7 @@ legend{padding:0}
 .t-wait{background:var(--amber-soft);color:var(--amber-ink)}
 .t-hold{background:var(--amber-soft);color:var(--amber-ink);box-shadow:inset 0 0 0 1px var(--amber)}
 .t-work{background:var(--blue-soft);color:var(--blue)}
-.t-ready{background:var(--teal-soft);color:var(--teal-ink)}
+.t-ready{background:var(--green-soft);color:var(--green)}
 .t-done{background:var(--grey-soft);color:var(--ink-2)}
 .t-alert{background:var(--red-soft);color:var(--red)}
 .chip{display:inline-block;font:600 11.5px/1.5 var(--f-head);padding:1px 7px;border-radius:4px;margin:2px 4px 2px 0;white-space:nowrap}
@@ -78,7 +82,7 @@ legend{padding:0}
 .note b{font:600 14.5px/1.5 var(--f-head)}
 .n-wait{background:var(--amber-soft)} .n-wait b{color:var(--amber-ink)}
 .n-alert{background:var(--red-soft)} .n-alert b{color:var(--red)}
-.n-ready{background:var(--teal-soft)} .n-ready b{color:var(--teal-ink)}
+.n-ready{background:var(--green-soft)} .n-ready b{color:var(--green)}
 .n-info{background:var(--blue-soft)} .n-info b{color:var(--blue)}
 .n-done{background:var(--grey-soft)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
@@ -138,34 +142,64 @@ legend{padding:0}
   .pg-land .sig{margin-top:3mm;font-size:11pt;line-height:1.38;gap:8px}
   .pg-land .sig .dots{margin-top:2.5mm}
   .pg-land .sheet:last-child{border-right:0}
+  .pg-land.slips{display:grid;grid-template-columns:1fr 1fr}
   .pg-port{page:a4port;width:210mm;height:296mm;break-after:page;overflow:hidden}
   .pg-port:last-child{break-after:auto}
 }
-.slips{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;height:100%}
-.slip{font-family:var(--f-doc);color:#151515;border:1px dashed #9AA3AF;padding:10mm 9mm 8mm;display:grid;gap:6mm;align-content:start;font-size:15.5pt;line-height:1.35}
-.slip h4{font-family:var(--f-doc);font-size:20pt;font-weight:700;text-align:center;line-height:1.2}
-.slip h4 small{display:block;font-weight:400;font-size:11.5pt;color:#444}
-.digits{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.digits span.box{display:inline-flex}
-.digits i{width:10mm;height:12mm;border:1.3px solid #222;border-right-width:0;display:inline-block}
-.digits i:last-child{border-right-width:1.3px}
-.slip .ln2{display:flex;gap:6px;align-items:flex-end}
-.slip .dl{border-bottom:1px dotted #555;flex:1;min-width:30px;display:inline-block;height:1.1em}
-.slip-sign{font-size:13pt;display:grid;gap:8mm;color:#222}
-.slip p{font-size:12.5pt;color:#333;border-top:1px solid #ccc;padding-top:3mm;line-height:1.4}
+/* ใบนำส่งรูปถ่าย: A4 แนวนอน 2 ใบ (ใบละ A5 แนวตั้ง) ขาวดำล้วน สำหรับถ่ายเอกสาร */
+.slip{font-family:var(--f-doc);color:#000;background:#fff;height:209mm;padding:8mm 9mm 7mm;display:flex;flex-direction:column;gap:3.4mm;font-size:12.5pt;line-height:1.35;position:relative}
+.slips .slip + .slip{border-left:.3mm dashed #000}
+.slips .slip + .slip::before{content:"ตัดตามเส้นประ";position:absolute;left:-1.6mm;top:50%;transform:translate(-50%,-50%) rotate(-90deg);background:#fff;padding:0 2mm;font-size:8pt;letter-spacing:.06em}
+.slip-head{display:flex;gap:3.5mm;align-items:center}
+.slip-emb{height:21mm;width:auto;flex:none}
+.slip-head div{display:grid;line-height:1.28}
+.slip-head b{font-size:16pt;font-weight:700}
+.slip-head span{font-size:10pt}
+.slip-head .en{font-family:var(--f-label);font-size:8.5pt;letter-spacing:.2em;font-weight:600}
+.slip-title{border-top:.6mm solid #000;border-bottom:.25mm solid #000;padding:1.4mm 0 1.6mm;text-align:center;display:grid}
+.slip-title h4{font-family:var(--f-doc);font-size:22pt;line-height:1.15;font-weight:700;margin:0}
+.slip-title span{font-size:10.5pt}
+.slip-body{display:grid;grid-template-columns:minmax(0,1fr) 39mm;gap:4mm;flex:1 1 auto;max-height:86mm}
+.slip-fields{display:grid;gap:2.8mm;align-content:space-between}
+.slip .fld{display:grid;gap:.8mm;justify-items:start}
+.slip .fld>span:first-child{font-size:11pt;font-weight:600}
+.slip .box{display:inline-flex}
+.slip .box i{width:8.6mm;height:10mm;border:.3mm solid #000;border-right-width:0;display:block}
+.slip .box i:last-child{border-right-width:.3mm}
+.slip .ln2{display:flex;gap:1.5mm;align-items:flex-end;white-space:nowrap}
+.slip .dl{border-bottom:.3mm dotted #000;flex:1 1 0;min-width:6mm;height:1.15em;display:block}
+.slip .dl.w9{flex:0 0 9mm}
+.slip-photo{border:.35mm dashed #000;border-radius:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2.2mm;padding:3mm 2mm}
+.slip-photo b{font-size:13pt;line-height:1.3}
+.slip-photo span{font-size:9pt;line-height:1.35}
+.slip-sign{display:grid;gap:5mm;font-size:12pt;padding-top:1mm}
+.slip-sign p{font-size:10.5pt;margin:0}
+.slip-qr{display:grid;grid-template-columns:27mm minmax(0,1fr);gap:3.5mm;align-items:center;border:.3mm solid #000;border-radius:2mm;padding:3mm}
+.slip-qr .q svg,.slip-qr .q img{width:27mm;height:27mm;display:block}
+.slip-qr b{font-size:11.5pt}
+.slip-qr ol{margin:.8mm 0 1mm;padding-left:4.6mm;font-size:9.5pt;line-height:1.38}
+.slip-qr .url{font-family:var(--f-label);font-size:7.5pt;word-break:break-all;display:block}
+.slip-staff{margin-top:auto;border-top:.25mm dashed #000;padding-top:2mm;font-size:9.5pt;display:flex;gap:1.5mm;align-items:flex-end;white-space:nowrap}
 .labels{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:49.3mm;height:100%}
 .label{font-family:var(--f-doc);color:#151515;border:1px dashed #aaa;padding:5mm 7mm;display:grid;align-content:center;gap:1mm;font-size:13pt;line-height:1.35}
 .label b{font-size:22pt;font-family:var(--f-label);letter-spacing:.04em}
 .label .big{font-size:15pt;font-weight:700}
-.poster{height:100%;background:#142B4D;color:#fff;display:grid;grid-template-rows:auto 1fr auto;font-family:var(--f-head);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.poster-b{padding:22mm 20mm 10mm;display:grid;gap:7mm;align-content:start;justify-items:center;text-align:center}
-.poster-b .ey{font:600 13pt var(--f-label);letter-spacing:.18em;color:#7FD3D9}
-.poster-b h1{font:700 38pt/1.25 var(--f-head);color:#fff}
-.poster-b p{font-size:17pt;color:#C9D4E6;line-height:1.5}
-.poster-qr{background:#fff;color:#111;border-radius:6mm;padding:8mm;width:105mm}
+/* โปสเตอร์ QR: พื้นขาว แถบม่วงด้านบน ประหยัดหมึก */
+.poster{height:100%;background:#fff;color:#2A0E4F;display:grid;grid-template-rows:auto 1fr auto auto;font-family:var(--f-head);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.poster-top{background:linear-gradient(135deg,#2E0F57,#5B2A9E);color:#fff;display:flex;align-items:center;justify-content:center;gap:7mm;padding:9mm 16mm;border-bottom:3mm solid #F5B700}
+.poster-top img{height:33mm;width:auto}
+.poster-top div{display:grid;line-height:1.3}
+.poster-top b{font:700 27pt/1.25 var(--f-head)}
+.poster-top span{font:600 12pt var(--f-label);letter-spacing:.24em;color:#FFD54F}
+.poster-b{padding:7mm 20mm 4mm;display:grid;gap:4mm;align-content:center;justify-items:center;text-align:center}
+.poster-b .ey{font:600 14pt var(--f-head);color:#6B4A99;letter-spacing:.04em}
+.poster-b h1{font:700 31pt/1.25 var(--f-head);color:#2E0F57}
+.poster-b p{font-size:16pt;color:#4E4566;line-height:1.5}
+.poster-qr{background:#fff;color:#000;border:1.2mm solid #5B2A9E;border-radius:6mm;padding:5mm;width:82mm}
 .poster-qr svg,.poster-qr img{width:100%;height:auto;display:block}
-.poster-url{font:500 12pt var(--f-label);color:#C9D4E6;word-break:break-all}
-.poster-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;padding:0 16mm 14mm;font-size:12.5pt;line-height:1.45;color:#E3EAF5}
-.poster-steps div{border-top:2px solid #7FD3D9;padding-top:3mm}
-.poster-steps b{display:block;font:700 18pt var(--f-label);color:#7FD3D9}
-.poster-s{height:7mm;background:linear-gradient(90deg,#12808A 0 70%,#D99A0B 70% 100%)}
+.poster-url{font:500 11pt var(--f-label);color:#4E4566;word-break:break-all}
+.poster-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;padding:0 14mm 8mm;font-size:12.5pt;line-height:1.45;color:#2A0E4F}
+.poster-steps div{border-top:1mm solid #F5B700;padding-top:3mm}
+.poster-steps b{display:grid;place-items:center;width:10mm;height:10mm;border-radius:50%;background:#5B2A9E;color:#FFD54F;font:700 15pt var(--f-label);margin-bottom:2mm}
+.poster-foot{background:#2E0F57;color:#FFD54F;text-align:center;font:600 15pt var(--f-head);padding:5mm 10mm}
+.sheet-emb{height:15mm;width:auto;align-self:center}

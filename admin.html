@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>หลังบ้าน · คำร้อง ปพ. งานทะเบียน</title>
-<meta name="theme-color" content="#142B4D">
+<meta name="theme-color" content="#3A1468">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preload" as="image" href="assets/emblem-bw.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&family=Sarabun:wght@400;600;700&display=swap">
@@ -14,22 +16,26 @@
 body{font-size:15px}
 .wrapc{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 /* login */
-.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--navy)}
-.login-card{width:min(420px,100%);background:var(--surface);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-.login-top{background:var(--navy);color:var(--navy-ink);padding:22px 24px 16px;border-bottom:5px solid;border-image:linear-gradient(90deg,var(--teal) 0 70%,var(--amber) 70% 100%) 1}
-.login-top span{font:600 11.5px/1.4 var(--f-label);letter-spacing:.14em;color:var(--cyan)}
-.login-top h1{font-size:22px;margin-top:4px}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(120% 90% at 50% 0%,#5B2A9E 0%,#2A0E4F 70%)}
+.login-card{width:min(420px,100%);background:var(--surface);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px rgba(10,0,30,.35)}
+.login-top{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:var(--navy-ink);padding:22px 24px 18px;border-bottom:4px solid var(--gold);display:grid;justify-items:center;text-align:center;gap:2px}
+.login-top img{height:78px;width:auto;margin-bottom:8px}
+.login-top b{font:600 16px/1.4 var(--f-head)}
+.login-top span{font:600 10.5px/1.6 var(--f-label);letter-spacing:.24em;color:var(--gold-2)}
+.login-top h1{font-size:20px;margin-top:8px}
 .login-b{padding:20px 24px 24px;display:grid;gap:14px}
 /* shell */
-.atop{background:var(--navy);color:var(--navy-ink);display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:10px}
-.abrand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.abrand b{font:700 17px var(--f-head)}
-.abrand span{font:500 13.5px var(--f-head);color:var(--band-sub)}
+.atop{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:var(--navy-ink);display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:8px}
+.abrand{display:flex;align-items:center;gap:11px;min-width:0}
+.abrand img{height:42px;width:auto;flex:none}
+.abrand div{display:grid;line-height:1.3;min-width:0}
+.abrand b{font:600 16px var(--f-head)}
+.abrand span{font:500 13px var(--f-head);color:var(--band-sub)}
 .auser{display:flex;align-items:center;gap:12px;text-align:right}
 .auser div{display:grid;line-height:1.3}
 .auser b{font:600 14px var(--f-head)} .auser small{color:var(--band-sub);font-size:12px}
-.auser .btn{background:rgba(255,255,255,.12);color:var(--navy-ink)}
-.stripe{height:4px;background:linear-gradient(90deg,var(--teal) 0 70%,var(--amber) 70% 100%)}
+.auser .btn{background:rgba(255,255,255,.12);color:var(--navy-ink);border-color:rgba(255,255,255,.2)}
+.stripe{height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-2) 50%,var(--gold))}
 .anav{display:flex;gap:2px;border-bottom:1px solid var(--line);background:var(--surface);overflow-x:auto;position:sticky;top:0;z-index:15}
 .anav button{border:0;background:none;padding:12px 13px;font:600 14.5px var(--f-head);color:var(--ink-2);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .anav button.on{color:var(--ink);border-bottom-color:var(--teal)}
@@ -168,7 +174,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
         (L.err ? '<div class="note n-alert"><span>' + esc(L.err) + '</span></div>' : '') +
         '<button class="btn btn-pri btn-blk" type="submit"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังเข้าสู่ระบบ' : 'เข้าสู่ระบบ') + '</button>' +
         '<p class="muted" style="font-size:13px">ลืมรหัสผ่านหรือเข้าใช้ครั้งแรก ติดต่อผู้ดูแลระบบเพื่อขอรหัสผ่านชั่วคราว</p></form>';
-    $('app').innerHTML = '<div class="login"><div class="login-card"><div class="login-top"><span>PROT PITTAYAPAYAT · งานทะเบียน</span><h1>หลังบ้านระบบคำร้อง ปพ.</h1></div><div class="login-b">' + body + '</div></div></div>';
+    $('app').innerHTML = '<div class="login"><div class="login-card"><div class="login-top"><img src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="64" height="78"><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span><h1>หลังบ้านระบบคำร้อง ปพ.</h1></div><div class="login-b">' + body + '</div></div></div>';
     var f = $(L.step === 'setup' ? 'pw1' : 'un'); if (f) f.focus();
   }
   document.addEventListener('submit', function (e) {
@@ -214,7 +220,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   var TABS = [['queue', 'คิวงาน'], ['manual', 'บันทึกคำร้องแทน'], ['report', 'รายงาน'], ['settings', 'ตั้งค่า'], ['media', 'สื่อสำหรับตู้ลิ้นชัก']];
   function openCount() { return A.list.filter(PP.isOpen).length; }
   function renderShell() {
-    $('app').innerHTML = '<header class="atop wrapc"><div class="abrand"><b>งานทะเบียน</b><span>ระบบคำร้อง ปพ.1 / ปพ.7</span></div><div class="auser"><div><b>' + esc(A.me.displayName) + '</b><small>' + (A.me.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่') + '</small></div><button class="btn btn-sm" data-act="logout">ออกจากระบบ</button></div></header><div class="stripe"></div>' +
+    $('app').innerHTML = '<header class="atop wrapc"><div class="abrand"><img src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="34" height="42"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · ระบบคำร้อง ปพ.1 / ปพ.7</span></div></div><div class="auser"><div><b>' + esc(A.me.displayName) + '</b><small>' + (A.me.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่') + '</small></div><button class="btn btn-sm" data-act="logout">ออกจากระบบ</button></div></header><div class="stripe"></div>' +
       '<nav class="anav wrapc" id="nav" aria-label="เมนูหลังบ้าน"></nav><main class="abody wrapc" id="body"></main>';
     renderNav(); renderBody();
   }
@@ -359,7 +365,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     if (c.fa) notes.push('ชื่อบิดา ในทะเบียน "' + (c.fa.from || 'ไม่มีข้อมูล') + '" ขอแก้เป็น "' + (c.fa.to || 'ไม่ระบุ') + '" (' + c.fa.reason + ')');
     if (c.mo) notes.push('ชื่อมารดา ในทะเบียน "' + (c.mo.from || 'ไม่มีข้อมูล') + '" ขอแก้เป็น "' + (c.mo.to || 'ไม่ระบุ') + '" (' + c.mo.reason + ')');
     var p = r.purpose, qr = qrSvg((S.adminUrl || '') + '#no=' + r.no, 3);
-    return '<div class="sheet"><div class="sheet-top"><div><b>คำร้องเลขที่ ' + esc(r.no) + '/' + esc(r.year) + '</b><br>' + (r.channel === 'paper' ? 'บันทึกจากใบคำร้องกระดาษ' : 'ยื่นผ่านระบบออนไลน์') + '<br>' + PP.fDT(r.submittedAt) + '</div>' + (qr ? '<div class="sheet-qr">' + qr + 'สแกนเปิดคำร้อง</div>' : '') + '</div>' +
+    return '<div class="sheet"><div class="sheet-top"><div><b>คำร้องเลขที่ ' + esc(r.no) + '/' + esc(r.year) + '</b><br>' + (r.channel === 'paper' ? 'บันทึกจากใบคำร้องกระดาษ' : 'ยื่นผ่านระบบออนไลน์') + '<br>' + PP.fDT(r.submittedAt) + '</div><img class="sheet-emb" src="assets/emblem-bw.png" alt="">' + (qr ? '<div class="sheet-qr">' + qr + 'สแกนเปิดคำร้อง</div>' : '<div class="sheet-qr"></div>') + '</div>' +
       '<div class="sheet-title">แบบคำร้องขอใบรับรอง</div>' +
       '<span class="r right">วันที่ <span class="fl">' + sp.d + '</span> เดือน <span class="fl">' + sp.m + '</span> พ.ศ. <span class="fl">' + sp.y + '</span></span>' +
       '<span class="r">สิ่งที่ส่งมาด้วย <u>รูปถ่ายขนาด 1.5 นิ้ว</u> จำนวน <span class="fl">' + nPhotos(r) + '</span> รูป (ทรงผมต้องถูกระเบียบ/ไม่สวมเครื่องประดับ)</span>' +
@@ -378,28 +384,41 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
       '<div class="sig"><div>งานทะเบียนและสำมะโนนักเรียน<br>เจ้าหน้าที่ <span class="dots">..............................</span>(' + esc(S.staffName || '') + ')<br><span class="dots">..............................</span>(' + esc(S.registrarName || '') + ')<br>นายทะเบียน</div>' +
       '<div>เรียน ผู้อำนวยการ<br>เห็นควร ○ อนุมัติ &nbsp; ○ ไม่อนุมัติ<br><span class="dots">..............................</span>(' + esc(S.approverName || '') + ')<br>' + esc(S.approverTitle || '') + '</div></div></div>';
   }
-  function slipHTML() {
-    return '<div class="slip"><h4>ใบนำส่งรูปถ่าย<small>งานทะเบียน โรงเรียนพรตพิทยพยัต</small></h4>' +
-      '<div class="digits">เลขคำร้อง <span class="box"><i></i><i></i><i></i><i></i></span></div>' +
-      '<div class="digits">รหัสนักเรียน <span class="box"><i></i><i></i><i></i><i></i><i></i></span></div>' +
-      '<div class="ln2">ชื่อ-สกุล <span class="dl"></span></div>' +
-      '<div class="ln2">ชั้น ม. <span class="dl" style="max-width:22mm"></span> จำนวนรูป <span class="dl" style="max-width:14mm"></span> รูป</div>' +
-      '<div class="slip-sign">ข้าพเจ้ายืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง<div class="ln2">ลงชื่อ <span class="dl"></span> ผู้ขอ</div></div>' +
-      '<p>เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ เสียบรูปกับใบนี้ด้วยลวดเสียบกระดาษ แล้วใส่ลิ้นชักที่ 2</p></div>';
+  // ใบนำส่งรูปถ่าย ครึ่ง A4 (A5 แนวตั้ง) ขาวดำทั้งหมด เพื่อถ่ายเอกสารแล้วตัดครึ่ง
+  function slipHTML(url) {
+    var qr = qrSvg(url, 4), boxes = function (n) { var s = ''; for (var i = 0; i < n; i++) s += '<i></i>'; return '<span class="box">' + s + '</span>'; };
+    return '<div class="slip">' +
+      '<div class="slip-head"><img class="slip-emb" src="assets/emblem-bw.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span class="en">PROT PITTAYAPAYAT SCHOOL</span><span>งานทะเบียน สำนักงานวิชาการ โทร. 0-2326-4050</span></div></div>' +
+      '<div class="slip-title"><h4>ใบนำส่งรูปถ่าย</h4><span>ประกอบคำร้องขอ ปพ.1 / ปพ.7 ที่ยื่นผ่านระบบออนไลน์</span></div>' +
+      '<div class="slip-body"><div class="slip-fields">' +
+        '<div class="fld"><span>เลขคำร้อง (4 หลัก)</span>' + boxes(4) + '</div>' +
+        '<div class="fld"><span>รหัสนักเรียน (5 หลัก)</span>' + boxes(5) + '</div>' +
+        '<div class="ln2">ชื่อ-สกุล <span class="dl"></span></div>' +
+        '<div class="ln2">ชั้น ม. <span class="dl w9"></span>/<span class="dl w9"></span> เลขที่ <span class="dl"></span></div>' +
+        '<div class="ln2">จำนวนรูปที่แนบ <span class="dl"></span> รูป</div>' +
+      '</div><div class="slip-photo"><b>หนีบรูปถ่าย<br>ขนาด 1.5 นิ้ว<br>ตรงนี้</b><span>1 รูป ต่อเอกสาร 1 ชุด</span><span>เขียนชื่อและรหัสนักเรียน<br>ด้านหลังรูปทุกใบ</span></div></div>' +
+      '<div class="slip-sign"><p>ข้าพเจ้าขอยืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง</p>' +
+        '<div class="ln2">ลงชื่อ <span class="dl"></span> ผู้ขอ</div><div class="ln2">วันที่ <span class="dl"></span>/<span class="dl"></span>/<span class="dl"></span></div></div>' +
+      '<div class="slip-qr">' + (qr ? '<div class="q">' + qr + '</div>' : '') + '<div><b>ยังไม่ได้ยื่นคำร้อง สแกนที่นี่</b>' +
+        '<ol><li>ยื่นคำร้องออนไลน์ ได้เลขคำร้อง 4 หลัก</li><li>กรอกใบนี้ หนีบรูป ใส่ลิ้นชักที่ 2 ภายใน ' + esc(A.cfg && A.cfg.photoDays || 7) + ' วัน</li><li>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</li></ol>' +
+        '<span class="url">' + esc(String(url).replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</span></div></div>' +
+      '<div class="slip-staff">สำหรับเจ้าหน้าที่ &nbsp; รับรูปเมื่อ <span class="dl"></span> ลงชื่อ <span class="dl"></span></div>' +
+      '</div>';
   }
   function labelHTML(r) {
     return '<div class="label"><b>คำร้อง ' + esc(r.no) + '</b><span class="big">' + esc(r.name) + '</span><span>ม.' + esc(r.cls) + ' · รหัส ' + esc(r.sid) + '</span><span>' + esc(PP.docsText(r)) + ' · ลิ้นชัก ม.' + lvOf(r) + '</span></div>';
   }
   function posterHTML() {
     var url = A.settings.studentUrl || '', qr = qrSvg(url, 8);
-    return '<div class="poster"><div class="poster-b"><span class="ey">PROT PITTAYAPAYAT · งานทะเบียน</span><h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
+    return '<div class="poster"><div class="poster-top"><img src="assets/emblem-gold.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span></div></div>' +
+      '<div class="poster-b"><span class="ey">งานทะเบียน สำนักงานวิชาการ</span><h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7 ออนไลน์</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
       '<div class="poster-qr">' + (qr || '') + '</div><div class="poster-url">' + esc(url) + '</div></div>' +
-      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง</div><div><b>2</b>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียนเลขคำร้องและลงชื่อ</div><div><b>3</b>เสียบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
-      '<div class="poster-s"></div></div>';
+      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</div><div><b>2</b>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 กรอกและลงชื่อ</div><div><b>3</b>หนีบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
+      '<div class="poster-foot">สอบถาม สำนักงานวิชาการ โทร. 0-2326-4050</div></div>';
   }
   function signListHTML(list) {
     var rows = list.map(function (r, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(r.no) + '</td><td>' + esc(r.name) + '</td><td>ม.' + esc(r.cls) + '</td><td>' + esc(PP.docsText(r)) + '</td><td></td></tr>'; }).join('');
-    return '<div class="sheet" style="height:100%;padding:16mm 16mm"><div class="sheet-title" style="font-size:20px">บัญชีรายชื่อคำร้องเสนอลงนาม</div><p style="text-align:center">งานทะเบียน โรงเรียนพรตพิทยพยัต · วันที่ ' + PP.fD(new Date()) + ' · รวม ' + list.length + ' คำร้อง</p>' +
+    return '<div class="sheet" style="height:100%;padding:14mm 16mm"><img src="assets/emblem-bw.png" alt="" style="height:22mm;display:block;margin:0 auto 3mm"><div class="sheet-title" style="font-size:20px">บัญชีรายชื่อคำร้องเสนอลงนาม</div><p style="text-align:center">งานทะเบียน โรงเรียนพรตพิทยพยัต · วันที่ ' + PP.fD(new Date()) + ' · รวม ' + list.length + ' คำร้อง</p>' +
       '<table style="width:100%;border-collapse:collapse;margin-top:6mm;font-size:13pt" border="1" cellpadding="6"><thead><tr><th>ที่</th><th>เลขคำร้อง</th><th>ชื่อ-สกุล</th><th>ชั้น</th><th>เอกสาร</th><th style="width:30mm">หมายเหตุ</th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="sig" style="margin-top:14mm"><div>ลงชื่อ ..............................<br>(' + esc(A.settings.staffName || '') + ')<br>เจ้าหน้าที่ผู้เสนอ</div><div>ลงชื่อ ..............................<br>(' + esc(A.settings.registrarName || '') + ')<br>นายทะเบียน</div></div></div>';
   }
@@ -410,7 +429,10 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     function cleanup() { if (cleaned) return; cleaned = true; document.body.classList.remove('printing'); root.innerHTML = ''; }
     window.addEventListener('afterprint', cleanup, { once: true });
     var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
-    ready.then(function () { setTimeout(function () { window.print(); setTimeout(cleanup, 500); }, 150); });
+    var imgs = Array.prototype.slice.call(root.querySelectorAll('img')).map(function (im) {
+      return im.complete ? Promise.resolve() : new Promise(function (res) { im.onload = im.onerror = res; setTimeout(res, 4000); });
+    });
+    Promise.all([ready].concat(imgs)).then(function () { setTimeout(function () { window.print(); setTimeout(cleanup, 500); }, 150); });
   }
   function printForms2(list) {
     var html = '';
@@ -480,7 +502,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   function mediaHTML() {
     var url = A.settings.studentUrl || '', qr = qrSvg(url, 6);
     return '<div class="panel"><h3>ลิงก์และ QR หน้าเว็บนักเรียน</h3><div class="qrbox"><div class="qr">' + (qr || '<span class="muted">โหลดตัวสร้าง QR ไม่ได้</span>') + '</div><div style="display:grid;gap:8px;min-width:0;flex:1"><div class="urlbox">' + esc(url) + '</div><div class="acts"><button class="btn btn-sm btn-sec" data-act="copy" data-v="' + esc(url) + '">คัดลอกลิงก์</button><a class="btn btn-sm btn-sec" href="' + esc(url) + '" target="_blank" rel="noopener">เปิดหน้าเว็บนักเรียน</a></div></div></div></div>' +
-      '<div class="panel"><h3>พิมพ์สื่อสำหรับตู้ลิ้นชัก</h3><p class="hint">ใบนำส่งรูปถ่ายวางในลิ้นชักที่ 1 (4 ใบต่อแผ่น A4 ตัดตามเส้นประ) และโปสเตอร์ QR ติดที่ตู้ลิ้นชัก</p><div class="acts"><button class="btn btn-pri" data-act="print-slips">พิมพ์ใบนำส่งรูปถ่าย</button><button class="btn btn-sec" data-act="print-poster">พิมพ์โปสเตอร์ QR (A4)</button></div></div>';
+      '<div class="panel"><h3>พิมพ์สื่อสำหรับตู้ลิ้นชัก</h3><p class="hint">ใบนำส่งรูปถ่ายวางในลิ้นชักที่ 1 พิมพ์เป็นต้นฉบับขาวดำ A4 แนวนอน 1 แผ่นได้ 2 ใบ ถ่ายเอกสารแล้วตัดครึ่งตามเส้นประ ส่วนโปสเตอร์ QR ติดที่ตู้ลิ้นชัก</p><div class="acts"><button class="btn btn-pri" data-act="print-slips">พิมพ์ใบนำส่งรูปถ่าย</button><button class="btn btn-sec" data-act="print-poster">พิมพ์โปสเตอร์ QR (A4)</button></div></div>';
   }
 
   /* ===================== Events ===================== */
@@ -527,7 +549,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   ACT['print-forms'] = function (a) { var list = a.dataset.v === 'one' ? [find(A.open)] : selList().map(find); list = list.filter(Boolean); if (!list.length) return; printForms2(list); };
   ACT['print-labels'] = function (a) { var list = a.dataset.v === 'one' ? [find(A.open)] : selList().map(find); list = list.filter(Boolean); if (!list.length) return; printLabels(list); };
   ACT['print-signlist'] = function () { var list = selList().map(find).filter(Boolean); if (!list.length) return; doPrint('<div class="pg-port">' + signListHTML(list) + '</div>'); };
-  ACT['print-slips'] = function () { doPrint('<div class="pg-port"><div class="slips">' + slipHTML() + slipHTML() + slipHTML() + slipHTML() + '</div></div>'); };
+  ACT['print-slips'] = function () { var u = A.settings.studentUrl || ''; doPrint('<div class="pg-land slips">' + slipHTML(u) + slipHTML(u) + '</div>'); };
   ACT['print-poster'] = function () { doPrint('<div class="pg-port">' + posterHTML() + '</div>'); };
   ACT['report-reload'] = function () { A.report = null; renderBody(); };
   ACT['man-reset'] = function () { manReset(); renderBody(); };
