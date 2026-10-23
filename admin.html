@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>หลังบ้าน · คำร้อง ปพ. งานทะเบียน</title>
+<meta name="theme-color" content="#142B4D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&family=Sarabun:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body{font-size:15px}
+.wrapc{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--navy)}
+.login-card{width:min(420px,100%);background:var(--surface);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.login-top{background:var(--navy);color:var(--navy-ink);padding:22px 24px 16px;border-bottom:5px solid;border-image:linear-gradient(90deg,var(--teal) 0 70%,var(--amber) 70% 100%) 1}
+.login-top span{font:600 11.5px/1.4 var(--f-label);letter-spacing:.14em;color:var(--cyan)}
+.login-top h1{font-size:22px;margin-top:4px}
+.login-b{padding:20px 24px 24px;display:grid;gap:14px}
+/* shell */
+.atop{background:var(--navy);color:var(--navy-ink);display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:10px}
+.abrand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.abrand b{font:700 17px var(--f-head)}
+.abrand span{font:500 13.5px var(--f-head);color:var(--band-sub)}
+.auser{display:flex;align-items:center;gap:12px;text-align:right}
+.auser div{display:grid;line-height:1.3}
+.auser b{font:600 14px var(--f-head)} .auser small{color:var(--band-sub);font-size:12px}
+.auser .btn{background:rgba(255,255,255,.12);color:var(--navy-ink)}
+.stripe{height:4px;background:linear-gradient(90deg,var(--teal) 0 70%,var(--amber) 70% 100%)}
+.anav{display:flex;gap:2px;border-bottom:1px solid var(--line);background:var(--surface);overflow-x:auto;position:sticky;top:0;z-index:15}
+.anav button{border:0;background:none;padding:12px 13px;font:600 14.5px var(--f-head);color:var(--ink-2);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.anav button.on{color:var(--ink);border-bottom-color:var(--teal)}
+.anav .cnt{font:700 12px/1 var(--f-label);background:var(--grey-soft);border-radius:999px;padding:3px 8px;color:var(--ink-2)}
+.anav .sync{margin-left:auto;align-self:center;font-size:12.5px;color:var(--ink-3);padding-right:4px;white-space:nowrap}
+.abody{padding-block:16px 60px;display:grid;gap:12px;max-width:1400px}
+.filters{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}
+@media (max-width:1100px){.filters{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.flt{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;text-align:left;cursor:pointer;display:grid;gap:2px;align-content:space-between}
+.flt span{font:600 13px/1.35 var(--f-head);color:var(--ink-2)}
+.flt b{font:700 24px/1.1 var(--f-label);font-variant-numeric:tabular-nums}
+.flt.on{border-color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal);background:var(--teal-soft)}
+.flt.hot b{color:var(--red)}
+.tool{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tool .inp{max-width:360px}
+.batch{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--navy);color:var(--navy-ink);border-radius:10px;padding:8px 10px 8px 14px;min-height:48px;flex-wrap:wrap}
+.batch b{font:600 14px var(--f-head)}
+.batch-b{display:flex;gap:6px;flex-wrap:wrap}
+.batch .btn-sec{background:rgba(255,255,255,.1);color:var(--navy-ink);border-color:rgba(255,255,255,.25)}
+.batch .btn-ghost{color:var(--band-sub)}
+.batch-empty{background:var(--surface);color:var(--ink-3);border:1px dashed var(--line);font-size:14px}
+.tblw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
+.qt th{font:600 12.5px/1.4 var(--f-head);color:var(--ink-3);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+.qt td{padding:9px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;line-height:1.5}
+.qt td small{display:block;color:var(--ink-3);font-size:12.5px}
+.qt td b{font:600 14.5px/1.5 var(--f-head)}
+.qt tbody tr{cursor:pointer}
+.qt tbody tr:hover{background:var(--surface-2)}
+.qt tbody tr.is-open{background:var(--teal-soft)}
+.qt tr:last-child td{border-bottom:0}
+.qt .c-chk{width:38px;text-align:center}
+.qt input[type=checkbox]{width:17px;height:17px;accent-color:var(--teal);cursor:pointer}
+.qt .no{font:700 15px var(--f-label);letter-spacing:.03em}
+.empty{padding:26px;text-align:center;color:var(--ink-3)}
+/* drawer */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(500px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-14px 0 36px rgba(0,0,0,.14);display:flex;flex-direction:column;z-index:30}
+.dt-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dt-h>div{flex:1;display:grid;line-height:1.3}
+.dt-ey{font:600 12px var(--f-head);color:var(--ink-3)}
+.dt-no{font:700 22px var(--f-label);letter-spacing:.04em}
+.dt-b{flex:1;overflow-y:auto;padding:12px 16px 30px;display:grid;gap:18px;align-content:start}
+.dt-b h5{font:600 13px/1.4 var(--f-head);color:var(--ink-3);margin-bottom:6px}
+.fd{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-2)}
+.fd:last-child{border-bottom:0}
+.fd-l{font-size:13px;color:var(--ink-3)}
+.fd-v{font:600 15px/1.45 var(--f-head);min-width:0;overflow-wrap:anywhere}
+.fd.chg{background:var(--amber-soft);border-radius:8px;padding:6px 8px;border-bottom:0;margin:3px 0}
+.fd.chg .was{display:block;font:400 13px var(--f-body);color:var(--ink-2);text-decoration:line-through}
+.fd.chg em{display:block;font:500 12.5px var(--f-body);font-style:normal;color:var(--amber-ink)}
+.cp{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:3px 9px;font:600 12.5px var(--f-head);color:var(--teal-ink);cursor:pointer;white-space:nowrap}
+.cp:hover{border-color:var(--teal)}
+.kv{display:grid;grid-template-columns:100px minmax(0,1fr);gap:5px 10px;font-size:14.5px}
+.kv span{color:var(--ink-3);font-size:13px}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.fixbox{display:grid;gap:8px;background:var(--red-soft);border-radius:10px;padding:10px 12px}
+.confirm{display:grid;gap:8px;background:var(--red-soft);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.confirm div{display:flex;gap:8px;flex-wrap:wrap}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px}
+.log li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px}
+.log time{color:var(--ink-3);font-size:12.5px}
+.log b{font:600 13px var(--f-head);color:var(--ink-2);margin-right:4px}
+/* panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:12px;max-width:820px}
+.panel h3{font-size:17px}
+.panel p.hint{font-size:13.5px;color:var(--ink-3)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+.sw{display:flex;align-items:center;gap:10px;cursor:pointer;font:600 14.5px var(--f-head)}
+.sw input{appearance:none;width:44px;height:25px;border-radius:13px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;flex:none;margin:0}
+.sw input::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:var(--surface);transition:left .2s}
+.sw input:checked{background:var(--teal)}
+.sw input:checked::after{left:22px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:2px}
+.stats span{font:600 13px var(--f-head);color:var(--ink-3)}
+.stats b{font:700 28px/1.15 var(--f-label);font-variant-numeric:tabular-nums}
+.stats small{font-size:12.5px;color:var(--ink-3)}
+.mini{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+.mini th,.mini td{padding:7px 12px;border-bottom:1px solid var(--line-2);text-align:left}
+.mini th{font:600 12.5px var(--f-head);color:var(--ink-3)}
+.mini .r{text-align:right;font-variant-numeric:tabular-nums}
+.mini tr:last-child td{border-bottom:0}
+.qrbox{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.qrbox .qr{width:150px;background:#fff;padding:10px;border-radius:8px;border:1px solid var(--line)}
+.qrbox .qr svg,.qrbox .qr img{width:100%;height:auto;display:block}
+.urlbox{font:500 14px var(--f-label);word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.center{display:grid;place-items:center;gap:10px;padding:60px 0;color:var(--ink-2)}
+</style>
+<script src="config.js"></script>
+<script src="assets/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+<div id="app"><div class="center"><span class="spin"></span><span>กำลังโหลด</span></div></div>
+<aside id="drawer" hidden aria-label="รายละเอียดคำร้อง"></aside>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="print-root"></div>
+<script>
+(function () {
+  'use strict';
+  var esc = PP.esc, TOKEN_KEY = 'pp_admin_token';
+  var A = { token: null, me: null, cfg: null, settings: {}, fixReasons: [], students: 0, list: [], view: 'queue', filter: 'open', q: '', sel: {},
+    open: null, fixOpen: false, fixIdx: 0, fixText: '', confirm: null, busy: false, lastSync: null, report: null, login: { step: 'login', err: '', setupToken: null, name: '' },
+    man: null, setErr: '' };
+  function $(id) { return document.getElementById(id); }
+  function find(no) { for (var i = 0; i < A.list.length; i++) if (A.list[i].no === no) return A.list[i]; return null; }
+  function lvOf(r) { return String(r.cls || '').split('/')[0]; }
+  function roomOf(r) { return String(r.cls || '').split('/')[1] || ''; }
+  function nPhotos(r) { return (r.pp1 || 0) + (r.pp7 || 0); }
+  function hasChanges(r) { return r.changes && Object.keys(r.changes).length > 0; }
+  function qrSvg(text, cell) {
+    try { if (typeof qrcode !== 'function') return ''; var q = qrcode(0, 'M'); q.addData(unescape(encodeURIComponent(text))); q.make(); return q.createSvgTag({ cellSize: cell || 4, margin: 0, scalable: true }); } catch (e) { return ''; }
+  }
+  function apiAdmin(action, data) {
+    return PP.api(action, Object.assign({ token: A.token }, data || {})).catch(function (e) {
+      if (e.code === 'AUTH') { PP.store.del(TOKEN_KEY); A.token = null; renderLogin(); PP.toast('กรุณาเข้าสู่ระบบอีกครั้ง'); }
+      throw e;
+    });
+  }
+
+  /* ===================== Login ===================== */
+  function renderLogin() {
+    $('drawer').hidden = true;
+    var L = A.login;
+    var body = L.step === 'setup'
+      ? '<p>สวัสดี ' + esc(L.name) + ' กรุณาตั้งรหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร) ระบบจะใช้รหัสนี้แทนรหัสผ่านชั่วคราว</p>' +
+        '<form id="f-setup" style="display:grid;gap:14px"><div><label class="lbl" for="pw1">รหัสผ่านใหม่</label><input class="inp" id="pw1" type="password" autocomplete="new-password"></div>' +
+        '<div><label class="lbl" for="pw2">ยืนยันรหัสผ่านใหม่</label><input class="inp" id="pw2" type="password" autocomplete="new-password"></div>' +
+        (L.err ? '<div class="note n-alert"><span>' + esc(L.err) + '</span></div>' : '') +
+        '<button class="btn btn-pri btn-blk" type="submit"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังบันทึก' : 'บันทึกรหัสผ่านและเข้าสู่ระบบ') + '</button></form>'
+      : '<form id="f-login" style="display:grid;gap:14px"><div><label class="lbl" for="un">ชื่อผู้ใช้</label><input class="inp" id="un" autocomplete="username" autocapitalize="off"></div>' +
+        '<div><label class="lbl" for="pw">รหัสผ่าน</label><input class="inp" id="pw" type="password" autocomplete="current-password"></div>' +
+        (L.err ? '<div class="note n-alert"><span>' + esc(L.err) + '</span></div>' : '') +
+        '<button class="btn btn-pri btn-blk" type="submit"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังเข้าสู่ระบบ' : 'เข้าสู่ระบบ') + '</button>' +
+        '<p class="muted" style="font-size:13px">ลืมรหัสผ่านหรือเข้าใช้ครั้งแรก ติดต่อผู้ดูแลระบบเพื่อขอรหัสผ่านชั่วคราว</p></form>';
+    $('app').innerHTML = '<div class="login"><div class="login-card"><div class="login-top"><span>PROT PITTAYAPAYAT · งานทะเบียน</span><h1>หลังบ้านระบบคำร้อง ปพ.</h1></div><div class="login-b">' + body + '</div></div></div>';
+    var f = $(L.step === 'setup' ? 'pw1' : 'un'); if (f) f.focus();
+  }
+  document.addEventListener('submit', function (e) {
+    if (e.target.id === 'f-login') {
+      e.preventDefault(); if (A.busy) return;
+      var u = $('un').value.trim(), p = $('pw').value;
+      if (!u || !p) { A.login.err = 'กรอกชื่อผู้ใช้และรหัสผ่าน'; return renderLogin(); }
+      A.busy = true; A.login.err = ''; renderLogin();
+      PP.api('login', { username: u, password: p }).then(function (r) {
+        A.busy = false;
+        if (r.setup) { A.login = { step: 'setup', setupToken: r.setupToken, name: r.displayName, err: '' }; return renderLogin(); }
+        afterLogin(r);
+      }).catch(function (er) { A.busy = false; A.login.err = er.message; renderLogin(); });
+    }
+    if (e.target.id === 'f-setup') {
+      e.preventDefault(); if (A.busy) return;
+      var a = $('pw1').value, b = $('pw2').value;
+      if (a.length < 8) { A.login.err = 'รหัสผ่านใหม่ต้องยาวอย่างน้อย 8 ตัวอักษร'; return renderLogin(); }
+      if (a !== b) { A.login.err = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน'; return renderLogin(); }
+      A.busy = true; A.login.err = ''; renderLogin();
+      PP.api('setPassword', { setupToken: A.login.setupToken, newPassword: a }).then(function (r) { A.busy = false; afterLogin(r); })
+        .catch(function (er) { A.busy = false; A.login.err = er.message; renderLogin(); });
+    }
+  });
+  function afterLogin(r) {
+    A.token = r.token; A.me = r.user; PP.store.set(TOKEN_KEY, r.token, true);
+    A.login = { step: 'login', err: '' };
+    load(true);
+  }
+
+  /* ===================== Data ===================== */
+  function load(first) {
+    if (first) $('app').innerHTML = '<div class="center"><span class="spin"></span><span>กำลังโหลดคำร้อง</span></div>';
+    return apiAdmin('adminList').then(function (r) {
+      A.list = r.requests; A.cfg = r.config; PP.cfg = r.config; PP.setHolidays(r.config.holidays); A.settings = r.settings; A.me = r.me;
+      A.fixReasons = r.fixReasons || []; A.students = r.students; A.lastSync = new Date();
+      if (first) { renderShell(); openFromHash(); } else { renderBody(); renderDrawer(); renderNav(); }
+    }).catch(function (e) { if (e.code !== 'AUTH') { if (first) $('app').innerHTML = '<div class="center"><div class="note n-alert"><b>โหลดข้อมูลไม่ได้</b><span>' + esc(e.message) + '</span></div><button class="btn btn-pri" data-act="reload">ลองใหม่</button></div>'; else PP.toast(e.message); } });
+  }
+  function openFromHash() { var m = location.hash.match(/no=(\d{4})/); if (m && find(m[1])) { A.open = m[1]; renderDrawer(); renderBody(); } }
+
+  /* ===================== Shell ===================== */
+  var TABS = [['queue', 'คิวงาน'], ['manual', 'บันทึกคำร้องแทน'], ['report', 'รายงาน'], ['settings', 'ตั้งค่า'], ['media', 'สื่อสำหรับตู้ลิ้นชัก']];
+  function openCount() { return A.list.filter(PP.isOpen).length; }
+  function renderShell() {
+    $('app').innerHTML = '<header class="atop wrapc"><div class="abrand"><b>งานทะเบียน</b><span>ระบบคำร้อง ปพ.1 / ปพ.7</span></div><div class="auser"><div><b>' + esc(A.me.displayName) + '</b><small>' + (A.me.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่') + '</small></div><button class="btn btn-sm" data-act="logout">ออกจากระบบ</button></div></header><div class="stripe"></div>' +
+      '<nav class="anav wrapc" id="nav" aria-label="เมนูหลังบ้าน"></nav><main class="abody wrapc" id="body"></main>';
+    renderNav(); renderBody();
+  }
+  function renderNav() {
+    var n = $('nav'); if (!n) return;
+    n.innerHTML = TABS.map(function (t) { return '<button class="' + (A.view === t[0] ? 'on' : '') + '" data-act="view" data-v="' + t[0] + '">' + t[1] + (t[0] === 'queue' ? '<span class="cnt">' + openCount() + '</span>' : '') + '</button>'; }).join('') +
+      '<span class="sync">' + (A.lastSync ? 'อัปเดต ' + PP.fT(A.lastSync) : '') + '</span>';
+  }
+  function renderBody() {
+    var b = $('body'); if (!b) return;
+    if (A.view === 'queue') {
+      if (!$('q')) b.innerHTML = '<div class="tool"><label class="lbl" for="q" style="margin:0">ค้นหา</label><input class="inp" id="q" placeholder="เลขคำร้อง ชื่อ หรือรหัสนักเรียน" value="' + esc(A.q) + '" data-input="q"><button class="btn btn-sm btn-sec" data-act="reload">' + (A.busy ? '<span class="spin"></span>' : 'รีเฟรช') + '</button></div><div id="qlist" style="display:grid;gap:12px"></div>';
+      $('qlist').innerHTML = queueHTML();
+    } else if (A.view === 'manual') b.innerHTML = manualHTML();
+    else if (A.view === 'report') b.innerHTML = reportHTML();
+    else if (A.view === 'settings') b.innerHTML = settingsHTML();
+    else if (A.view === 'media') b.innerHTML = mediaHTML();
+  }
+
+  /* ===================== Queue ===================== */
+  var FILTERS = [['open', 'ยังไม่ปิด'], ['photo', 'รอรูปถ่าย'], ['work', 'กำลังจัดทำ'], ['hold', 'รอผลการเรียน'], ['sign', 'เสนอลงนาม'], ['ready', 'พร้อมรับ'], ['fix', 'ต้องแก้ไข'], ['closed', 'ปิดแล้ว (45 วัน)']];
+  function match(r, k) { if (k === 'open') return PP.isOpen(r); if (k === 'closed') return !PP.isOpen(r); return r.status === k; }
+  function searchOk(r) { var q = A.q.trim(); if (!q) return true; return (r.no + ' ' + r.sid + ' ' + r.name + ' ม.' + r.cls).indexOf(q) > -1; }
+  function flags(r) {
+    if (!PP.isOpen(r)) return [];
+    var f = [], s = r.student, c = A.cfg;
+    if (hasChanges(r)) f.push(['ขอแก้ข้อมูล', 'wait']);
+    var pre = r.changes && r.changes.name ? r.changes.name.to.pre : (s ? s.prefix : '');
+    var age = s ? PP.age(s.dob) : null;
+    if (age !== null && age >= 15 && /^เด็ก/.test(pre)) f.push(['ตรวจคำนำหน้า', 'wait']);
+    if (r.needBy && PP.workBetween(new Date(), PP.parseISO(r.needBy)) <= 3) f.push(['ด่วน', 'alert']);
+    if (r.status === 'photo' && r.photoDue && new Date() > new Date(r.photoDue)) f.push(['เลยกำหนดส่งรูป', 'alert']);
+    if ((r.status === 'work' || r.status === 'sign') && r.photoAt && PP.workBetween(r.photoAt, new Date()) > c.workMax) f.push(['เกิน ' + c.workMax + ' วันทำการ', 'alert']);
+    if (r.lang === 'en') f.push(['ภาษาอังกฤษ', 'work']);
+    if (r.channel === 'paper') f.push(['ใบกระดาษ', 'done']);
+    if (!s) f.push(['ไม่พบในทะเบียน', 'alert']);
+    return f;
+  }
+  function chips(fl) { return fl.map(function (x) { return '<span class="chip t-' + x[1] + '">' + x[0] + '</span>'; }).join(''); }
+  function isUrgent(r) { return flags(r).some(function (f) { return f[0] === 'ด่วน'; }); }
+  function sorted(list) {
+    if (A.filter === 'closed') return list.sort(function (a, b) { return (b.doneAt || b.submittedAt) < (a.doneAt || a.submittedAt) ? -1 : 1; });
+    return list.sort(function (a, b) { var ua = isUrgent(a) ? 0 : 1, ub = isUrgent(b) ? 0 : 1; if (ua !== ub) return ua - ub; return a.submittedAt < b.submittedAt ? -1 : 1; });
+  }
+  function selList() { return Object.keys(A.sel).filter(function (no) { return A.sel[no] && find(no); }); }
+  function queueHTML() {
+    function cnt(k) { return A.list.filter(function (r) { return match(r, k); }).length; }
+    var rows = sorted(A.list.filter(function (r) { return match(r, A.filter) && searchOk(r); }));
+    var sel = selList(), allOn = rows.length && rows.every(function (r) { return A.sel[r.no]; });
+    var h = '<div class="filters">' + FILTERS.map(function (f) { return '<button class="flt' + (A.filter === f[0] ? ' on' : '') + (f[0] === 'fix' && cnt('fix') ? ' hot' : '') + '" data-act="filter" data-v="' + f[0] + '"><span>' + f[1] + '</span><b>' + cnt(f[0]) + '</b></button>'; }).join('') + '</div>';
+    h += sel.length
+      ? '<div class="batch"><b>เลือก ' + sel.length + ' รายการ</b><div class="batch-b"><button class="btn btn-sm btn-pri" data-act="batch" data-v="recv">ได้รับรูปแล้ว</button><button class="btn btn-sm btn-pri" data-act="batch" data-v="sign">เสนอลงนาม</button><button class="btn btn-sm btn-pri" data-act="batch" data-v="ready">พร้อมรับ</button><button class="btn btn-sm btn-sec" data-act="print-forms" data-v="sel">พิมพ์ใบคำร้อง</button><button class="btn btn-sm btn-sec" data-act="print-signlist">พิมพ์บัญชีเสนอลงนาม</button><button class="btn btn-sm btn-sec" data-act="print-labels" data-v="sel">พิมพ์ป้ายชุดเอกสาร</button><button class="btn btn-sm btn-ghost" data-act="clear">ล้างการเลือก</button></div></div>'
+      : '<div class="batch batch-empty">ติ๊กเลือกหลายรายการ เพื่อเปลี่ยนสถานะ หรือพิมพ์ใบคำร้องพร้อมกัน</div>';
+    h += '<div class="tblw"><table class="qt"><thead><tr><th class="c-chk"><input type="checkbox" data-change="all" aria-label="เลือกทั้งหมดในตาราง"' + (allOn ? ' checked' : '') + '></th><th>เลขคำร้อง</th><th>นักเรียน</th><th>เอกสาร</th><th>ยื่นเมื่อ</th><th>ต้องใช้</th><th>สถานะ</th><th>ป้ายเตือน</th></tr></thead><tbody>';
+    h += rows.map(function (r) {
+      return '<tr class="' + (A.open === r.no ? 'is-open' : '') + '" data-act="open" data-no="' + esc(r.no) + '"><td class="c-chk"><input type="checkbox" data-change="sel" data-no="' + esc(r.no) + '"' + (A.sel[r.no] ? ' checked' : '') + ' aria-label="เลือกคำร้อง ' + esc(r.no) + '"></td>' +
+        '<td class="no">' + esc(r.no) + '</td><td><b>' + esc(r.name) + '</b><small>ม.' + esc(r.cls) + ' · ' + esc(r.sid) + '</small></td>' +
+        '<td>' + PP.docsText(r) + '<small>รูป ' + nPhotos(r) + ' รูป</small></td><td>' + PP.fD(r.submittedAt) + '<small>' + PP.fT(r.submittedAt) + '</small></td>' +
+        '<td>' + (r.needBy ? PP.fD(PP.parseISO(r.needBy)) : '<span class="muted">–</span>') + '</td><td>' + PP.pill(r) + '</td><td>' + chips(flags(r)) + '</td></tr>';
+    }).join('');
+    h += '</tbody></table>' + (rows.length ? '' : '<div class="empty">ไม่มีคำร้องในรายการนี้</div>') + '</div>';
+    return h;
+  }
+
+  /* ===================== Drawer ===================== */
+  function fieldRow(label, val, chg) {
+    if (chg) return '<div class="fd chg"><div class="fd-l">' + label + '</div><div class="fd-v"><span class="was">ในทะเบียน: ' + esc(chg.from || 'ไม่มีข้อมูล') + '</span>ขอแก้เป็น: ' + esc(chg.to || '(ไม่ระบุ)') + '<em>' + esc(chg.reason) + '</em></div>' + (chg.to ? '<button class="cp" data-act="copy" data-v="' + esc(chg.to) + '">คัดลอก</button>' : '<span></span>') + '</div>';
+    return '<div class="fd"><div class="fd-l">' + label + '</div><div class="fd-v">' + (val ? esc(val) : '<span class="muted">ไม่มีข้อมูล</span>') + '</div>' + (val ? '<button class="cp" data-act="copy" data-v="' + esc(val) + '">คัดลอก</button>' : '<span></span>') + '</div>';
+  }
+  function sgsRecipe(r) {
+    var lvn = lvOf(r), room = roomOf(r), c = A.cfg, L = [];
+    if (hasChanges(r)) L.push(['แก้ข้อมูลก่อนพิมพ์', 'เมนู นักเรียน → ประวัตินักเรียนโดยย่อ (ช่องชื่อ วันเกิด บิดา มารดา)']);
+    if (r.pp1) {
+      var p = String(r.scope).split('/'), n = PP.isM6(lvn) ? PP.m6Count(r.scope, c.year) : 0;
+      if (r.lang === 'en') L.push(['ปพ.1 (อังกฤษ)', 'รายงาน → ปพ.1 · ภาษา อังกฤษ · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ปีการศึกษาสุดท้าย ' + p[1] + ' ภาคเรียน ' + p[0]]);
+      else if (n === 4 || n === 5) L.push(['ปพ.1', 'รายงาน → พิมพ์ ปพ.1 4/5 ภาคเรียน · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ภาคเรียน ' + n]);
+      else L.push(['ปพ.1', 'รายงาน → ปพ.1 · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ปีการศึกษาสุดท้าย ' + p[1] + ' ภาคเรียน ' + p[0]]);
+    }
+    if (r.pp7) { var cur = String(c.pending || c.latest).split('/'); L.push(['ปพ.7', 'รายงาน → ปพ.7 (รับรองสภาพการเป็นนักเรียน) · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ปีการศึกษาสุดท้าย ' + cur[1] + ' ภาคเรียน ' + cur[0]]); }
+    return '<div class="kv">' + L.map(function (x) { return '<span>' + x[0] + '</span><div>' + esc(x[1]) + '</div>'; }).join('') + '</div><p class="muted" style="font-size:13px;margin-top:6px">แถบบนของ SGS เลือกชั้น ม.' + lvn + ' ก่อน · <button class="cp" data-act="copy" data-v="' + esc(r.sid) + '">คัดลอกรหัส ' + esc(r.sid) + '</button></p>';
+  }
+  function renderDrawer() {
+    var d = $('drawer'), r = A.open ? find(A.open) : null;
+    if (!r) { d.hidden = true; d.innerHTML = ''; return; }
+    var keep = d.querySelector('.dt-b') ? d.querySelector('.dt-b').scrollTop : 0;
+    var s = r.student || {}, c = r.changes || {}, nm = c.name, fl = flags(r);
+    function sub(k, label) { var a = s[{ pre: 'prefix', fn: 'fname', ln: 'lname' }[k]]; if (nm && nm.to[k] !== nm.from[k]) return fieldRow(label, null, { from: nm.from[k], to: nm.to[k], reason: nm.reason }); return fieldRow(label, a); }
+    var fields = r.student
+      ? sub('pre', 'คำนำหน้า') + sub('fn', 'ชื่อ') + sub('ln', 'ชื่อสกุล') + fieldRow('รหัสนักเรียน', r.sid) + fieldRow('ชั้น', 'ม.' + r.cls) +
+        (c.dob ? fieldRow('วันเกิด', null, { from: PP.fLong(c.dob.from) || c.dob.from, to: c.dob.to, reason: c.dob.reason }) : fieldRow('วันเกิด', PP.fLong(s.dob))) +
+        (c.fa ? fieldRow('ชื่อบิดา', null, c.fa) : fieldRow('ชื่อบิดา', s.father)) + (c.mo ? fieldRow('ชื่อมารดา', null, c.mo) : fieldRow('ชื่อมารดา', s.mother))
+      : fieldRow('ชื่อ-สกุล', r.name) + fieldRow('รหัสนักเรียน', r.sid) + fieldRow('ชั้น', 'ม.' + r.cls) + '<p class="muted" style="font-size:13px">ไม่พบรหัสนี้ในทะเบียนที่นำเข้าจาก SGS ตรวจข้อมูลใน SGS โดยตรง</p>';
+    var next = '';
+    if (r.status === 'photo') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="recv">ได้รับรูปแล้ว</button>';
+    if (r.status === 'work') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="sign">เสนอลงนาม</button>';
+    if (r.status === 'hold') next = '<button class="btn btn-sm btn-pri" disabled>รอผลการเรียน ' + esc(r.scope) + '</button>';
+    if (r.status === 'sign') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="ready">พร้อมรับ (ลิ้นชัก ม.' + lvOf(r) + ')</button>';
+    if (r.status === 'ready') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="staffdone">บันทึกว่านักเรียนรับแล้ว</button>';
+    if (r.status === 'fix') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="resume">นักเรียนแก้ไขแล้ว ดำเนินการต่อ</button>';
+    if (r.status === 'cancel' || r.status === 'expired') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="reopen">เปิดคำร้องอีกครั้ง</button>';
+    var open = PP.isOpen(r);
+    var acts = '<div class="acts">' + next + '<button class="btn btn-sm btn-sec" data-act="print-forms" data-v="one">พิมพ์ใบคำร้อง</button><button class="btn btn-sm btn-sec" data-act="print-labels" data-v="one">พิมพ์ป้าย</button>' +
+      (open && r.status !== 'fix' && !A.fixOpen ? '<button class="btn btn-sm btn-warn" data-act="fix-open">ส่งกลับให้แก้ไข</button>' : '') +
+      '<button class="btn btn-sm btn-ghost" data-act="act" data-v="reprint">บันทึกว่าพิมพ์เอกสารใหม่' + (r.reprint ? ' (' + r.reprint + ')' : '') + '</button>' +
+      (open && A.confirm !== 'cancel' ? '<button class="btn btn-sm btn-ghost" data-act="confirm" data-v="cancel">ยกเลิกคำร้อง</button>' : '') + '</div>';
+    if (r.status === 'hold') acts += '<p class="muted" style="font-size:13px">เมื่อโอนผลการเรียนภาคเรียนนี้เข้า SGS แล้ว ไปที่เมนูตั้งค่า เปลี่ยน "ภาคเรียนล่าสุดที่ผลการเรียนเข้า SGS แล้ว" คำร้องที่รออยู่จะเดินต่อพร้อมกัน</p>';
+    if (A.confirm === 'cancel') acts += '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' นักเรียนจะเห็นว่าคำร้องถูกยกเลิก</span><div><button class="btn btn-sm btn-warn" data-act="act" data-v="cancel">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="confirm" data-v="">ไม่ยกเลิก</button></div></div>';
+    if (A.fixOpen) {
+      var fx = A.fixReasons[A.fixIdx] || {};
+      acts += '<div class="fixbox"><div><label class="lbl" for="fix-r">เหตุผล</label><select class="inp" id="fix-r" data-change="fix-r">' + A.fixReasons.map(function (x, i) { return '<option value="' + i + '"' + (i === A.fixIdx ? ' selected' : '') + '>' + esc(x.r) + '</option>'; }).join('') + '</select></div>' +
+        '<div><label class="lbl" for="fix-t">ข้อความเพิ่มเติมถึงนักเรียน' + (fx.todo ? ' (ไม่บังคับ)' : ' (ต้องระบุ)') + '</label><textarea class="inp" id="fix-t" data-input="fix-t">' + esc(A.fixText) + '</textarea></div>' +
+        '<div style="font-size:13.5px;color:var(--ink-2)"><b>นักเรียนจะเห็น:</b> ต้องแก้ไข: ' + esc(fx.r || '') + (fx.todo ? ' · ' + esc(fx.todo) : '') + '</div>' +
+        '<div class="acts"><button class="btn btn-sm btn-warn" data-act="fix-send">ยืนยันส่งกลับ</button><button class="btn btn-sm btn-sec" data-act="fix-close">ยกเลิก</button></div></div>';
+    }
+    var purpose = r.purpose === 'อื่น ๆ' ? 'อื่น ๆ: ' + r.other : r.purpose;
+    var lg = (r.log || []).slice().sort(function (a, b) { return a.t < b.t ? 1 : -1; }).map(function (l) { return '<li><time>' + PP.fD(l.t) + '<br>' + PP.fT(l.t) + '</time><div><b>' + esc(l.who) + '</b>' + esc(l.action) + (l.detail ? ' · ' + esc(l.detail) : '') + '</div></li>'; }).join('');
+    d.innerHTML = '<div class="dt-h"><div><span class="dt-ey">คำร้องเลขที่</span><b class="dt-no">' + esc(r.no) + '/' + esc(r.year) + '</b></div>' + PP.pill(r) + '<button class="btn btn-sm btn-ghost" data-act="close">ปิด</button></div><div class="dt-b">' +
+      (fl.length || r.status === 'fix' ? '<div>' + chips(fl) + (r.status === 'fix' && r.issue ? '<div class="note n-alert" style="margin-top:6px"><b>ส่งกลับแล้ว: ' + esc(r.issue.reason) + '</b>' + (r.issue.text ? '<span>' + esc(r.issue.text) + '</span>' : '') + '</div>' : '') + '</div>' : '') +
+      '<section><h5>ข้อมูลนักเรียน (กดคัดลอกไปวางใน SGS)</h5>' + fields + '</section>' +
+      '<section><h5>เอกสารที่ขอ</h5><div class="kv">' + (r.pp1 ? '<span>ปพ.1</span><div>' + r.pp1 + ' ชุด · ' + esc(PP.scopeText(r.scope, lvOf(r), A.cfg.year)) + (r.lang === 'en' ? ' · ภาษาอังกฤษ' : '') + '</div>' : '') + (r.pp7 ? '<span>ปพ.7</span><div>' + r.pp7 + ' ชุด</div>' : '') +
+      '<span>รูปถ่าย</span><div>' + nPhotos(r) + ' รูป' + (r.status === 'photo' ? ' · ส่งภายใน ' + PP.fD(r.photoDue) : '') + '</div><span>เพื่อ</span><div>' + esc(purpose) + '</div><span>ต้องใช้</span><div>' + (r.needBy ? PP.fWeek(PP.parseISO(r.needBy)) : 'ไม่ระบุ') + '</div>' +
+      '<span>โทรศัพท์</span><div class="num">' + esc(PP.telFmt(r.phone)) + ' <button class="cp" data-act="copy" data-v="' + esc(r.phone) + '">คัดลอก</button></div><span>ช่องทาง</span><div>' + (r.channel === 'paper' ? 'ใบคำร้องกระดาษ (บันทึกโดย ' + esc(r.createdBy) + ')' : 'ยื่นออนไลน์') + '</div></div></section>' +
+      '<section><h5>วิธีพิมพ์ใน SGS</h5>' + sgsRecipe(r) + '</section>' +
+      '<section><h5>ดำเนินการ</h5>' + acts + '</section>' +
+      '<section><h5>บันทึกภายใน (นักเรียนไม่เห็น)</h5><textarea class="inp" id="note" placeholder="เช่น นักเรียนแจ้งว่าจะนำรูปมาวันจันทร์">' + esc(r.note) + '</textarea><div class="acts" style="margin-top:6px"><button class="btn btn-sm btn-sec" data-act="save-note">บันทึก</button></div></section>' +
+      '<section><h5>ประวัติคำร้อง</h5><ol class="log">' + lg + '</ol></section></div>';
+    d.hidden = false;
+    var b = d.querySelector('.dt-b'); if (b && A.keepScroll) b.scrollTop = keep; A.keepScroll = false;
+  }
+
+  /* ===================== Printing ===================== */
+  function formHTML(r) {
+    var S = A.settings, s = r.student || {}, c = r.changes || {};
+    var nm = c.name ? c.name.to : (r.student ? { pre: s.prefix, fn: s.fname, ln: s.lname } : null);
+    var name = nm ? PP.fullName(nm) : r.name;
+    var dp = PP.dateParts(s.dob), sp = PP.dateParts(PP.iso(new Date(r.submittedAt)));
+    var fa = c.fa ? c.fa.to : s.father, mo = c.mo ? c.mo.to : s.mother;
+    function bx(on) { return '<span class="bx">' + (on ? '✓' : '') + '</span>'; }
+    var notes = [];
+    if (c.name) ['pre', 'fn', 'ln'].forEach(function (k) { if (c.name.to[k] !== c.name.from[k]) notes.push({ pre: 'คำนำหน้า', fn: 'ชื่อ', ln: 'ชื่อสกุล' }[k] + ' ในทะเบียน "' + c.name.from[k] + '" ขอแก้เป็น "' + c.name.to[k] + '" (' + c.name.reason + ')'); });
+    if (c.dob) notes.push('วันเกิด ในทะเบียน "' + (PP.fLong(c.dob.from) || c.dob.from || 'ไม่มีข้อมูล') + '" ขอแก้เป็น "' + c.dob.to + '" (' + c.dob.reason + ')');
+    if (c.fa) notes.push('ชื่อบิดา ในทะเบียน "' + (c.fa.from || 'ไม่มีข้อมูล') + '" ขอแก้เป็น "' + (c.fa.to || 'ไม่ระบุ') + '" (' + c.fa.reason + ')');
+    if (c.mo) notes.push('ชื่อมารดา ในทะเบียน "' + (c.mo.from || 'ไม่มีข้อมูล') + '" ขอแก้เป็น "' + (c.mo.to || 'ไม่ระบุ') + '" (' + c.mo.reason + ')');
+    var p = r.purpose, qr = qrSvg((S.adminUrl || '') + '#no=' + r.no, 3);
+    return '<div class="sheet"><div class="sheet-top"><div><b>คำร้องเลขที่ ' + esc(r.no) + '/' + esc(r.year) + '</b><br>' + (r.channel === 'paper' ? 'บันทึกจากใบคำร้องกระดาษ' : 'ยื่นผ่านระบบออนไลน์') + '<br>' + PP.fDT(r.submittedAt) + '</div>' + (qr ? '<div class="sheet-qr">' + qr + 'สแกนเปิดคำร้อง</div>' : '') + '</div>' +
+      '<div class="sheet-title">แบบคำร้องขอใบรับรอง</div>' +
+      '<span class="r right">วันที่ <span class="fl">' + sp.d + '</span> เดือน <span class="fl">' + sp.m + '</span> พ.ศ. <span class="fl">' + sp.y + '</span></span>' +
+      '<span class="r">สิ่งที่ส่งมาด้วย <u>รูปถ่ายขนาด 1.5 นิ้ว</u> จำนวน <span class="fl">' + nPhotos(r) + '</span> รูป (ทรงผมต้องถูกระเบียบ/ไม่สวมเครื่องประดับ)</span>' +
+      '<span class="r">ชื่อนักเรียน <span class="fl">' + esc(name) + '</span></span>' +
+      '<span class="r">ชั้น ม. <span class="fl">' + esc(r.cls) + '</span> เลขที่ <span class="fl blank">' + esc(s.no || '') + '</span> รหัสนักเรียน <span class="fl">' + esc(r.sid) + '</span></span>' +
+      (c.dob ? '<span class="r">เกิดวันที่ <span class="fl">' + esc(c.dob.to) + '</span></span>' : '<span class="r">เกิดวันที่ <span class="fl blank">' + dp.d + '</span> เดือน <span class="fl blank">' + dp.m + '</span> พ.ศ. <span class="fl blank">' + dp.y + '</span></span>') +
+      '<span class="r">ชื่อบิดา <span class="fl">' + (fa ? esc(fa) : '–') + '</span></span>' +
+      '<span class="r">ชื่อมารดา <span class="fl">' + (mo ? esc(mo) : '–') + '</span></span>' +
+      '<span class="r">มีความประสงค์ขอเอกสาร</span>' +
+      '<span class="r ind">' + bx(r.pp7) + 'ใบรับรองการเป็นนักเรียน (ปพ.7) จำนวน <span class="fl">' + (r.pp7 || '–') + '</span> ใบ</span>' +
+      '<span class="r ind">' + bx(r.pp1) + 'ใบรับรองผลการเรียน (ปพ.1) จำนวน <span class="fl">' + (r.pp1 || '–') + '</span> ใบ' + (r.pp1 ? ' (' + esc(PP.scopeText(r.scope, lvOf(r), A.cfg.year)) + (r.lang === 'en' ? ' ภาษาอังกฤษ' : '') + ')' : '') + '</span>' +
+      '<span class="r">เพื่อ ' + bx(p === 'ขอทุนการศึกษา') + 'ขอทุนการศึกษา &nbsp;' + bx(p === 'ศึกษาต่อ') + 'ศึกษาต่อ &nbsp;' + bx(p === 'สมัครงาน') + 'สมัครงาน</span>' +
+      '<span class="r ind">' + bx(p === 'อื่น ๆ') + 'อื่น ๆ (ระบุ) <span class="fl">' + (p === 'อื่น ๆ' ? esc(r.other) : '') + '</span></span>' +
+      '<span class="r right">ลงชื่อ <span class="fl">' + (r.channel === 'paper' ? 'ตามใบคำร้องกระดาษที่แนบ' : 'ลงนามในใบนำส่งรูปถ่ายที่แนบ') + '</span> ผู้ขอ<br>(' + esc(name) + ')<br>เบอร์โทร <span class="fl">' + esc(PP.telFmt(r.phone)) + '</span></span>' +
+      (notes.length ? '<div class="sheet-note"><b>หมายเหตุ ข้อมูลที่นักเรียนขอแก้ไข</b><br>' + notes.map(esc).join('<br>') + '</div>' : '') +
+      '<div class="sig"><div>งานทะเบียนและสำมะโนนักเรียน<br>เจ้าหน้าที่ <span class="dots">..............................</span>(' + esc(S.staffName || '') + ')<br><span class="dots">..............................</span>(' + esc(S.registrarName || '') + ')<br>นายทะเบียน</div>' +
+      '<div>เรียน ผู้อำนวยการ<br>เห็นควร ○ อนุมัติ &nbsp; ○ ไม่อนุมัติ<br><span class="dots">..............................</span>(' + esc(S.approverName || '') + ')<br>' + esc(S.approverTitle || '') + '</div></div></div>';
+  }
+  function slipHTML() {
+    return '<div class="slip"><h4>ใบนำส่งรูปถ่าย<small>งานทะเบียน โรงเรียนพรตพิทยพยัต</small></h4>' +
+      '<div class="digits">เลขคำร้อง <span class="box"><i></i><i></i><i></i><i></i></span></div>' +
+      '<div class="digits">รหัสนักเรียน <span class="box"><i></i><i></i><i></i><i></i><i></i></span></div>' +
+      '<div class="ln2">ชื่อ-สกุล <span class="dl"></span></div>' +
+      '<div class="ln2">ชั้น ม. <span class="dl" style="max-width:22mm"></span> จำนวนรูป <span class="dl" style="max-width:14mm"></span> รูป</div>' +
+      '<div class="slip-sign">ข้าพเจ้ายืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง<div class="ln2">ลงชื่อ <span class="dl"></span> ผู้ขอ</div></div>' +
+      '<p>เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ เสียบรูปกับใบนี้ด้วยลวดเสียบกระดาษ แล้วใส่ลิ้นชักที่ 2</p></div>';
+  }
+  function labelHTML(r) {
+    return '<div class="label"><b>คำร้อง ' + esc(r.no) + '</b><span class="big">' + esc(r.name) + '</span><span>ม.' + esc(r.cls) + ' · รหัส ' + esc(r.sid) + '</span><span>' + esc(PP.docsText(r)) + ' · ลิ้นชัก ม.' + lvOf(r) + '</span></div>';
+  }
+  function posterHTML() {
+    var url = A.settings.studentUrl || '', qr = qrSvg(url, 8);
+    return '<div class="poster"><div class="poster-b"><span class="ey">PROT PITTAYAPAYAT · งานทะเบียน</span><h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
+      '<div class="poster-qr">' + (qr || '') + '</div><div class="poster-url">' + esc(url) + '</div></div>' +
+      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง</div><div><b>2</b>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียนเลขคำร้องและลงชื่อ</div><div><b>3</b>เสียบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
+      '<div class="poster-s"></div></div>';
+  }
+  function signListHTML(list) {
+    var rows = list.map(function (r, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(r.no) + '</td><td>' + esc(r.name) + '</td><td>ม.' + esc(r.cls) + '</td><td>' + esc(PP.docsText(r)) + '</td><td></td></tr>'; }).join('');
+    return '<div class="sheet" style="height:100%;padding:16mm 16mm"><div class="sheet-title" style="font-size:20px">บัญชีรายชื่อคำร้องเสนอลงนาม</div><p style="text-align:center">งานทะเบียน โรงเรียนพรตพิทยพยัต · วันที่ ' + PP.fD(new Date()) + ' · รวม ' + list.length + ' คำร้อง</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:6mm;font-size:13pt" border="1" cellpadding="6"><thead><tr><th>ที่</th><th>เลขคำร้อง</th><th>ชื่อ-สกุล</th><th>ชั้น</th><th>เอกสาร</th><th style="width:30mm">หมายเหตุ</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<div class="sig" style="margin-top:14mm"><div>ลงชื่อ ..............................<br>(' + esc(A.settings.staffName || '') + ')<br>เจ้าหน้าที่ผู้เสนอ</div><div>ลงชื่อ ..............................<br>(' + esc(A.settings.registrarName || '') + ')<br>นายทะเบียน</div></div></div>';
+  }
+  function doPrint(html) {
+    var root = $('print-root'); root.innerHTML = html;
+    document.body.classList.add('printing');
+    var cleaned = false;
+    function cleanup() { if (cleaned) return; cleaned = true; document.body.classList.remove('printing'); root.innerHTML = ''; }
+    window.addEventListener('afterprint', cleanup, { once: true });
+    var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    ready.then(function () { setTimeout(function () { window.print(); setTimeout(cleanup, 500); }, 150); });
+  }
+  function printForms2(list) {
+    var html = '';
+    for (var i = 0; i < list.length; i += 2) html += '<div class="pg-land">' + formHTML(list[i]) + (list[i + 1] ? formHTML(list[i + 1]) : '<div class="sheet"></div>') + '</div>';
+    doPrint(html);
+  }
+  function printLabels(list) {
+    var html = '';
+    for (var i = 0; i < list.length; i += 12) html += '<div class="pg-port"><div class="labels">' + list.slice(i, i + 12).map(labelHTML).join('') + '</div></div>';
+    doPrint(html);
+  }
+
+  /* ===================== Manual entry ===================== */
+  function manReset() { A.man = { sid: '', looked: false, student: null, openNos: [], m: { prefix: 'นาย', fname: '', lname: '', level: '1', room: '1' }, pp1: 1, scope: A.cfg.latest, lang: 'th', pp7: 0, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', err: '' }; }
+  function manualHTML() {
+    if (!A.man) manReset();
+    var M = A.man, level = M.student ? M.student.level : M.m.level, opts = PP.scopeOpts(A.cfg, level);
+    var who = '';
+    if (M.looked && M.student) who = '<div class="note n-ready"><b>' + esc(PP.fullName(M.student)) + '</b><span>ม.' + esc(M.student.level) + '/' + esc(M.student.room) + ' · บิดา ' + esc(M.student.father || '–') + ' · มารดา ' + esc(M.student.mother || '–') + '</span></div>' + (M.openNos.length ? '<div class="note n-wait"><span>มีคำร้องที่ยังไม่ปิด: ' + M.openNos.join(', ') + '</span></div>' : '');
+    if (M.looked && !M.student) who = '<div class="note n-wait"><b>ไม่พบรหัสนี้ในทะเบียน</b><span>กรอกข้อมูลจากใบคำร้องกระดาษแทน</span></div><div class="grid3"><div><label class="lbl" for="m-pre">คำนำหน้า</label><select class="inp" id="m-pre" data-man="m.prefix">' + PP.PREFIXES.map(function (p) { return '<option' + (M.m.prefix === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select></div><div><label class="lbl" for="m-fn">ชื่อ</label><input class="inp" id="m-fn" value="' + esc(M.m.fname) + '" data-man="m.fname"></div><div><label class="lbl" for="m-ln">นามสกุล</label><input class="inp" id="m-ln" value="' + esc(M.m.lname) + '" data-man="m.lname"></div><div><label class="lbl" for="m-lv">ชั้น ม.</label><select class="inp" id="m-lv" data-man="m.level">' + [1, 2, 3, 4, 5, 6].map(function (l) { return '<option' + (String(M.m.level) === String(l) ? ' selected' : '') + '>' + l + '</option>'; }).join('') + '</select></div><div><label class="lbl" for="m-rm">ห้อง</label><input class="inp" id="m-rm" inputmode="numeric" value="' + esc(M.m.room) + '" data-man="m.room"></div></div>';
+    function sel(id, key, list, cur) { return '<select class="inp" id="' + id + '" data-man="' + key + '">' + list.map(function (o) { var v = o.v !== undefined ? o.v : o, l = o.l || o; return '<option value="' + esc(v) + '"' + (String(cur) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select>'; }
+    return '<div class="panel"><h3>บันทึกคำร้องแทนนักเรียน</h3><p class="hint">ใช้เมื่อนักเรียนยื่นใบคำร้องกระดาษ ไม่มีมือถือ หรือไม่พบชื่อในระบบ คำร้องที่บันทึกแทนจะได้เลขคำร้องและนักเรียนติดตามได้เหมือนกัน</p>' +
+      '<div class="tool"><label class="lbl" for="m-sid" style="margin:0">รหัสนักเรียน</label><input class="inp num" id="m-sid" inputmode="numeric" maxlength="5" style="max-width:160px" value="' + esc(M.sid) + '" data-man="sid"><button class="btn btn-sm btn-sec" data-act="man-find">ค้นหาในทะเบียน</button></div>' + who +
+      (M.looked ? '<div class="grid3"><div><label class="lbl" for="m-pp1">ปพ.1 (ชุด)</label>' + sel('m-pp1', 'pp1', [0, 1, 2], M.pp1) + '</div><div><label class="lbl" for="m-scope">ช่วงผลการเรียน</label>' + sel('m-scope', 'scope', opts, M.scope) + '</div><div><label class="lbl" for="m-lang">ภาษา ปพ.1</label>' + sel('m-lang', 'lang', [{ v: 'th', l: 'ภาษาไทย' }, { v: 'en', l: 'ภาษาอังกฤษ' }], M.lang) + '</div>' +
+        '<div><label class="lbl" for="m-pp7">ปพ.7 (ชุด)</label>' + sel('m-pp7', 'pp7', [0, 1, 2], M.pp7) + '</div><div><label class="lbl" for="m-pur">เพื่อ</label>' + sel('m-pur', 'purpose', PP.PURPOSES, M.purpose) + '</div><div><label class="lbl" for="m-oth">ระบุอื่น ๆ</label><input class="inp" id="m-oth" value="' + esc(M.other) + '" data-man="other"></div>' +
+        '<div><label class="lbl" for="m-need">ต้องใช้ภายใน (ไม่บังคับ)</label><input class="inp" id="m-need" type="date" value="' + esc(M.needBy) + '" data-man="needBy"></div><div><label class="lbl" for="m-tel">เบอร์โทรศัพท์</label><input class="inp num" id="m-tel" inputmode="tel" value="' + esc(M.phone) + '" data-man="phone"></div></div>' +
+        (M.err ? '<div class="note n-alert"><span>' + esc(M.err) + '</span></div>' : '') +
+        '<div class="acts"><button class="btn btn-pri" data-act="man-save"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังบันทึก' : 'บันทึกคำร้อง') + '</button><button class="btn btn-ghost" data-act="man-reset">ล้างฟอร์ม</button></div>' : '') + '</div>';
+  }
+
+  /* ===================== Report ===================== */
+  function reportHTML() {
+    var R = A.report;
+    if (!R) { loadReport(); return '<div class="center"><span class="spin"></span><span>กำลังคำนวณรายงาน</span></div>'; }
+    function tbl(head, rows) { return '<table class="mini"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="r"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + (rows.length ? rows.join('') : '<tr><td colspan="' + head.length + '" class="muted">ยังไม่มีข้อมูล</td></tr>') + '</tbody></table>'; }
+    var st = Object.keys(R.byStatus).map(function (k) { return '<tr><td>' + ((PP.ST[k] || {}).label || k) + '</td><td class="r">' + R.byStatus[k] + '</td></tr>'; });
+    var lvs = Object.keys(R.byLevel).sort().map(function (k) { var x = R.byLevel[k]; return '<tr><td>ม.' + k + '</td><td class="r">' + x.n + '</td><td class="r">' + x.pp1 + '</td><td class="r">' + x.pp7 + '</td></tr>'; });
+    var ms = Object.keys(R.byMonth).sort().map(function (k) { var p = k.split('-'); return '<tr><td>' + new Intl.DateTimeFormat('th-TH-u-ca-buddhist', { month: 'long', year: 'numeric' }).format(new Date(+p[0], +p[1] - 1, 1)) + '</td><td class="r">' + R.byMonth[k] + '</td></tr>'; });
+    var fx = Object.keys(R.fixes).map(function (k) { return '<tr><td>' + esc(k) + '</td><td class="r">' + R.fixes[k] + '</td></tr>'; });
+    return '<div class="stats"><div><span>คำร้องทั้งหมด</span><b>' + R.total + '</b><small>ปพ.1 ' + R.pp1 + ' ชุด · ปพ.7 ' + R.pp7 + ' ชุด</small></div>' +
+      '<div><span>เวลาเฉลี่ย ได้รูปถึงพร้อมรับ</span><b>' + (R.avgWorkdays === null ? '–' : R.avgWorkdays) + '</b><small>วันทำการ (' + R.timedCount + ' คำร้อง)</small></div>' +
+      '<div><span>เสร็จภายใน ' + R.workMax + ' วันทำการ</span><b>' + (R.withinPct === null ? '–' : R.withinPct + '%') + '</b><small>ของคำร้องที่พร้อมรับแล้ว</small></div>' +
+      '<div><span>ความพึงพอใจเฉลี่ย</span><b>' + (R.avgRating === null ? '–' : R.avgRating) + '</b><small>จาก 5 (' + R.ratingCount + ' คะแนน)</small></div></div>' +
+      '<div class="grid2"><div>' + tbl(['สถานะ', 'คำร้อง'], st) + '</div><div>' + tbl(['ระดับชั้น', 'คำร้อง', 'ปพ.1', 'ปพ.7'], lvs) + '</div><div>' + tbl(['เดือน', 'คำร้อง'], ms) + '</div><div>' + tbl(['เหตุผลที่ส่งกลับให้แก้ไข', 'ครั้ง'], fx) +
+      '<p class="muted" style="font-size:13px;margin-top:8px">ช่องทาง: ออนไลน์ ' + R.channel.online + ' · ใบกระดาษ ' + R.channel.paper + ' · พิมพ์เอกสารใหม่ ' + R.reprint + ' ครั้ง</p></div></div>' +
+      '<div><button class="btn btn-sm btn-sec" data-act="report-reload">คำนวณใหม่</button></div>';
+  }
+  function loadReport() { apiAdmin('adminReport').then(function (r) { A.report = r; if (A.view === 'report') renderBody(); }).catch(function (e) { PP.toast(e.message); }); }
+
+  /* ===================== Settings ===================== */
+  function settingsHTML() {
+    var S = A.settings;
+    function txt(k, label, hint) { return '<div><label class="lbl" for="s-' + k + '">' + label + '</label><input class="inp" id="s-' + k + '" data-set="' + k + '" value="' + esc(S[k]) + '">' + (hint ? '<p class="hint" style="font-size:12.5px;color:var(--ink-3)">' + hint + '</p>' : '') + '</div>'; }
+    function sw(k, label) { var on = String(S[k]).toUpperCase() === 'TRUE'; return '<label class="sw"><input type="checkbox" data-set="' + k + '"' + (on ? ' checked' : '') + '><span>' + label + '</span></label>'; }
+    return '<div class="panel"><h3>การรับคำร้อง</h3>' + sw('open', 'เปิดรับคำร้องออนไลน์') + sw('allowEnglish', 'ให้เลือกขอ ปพ.1 ฉบับภาษาอังกฤษ') +
+      '<div><label class="lbl" for="s-announce">ข้อความประกาศหน้าแรกของนักเรียน (เว้นว่างได้)</label><textarea class="inp" id="s-announce" data-set="announce">' + esc(S.announce) + '</textarea></div></div>' +
+      '<div class="panel"><h3>ผลการเรียนใน SGS</h3><div class="grid2">' + txt('latest', 'ภาคเรียนล่าสุดที่ผลการเรียนเข้า SGS แล้ว', 'รูปแบบ ภาค/ปี เช่น 2/2568 เมื่อเปลี่ยนแล้ว คำร้องที่รอผลการเรียนจะเดินต่อพร้อมกัน') + txt('pending', 'ภาคเรียนปัจจุบันที่ยังรอผลการเรียน', 'เช่น 1/2569 เว้นว่างถ้าไม่มี') + '</div></div>' +
+      '<div class="panel"><h3>ระยะเวลา</h3><div class="grid3">' + txt('photoDays', 'วันให้ส่งรูปหลังยื่นคำร้อง') + txt('workMin', 'วันทำการขั้นต่ำที่คาดว่าเสร็จ') + txt('workMax', 'วันทำการสูงสุดที่คาดว่าเสร็จ') + txt('autoCloseDays', 'ปิดคำร้องเองเมื่อพร้อมรับเกิน (วัน)') + '</div>' +
+      '<div><label class="lbl" for="s-holidays">วันหยุดที่ไม่นับเป็นวันทำการ (บรรทัดละ 1 วัน รูปแบบ ปปปป-ดด-วว ชื่อวันหยุด ใช้ปี ค.ศ.)</label><textarea class="inp num" id="s-holidays" data-set="holidays" style="min-height:180px">' + esc(S.holidays) + '</textarea></div></div>' +
+      '<div class="panel"><h3>ชื่อในใบคำร้องที่พิมพ์</h3><div class="grid2">' + txt('staffName', 'เจ้าหน้าที่') + txt('registrarName', 'นายทะเบียน') + txt('approverName', 'ผู้ลงนามเห็นควร') + txt('approverTitle', 'ตำแหน่งผู้ลงนามเห็นควร') + '</div></div>' +
+      (A.setErr ? '<div class="note n-alert" style="max-width:820px"><span>' + esc(A.setErr) + '</span></div>' : '') +
+      '<div class="acts"><button class="btn btn-pri" data-act="save-settings"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังบันทึก' : 'บันทึกการตั้งค่า') + '</button></div>' +
+      '<p class="muted" style="font-size:13px">นักเรียนในฐานข้อมูล ' + A.students.toLocaleString('th-TH') + ' คน · เลขคำร้องถัดไป ' + esc(S.nextNo) + '/' + esc(S.year) + ' · ผู้ใช้หลังบ้านและรหัสผ่านชั่วคราว จัดการในชีต "ผู้ใช้หลังบ้าน" ของฐานข้อมูล</p>';
+  }
+
+  /* ===================== Media ===================== */
+  function mediaHTML() {
+    var url = A.settings.studentUrl || '', qr = qrSvg(url, 6);
+    return '<div class="panel"><h3>ลิงก์และ QR หน้าเว็บนักเรียน</h3><div class="qrbox"><div class="qr">' + (qr || '<span class="muted">โหลดตัวสร้าง QR ไม่ได้</span>') + '</div><div style="display:grid;gap:8px;min-width:0;flex:1"><div class="urlbox">' + esc(url) + '</div><div class="acts"><button class="btn btn-sm btn-sec" data-act="copy" data-v="' + esc(url) + '">คัดลอกลิงก์</button><a class="btn btn-sm btn-sec" href="' + esc(url) + '" target="_blank" rel="noopener">เปิดหน้าเว็บนักเรียน</a></div></div></div></div>' +
+      '<div class="panel"><h3>พิมพ์สื่อสำหรับตู้ลิ้นชัก</h3><p class="hint">ใบนำส่งรูปถ่ายวางในลิ้นชักที่ 1 (4 ใบต่อแผ่น A4 ตัดตามเส้นประ) และโปสเตอร์ QR ติดที่ตู้ลิ้นชัก</p><div class="acts"><button class="btn btn-pri" data-act="print-slips">พิมพ์ใบนำส่งรูปถ่าย</button><button class="btn btn-sec" data-act="print-poster">พิมพ์โปสเตอร์ QR (A4)</button></div></div>';
+  }
+
+  /* ===================== Events ===================== */
+  var ACT = {};
+  ACT.reload = function () { if (!$('body')) return load(true); A.busy = true; renderBody(); load(false).then(function () { A.busy = false; renderBody(); }); };
+  ACT.logout = function () { var t = A.token; PP.store.del(TOKEN_KEY); A.token = null; A.open = null; renderLogin(); if (t) PP.api('adminLogout', { token: t }).catch(function () { }); };
+  ACT.view = function (a) { A.view = a.dataset.v; A.open = null; if (A.view === 'report') A.report = null; A.setErr = ''; renderDrawer(); renderNav(); renderBody(); };
+  ACT.filter = function (a) { A.filter = a.dataset.v; renderBody(); };
+  ACT.open = function (a) { A.open = a.dataset.no; A.fixOpen = false; A.fixText = ''; A.fixIdx = 0; A.confirm = null; renderDrawer(); renderBody(); try { history.replaceState(null, '', '#no=' + A.open); } catch (e) { } };
+  ACT.close = function () { A.open = null; renderDrawer(); renderBody(); try { history.replaceState(null, '', location.pathname); } catch (e) { } };
+  ACT.clear = function () { A.sel = {}; renderBody(); };
+  ACT.copy = function (a) {
+    var v = a.dataset.v, orig = a.textContent;
+    function done() { a.textContent = 'คัดลอกแล้ว'; setTimeout(function () { a.textContent = orig; }, 1300); }
+    function fb() { var t = document.createElement('textarea'); t.value = v; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) { PP.toast(v); } t.remove(); }
+    try { if (navigator.clipboard) navigator.clipboard.writeText(v).then(done, fb); else fb(); } catch (e) { fb(); }
+  };
+  function runAct(nos, act) {
+    if (A.busy) return;
+    A.busy = true;
+    var label = { recv: 'ได้รับรูปแล้ว', sign: 'เสนอลงนาม', ready: 'พร้อมรับ', staffdone: 'รับเอกสารแล้ว', resume: 'ดำเนินการต่อ', cancel: 'ยกเลิกคำร้อง', reopen: 'เปิดคำร้องอีกครั้ง', reprint: 'บันทึกการพิมพ์ใหม่' }[act];
+    apiAdmin('adminAct', { nos: nos, act: act }).then(function (r) {
+      A.busy = false; A.confirm = null; A.keepScroll = true;
+      PP.toast('"' + label + '" ' + r.done.length + ' รายการ' + (r.skipped.length ? ' · ข้าม ' + r.skipped.length + ' รายการที่อยู่ขั้นอื่น' : ''));
+      return load(false);
+    }).catch(function (e) { A.busy = false; if (e.code !== 'AUTH') PP.toast(e.message); });
+  }
+  ACT.batch = function (a) { var nos = selList(); A.sel = {}; runAct(nos, a.dataset.v); };
+  ACT.act = function (a) { runAct([A.open], a.dataset.v); };
+  ACT.confirm = function (a) { A.confirm = a.dataset.v || null; A.keepScroll = true; renderDrawer(); };
+  ACT['fix-open'] = function () { A.fixOpen = true; A.fixIdx = 0; A.fixText = ''; A.keepScroll = true; renderDrawer(); };
+  ACT['fix-close'] = function () { A.fixOpen = false; A.keepScroll = true; renderDrawer(); };
+  ACT['fix-send'] = function () {
+    var fx = A.fixReasons[A.fixIdx] || {};
+    if (!fx.todo && !A.fixText.trim()) return PP.toast('เหตุผล "อื่น ๆ" ต้องพิมพ์ข้อความถึงนักเรียน');
+    if (A.busy) return; A.busy = true;
+    apiAdmin('adminFix', { no: A.open, reason: A.fixIdx, text: A.fixText }).then(function () { A.busy = false; A.fixOpen = false; PP.toast('ส่งคำร้อง ' + A.open + ' กลับให้นักเรียนแก้ไขแล้ว'); return load(false); })
+      .catch(function (e) { A.busy = false; if (e.code !== 'AUTH') PP.toast(e.message); });
+  };
+  ACT['save-note'] = function () {
+    var v = $('note').value, no = A.open;
+    apiAdmin('adminNote', { no: no, note: v }).then(function () { var r = find(no); if (r) r.note = v; PP.toast('บันทึกแล้ว'); }).catch(function (e) { if (e.code !== 'AUTH') PP.toast(e.message); });
+  };
+  ACT['print-forms'] = function (a) { var list = a.dataset.v === 'one' ? [find(A.open)] : selList().map(find); list = list.filter(Boolean); if (!list.length) return; printForms2(list); };
+  ACT['print-labels'] = function (a) { var list = a.dataset.v === 'one' ? [find(A.open)] : selList().map(find); list = list.filter(Boolean); if (!list.length) return; printLabels(list); };
+  ACT['print-signlist'] = function () { var list = selList().map(find).filter(Boolean); if (!list.length) return; doPrint('<div class="pg-port">' + signListHTML(list) + '</div>'); };
+  ACT['print-slips'] = function () { doPrint('<div class="pg-port"><div class="slips">' + slipHTML() + slipHTML() + slipHTML() + slipHTML() + '</div></div>'); };
+  ACT['print-poster'] = function () { doPrint('<div class="pg-port">' + posterHTML() + '</div>'); };
+  ACT['report-reload'] = function () { A.report = null; renderBody(); };
+  ACT['man-reset'] = function () { manReset(); renderBody(); };
+  ACT['man-find'] = function () {
+    var sid = (A.man.sid || '').replace(/\D/g, '');
+    if (!/^\d{5}$/.test(sid)) return PP.toast('รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก');
+    apiAdmin('adminFindStudent', { sid: sid }).then(function (r) {
+      A.man.looked = true; A.man.student = r.student; A.man.openNos = r.open || []; A.man.err = '';
+      var opts = PP.scopeOpts(A.cfg, r.student ? r.student.level : A.man.m.level); A.man.scope = opts[0].v;
+      renderBody();
+    }).catch(function (e) { if (e.code !== 'AUTH') PP.toast(e.message); });
+  };
+  ACT['man-save'] = function () {
+    var M = A.man; if (A.busy) return;
+    var req = { pp1: +M.pp1, scope: M.scope, lang: M.lang, pp7: +M.pp7, purpose: M.purpose, other: M.other, needBy: M.needBy, phone: String(M.phone).replace(/\D/g, '') };
+    A.busy = true; M.err = ''; renderBody();
+    apiAdmin('adminCreate', { sid: M.sid.replace(/\D/g, ''), req: req, manual: M.student ? null : M.m }).then(function (r) {
+      A.busy = false; PP.toast('บันทึกคำร้อง ' + r.request.no + ' แล้ว'); manReset(); A.view = 'queue'; A.open = r.request.no; renderNav();
+      return load(false).then(function () { renderBody(); renderDrawer(); });
+    }).catch(function (e) { A.busy = false; M.err = e.message; renderBody(); });
+  };
+  ACT['save-settings'] = function () {
+    var patch = {};
+    document.querySelectorAll('[data-set]').forEach(function (el) { var k = el.dataset.set; patch[k] = el.type === 'checkbox' ? (el.checked ? 'TRUE' : 'FALSE') : el.value; });
+    if (A.busy) return; A.busy = true; A.setErr = ''; renderBody();
+    apiAdmin('adminSaveSettings', { patch: patch }).then(function (r) {
+      A.busy = false; A.settings = r.settings; A.cfg = r.config; PP.cfg = r.config; PP.setHolidays(r.config.holidays);
+      PP.toast(r.changed.length ? 'บันทึกการตั้งค่าแล้ว' + (r.released ? ' · ปลดล็อกคำร้องที่รอผลการเรียน ' + r.released + ' รายการ' : '') : 'ไม่มีค่าที่เปลี่ยน');
+      renderBody(); if (r.released) load(false);
+    }).catch(function (e) { A.busy = false; A.setErr = e.message; renderBody(); });
+  };
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-act]'); if (!a) return;
+    if (a.dataset.act === 'open' && e.target.closest('input,button,label,select,textarea,a')) return;
+    var fn = ACT[a.dataset.act]; if (fn) { if (a.tagName !== 'A') e.preventDefault(); fn(a, e); }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target, k = t.dataset && t.dataset.change;
+    if (k === 'sel') { A.sel[t.dataset.no] = t.checked; renderBody(); }
+    else if (k === 'all') { A.list.filter(function (r) { return match(r, A.filter) && searchOk(r); }).forEach(function (r) { A.sel[r.no] = t.checked; }); renderBody(); }
+    else if (k === 'fix-r') { A.fixIdx = Number(t.value); A.keepScroll = true; renderDrawer(); }
+    if (t.dataset && t.dataset.man && t.tagName === 'SELECT') { setMan(t); if (t.dataset.man === 'm.level') renderBody(); }
+  });
+  function setMan(t) { var p = t.dataset.man.split('.'); if (p.length === 2) A.man[p[0]][p[1]] = t.value; else A.man[p[0]] = t.value; }
+  document.addEventListener('input', function (e) {
+    var t = e.target; if (!t.dataset) return;
+    if (t.dataset.input === 'q') { A.q = t.value; $('qlist').innerHTML = queueHTML(); }
+    if (t.dataset.input === 'fix-t') A.fixText = t.value;
+    if (t.dataset.man && t.tagName !== 'SELECT') setMan(t);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && A.open && !A.fixOpen) ACT.close(); });
+  setInterval(function () {
+    if (!A.token || document.visibilityState !== 'visible' || A.busy || A.view !== 'queue') return;
+    var ae = document.activeElement; if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) && ae.id !== 'q') return;
+    if (A.fixOpen || A.confirm) return;
+    A.keepScroll = true; load(false);
+  }, 60000);
+
+  /* ===================== Boot ===================== */
+  A.token = PP.store.get(TOKEN_KEY);
+  if (A.token) load(true); else renderLogin();
+})();
+</script>
+</body>
+</html>
