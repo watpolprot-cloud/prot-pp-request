@@ -387,18 +387,20 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   // ใบนำส่งรูปถ่าย ครึ่ง A4 (A5 แนวตั้ง) ขาวดำทั้งหมด เพื่อถ่ายเอกสารแล้วตัดครึ่ง
   function slipHTML(url) {
     var qr = qrSvg(url, 4), boxes = function (n) { var s = ''; for (var i = 0; i < n; i++) s += '<i></i>'; return '<span class="box">' + s + '</span>'; };
+    // ลวดเสียบกระดาษเบอร์ 1 ขนาดเท่าจริง (ยาวประมาณ 33 มม. กว้าง 8.5 มม.)
+    var clip = '<svg class="clip-svg" viewBox="0 0 8.5 33.4" width="8.5mm" height="33.4mm" aria-hidden="true"><path d="M2 9.5V28.6a2.25 2.25 0 0 0 4.5 0V4.4a3 3 0 0 0 -6 0V29.3a3.75 3.75 0 0 0 7.5 0V11.5" fill="none" stroke="#000" stroke-width=".75" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     return '<div class="slip">' +
-      '<div class="slip-head"><img class="slip-emb" src="assets/emblem-bw.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span class="en">PROT PITTAYAPAYAT SCHOOL</span><span>งานทะเบียน สำนักงานวิชาการ โทร. 0-2326-4050</span></div></div>' +
-      '<div class="slip-title"><h4>ใบนำส่งรูปถ่าย</h4><span>ประกอบคำร้องขอ ปพ.1 / ปพ.7 ที่ยื่นผ่านระบบออนไลน์</span></div>' +
-      '<div class="slip-body"><div class="slip-fields">' +
-        '<div class="fld"><span>เลขคำร้อง (4 หลัก)</span>' + boxes(4) + '</div>' +
-        '<div class="fld"><span>รหัสนักเรียน (5 หลัก)</span>' + boxes(5) + '</div>' +
+      '<div class="slip-top"><div class="slip-left">' +
+        '<div class="slip-head"><img class="slip-emb" src="assets/emblem-bw.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span class="en">PROT PITTAYAPAYAT SCHOOL</span><span>งานทะเบียน สำนักงานวิชาการ โทร. 0-2326-4050</span></div></div>' +
+        '<div class="slip-title"><h4>ใบนำส่งรูปถ่าย</h4><span>ประกอบคำร้องขอ ปพ.1 / ปพ.7 ที่ยื่นผ่านระบบออนไลน์</span></div>' +
+        '<div class="slip-ids"><div class="fld"><span>เลขคำร้อง (4 หลัก)</span>' + boxes(4) + '</div><div class="fld"><span>รหัสนักเรียน (5 หลัก)</span>' + boxes(5) + '</div></div>' +
+      '</div><div class="slip-clip">' + clip + '<b>หนีบรูปถ่าย<br>1.5 นิ้ว ที่มุมนี้</b><span>ด้วยลวดเสียบกระดาษ<br>(ภาพขนาดเท่าจริง)</span><span>1 รูป ต่อเอกสาร 1 ชุด</span><span>เขียนชื่อ-รหัส<br>ด้านหลังรูปทุกใบ</span></div></div>' +
+      '<div class="slip-fields">' +
         '<div class="ln2">ชื่อ-สกุล <span class="dl"></span></div>' +
-        '<div class="ln2">ชั้น ม. <span class="dl w9"></span>/<span class="dl w9"></span> เลขที่ <span class="dl"></span></div>' +
-        '<div class="ln2">จำนวนรูปที่แนบ <span class="dl"></span> รูป</div>' +
-      '</div><div class="slip-photo"><b>หนีบรูปถ่าย<br>ขนาด 1.5 นิ้ว<br>ตรงนี้</b><span>1 รูป ต่อเอกสาร 1 ชุด</span><span>เขียนชื่อและรหัสนักเรียน<br>ด้านหลังรูปทุกใบ</span></div></div>' +
+        '<div class="ln2">ชั้น ม. <span class="dl w9"></span>/<span class="dl w9"></span> เลขที่ <span class="dl w14"></span> จำนวนรูปที่แนบ <span class="dl w14"></span> รูป</div>' +
+      '</div>' +
       '<div class="slip-sign"><p>ข้าพเจ้าขอยืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง</p>' +
-        '<div class="ln2">ลงชื่อ <span class="dl"></span> ผู้ขอ</div><div class="ln2">วันที่ <span class="dl"></span>/<span class="dl"></span>/<span class="dl"></span></div></div>' +
+        '<div class="sg"><div class="ln2">ลงลายมือชื่อ <span class="dl w50"></span> ผู้ขอ</div><div class="ln2">วันที่ <span class="dl w10"></span>/<span class="dl w10"></span>/<span class="dl w16"></span></div></div></div>' +
       '<div class="slip-qr">' + (qr ? '<div class="q">' + qr + '</div>' : '') + '<div><b>ยังไม่ได้ยื่นคำร้อง สแกนที่นี่</b>' +
         '<ol><li>ยื่นคำร้องออนไลน์ ได้เลขคำร้อง 4 หลัก</li><li>กรอกใบนี้ หนีบรูป ใส่ลิ้นชักที่ 2 ภายใน ' + esc(A.cfg && A.cfg.photoDays || 7) + ' วัน</li><li>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</li></ol>' +
         '<span class="url">' + esc(String(url).replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</span></div></div>' +
