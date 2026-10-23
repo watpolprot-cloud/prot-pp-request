@@ -229,9 +229,12 @@ function config_() {
 function sha_(s) {
   return Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8));
 }
+var _pepper = null;
 function pepper_() {
+  if (_pepper) return _pepper;
   var p = PropertiesService.getScriptProperties().getProperty('PEPPER');
   if (!p) throw new Error('missing PEPPER');
+  _pepper = p;
   return p;
 }
 function nidHash_(nid) { return sha_('nid|' + pepper_() + '|' + nid); }
