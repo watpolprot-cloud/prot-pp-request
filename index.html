@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&family=Mali:wght@500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <style>
 .app{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
@@ -207,6 +207,71 @@
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,168,0,.55)}100%{box-shadow:0 0 0 10px rgba(226,168,0,0)}}
 .enter .vstep li.done .dot{animation:dotIn .4s cubic-bezier(.2,1.5,.4,1) both}
 @keyframes dotIn{from{transform:scale(.5)}}
+/* ภาพแนะนำการส่งรูปถ่าย */
+.guide{gap:0;padding:14px 14px 16px}
+.guide .card-h{margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.guide .card-h em{font:600 13px var(--f-head);font-style:normal;color:var(--amber-ink);background:var(--amber-soft);border-radius:999px;padding:1px 10px}
+.g-step{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:10px;align-items:start}
+.g-n{width:30px;height:30px;border-radius:50%;background:var(--navy-2);color:#fff;display:grid;place-items:center;font:700 15px var(--f-label);box-shadow:0 0 0 4px var(--teal-soft)}
+.g-t{display:grid;gap:1px;padding-top:2px;min-width:0}
+.g-t b{font:600 15px/1.45 var(--f-head);color:var(--ink)}
+.g-t span{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.g-t span b{font-size:inherit;font-family:var(--f-head)}
+.g-row{display:grid;grid-template-columns:minmax(0,1fr) 118px;gap:8px;align-items:center}
+.g-art{display:block;width:100%;height:auto;overflow:visible}
+.g-slip{grid-column:1/-1;margin:10px -4px 0;padding:12px 6px 2px;border-radius:12px;background:linear-gradient(180deg,var(--teal-soft),rgba(0,0,0,0) 85%)}
+.g-cap{font-size:12.5px;color:var(--ink-3);text-align:center;margin:2px 0 8px}
+.g-cap b{color:#1d44b8;font-weight:600}
+@media (prefers-color-scheme: dark){.g-cap b{color:#9db4ff}}
+.g-flow{width:30px;height:34px;display:grid;place-items:center}
+.g-flow svg{width:14px;height:30px;overflow:visible}
+.g-flow path{fill:none;stroke:var(--teal);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.g-flow .fl{stroke-dasharray:3 5;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-16}}
+.g-legend{grid-column:1/-1;list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.g-legend li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:9px;align-items:start}
+.g-legend i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font:700 12.5px/22px var(--f-label);text-align:center;margin-top:1px}
+.g-legend b{color:var(--ink);font-family:var(--f-head)}
+.g-legend .num{font-family:var(--f-label);letter-spacing:.06em}
+/* กระดาษจำลอง (สีคงที่ เหมือนกระดาษจริง) */
+.sl-t{font-family:var(--f-head);fill:#161616}
+.sl-s{font-family:var(--f-body);fill:#3a3a3a}
+.sl-dl{stroke:#555;stroke-width:1.3;stroke-dasharray:1.5 3.5;stroke-linecap:round}
+.hw{font-family:"Mali","IBM Plex Sans Thai",cursive;font-weight:500;fill:#1d44b8}
+.hw-sig{fill:none;stroke:#1d44b8;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.sl-mk circle{fill:#F5B700;stroke:#fff;stroke-width:3.5}
+.sl-mk text{font:700 17px "Chakra Petch",sans-serif;fill:#2A1300}
+.sl-pill{filter:drop-shadow(0 3px 5px rgba(40,10,80,.28))}
+.sl-arw{fill:none;stroke:#F5B700;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.sl-arw2{fill:none;stroke:#3A1468;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.sl-arw-g{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(-5px)}}
+.play .hw,.play .hw-g{animation:hwIn .45s cubic-bezier(.2,1.4,.4,1) both;animation-delay:var(--d,0s);transform-box:fill-box;transform-origin:50% 80%}
+@keyframes hwIn{from{opacity:0;transform:translateY(5px) scale(.6)}}
+.play .hw-sig{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.play .sl-mk,.play .sl-pill-g{animation:mkIn .45s cubic-bezier(.2,1.5,.4,1) both;animation-delay:var(--d,0s);transform-box:fill-box;transform-origin:center}
+@keyframes mkIn{from{opacity:0;transform:scale(.3)}}
+.play .sl-photo{animation:photoIn .7s cubic-bezier(.2,.9,.3,1) both;animation-delay:var(--d,0s)}
+@keyframes photoIn{from{opacity:0;transform:translate(70px,-90px) rotate(18deg)}}
+/* ลิ้นชัก */
+.dw-cab{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.dw-front{fill:var(--surface);stroke:var(--teal);stroke-width:2}
+.dw-slot{fill:var(--ink);opacity:.55}
+.dw-plate{fill:var(--navy-2)}
+.dw-plate-t{font:600 11.5px var(--f-head);fill:#fff}
+.dw-handle{fill:var(--teal)}
+.dw-num{fill:#F5B700;stroke:var(--surface);stroke-width:2.5}
+.dw-num-t{font:700 14px "Chakra Petch",sans-serif;fill:#2A1300}
+.dw-paper{fill:#fff;stroke:#b9b0c9;stroke-width:1.2}
+.dw-pl{stroke:#c9c2d6;stroke-width:2;stroke-linecap:round}
+.dw-arw{fill:none;stroke:#F5B700;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.dw-in{animation:slipIn 3.4s ease-in-out infinite}
+@keyframes slipIn{0%{transform:translateY(-16px);opacity:0}14%{transform:translateY(-16px);opacity:1}62%,100%{transform:translateY(46px);opacity:1}}
+.dw-out{animation:slipOut 3.4s ease-in-out infinite}
+@keyframes slipOut{0%{transform:translateY(46px);opacity:1}48%,82%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
+.dw-bob{animation:nudge 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.guide *{animation:none!important}}
 @media (prefers-reduced-motion: reduce){.enter>*,.doc.on,.btn-gold::after,.bigno b,.vstep li .dot,.mdl,.mdl-card,.mdl-img img,.sem.pop,.steps.enter .steps-bar i{animation:none!important}}
 </style>
 <script src="config.js"></script>
@@ -235,6 +300,103 @@
   function findReq(no) { for (var i = 0; i < P.requests.length; i++) if (P.requests[i].no === no) return P.requests[i]; return null; }
   function lv() { return P.student ? String(P.student.level) : ''; }
   function nPhotos(r) { return (r.pp1 || 0) + (r.pp7 || 0); }
+  // ---------- ภาพแนะนำการส่งรูปถ่าย (ใบนำส่งจำลอง + ลิ้นชัก) ----------
+  function drawerArt(n, mode, photo) {
+    var id = 'dwc' + n, inn = mode === 'in';
+    var paper = '<g class="' + (inn ? 'dw-in' : 'dw-out') + '"><rect class="dw-paper" x="50" y="4" width="48" height="60" rx="2"/>' +
+      '<path class="dw-pl" d="M56 16h22M56 24h30M56 32h30M56 40h24"/>' +
+      (photo ? '<rect x="80" y="7" width="14" height="17" rx="1.5" fill="#cfd8ec" stroke="#9fb0cf"/><circle cx="87" cy="13" r="3" fill="#9fb0cf"/><path d="M81.5 24c1-4 3-5.5 5.5-5.5s4.5 1.5 5.5 5.5z" fill="#9fb0cf"/><path d="M86 5v9" stroke="#555" stroke-width="1.4" stroke-linecap="round"/>' : '') + '</g>';
+    var arw = inn ? '<g class="dw-bob"><path class="dw-arw" d="M122 6v28M114 26l8 9 8-9"/></g>' : '<g class="dw-bob"><path class="dw-arw" d="M122 36V8M114 16l8-9 8 9"/></g>';
+    return '<svg class="g-art" viewBox="0 0 150 118" role="img" aria-label="ลิ้นชักที่ ' + n + '">' +
+      '<defs><clipPath id="' + id + '"><rect x="0" y="-40" width="150" height="88"/></clipPath></defs>' +
+      '<rect class="dw-cab" x="4" y="40" width="142" height="76" rx="9"/>' +
+      '<g clip-path="url(#' + id + ')">' + paper + '</g>' +
+      '<rect class="dw-slot" x="20" y="44" width="110" height="7" rx="3"/>' +
+      '<rect class="dw-front" x="12" y="50" width="126" height="60" rx="7"/>' +
+      '<rect class="dw-plate" x="40" y="60" width="70" height="22" rx="4"/><text class="dw-plate-t" x="75" y="75.5" text-anchor="middle">ลิ้นชักที่ ' + n + '</text>' +
+      '<rect class="dw-handle" x="57" y="90" width="36" height="7" rx="3.5"/>' +
+      '<circle class="dw-num" cx="126" cy="66" r="12"/><text class="dw-num-t" x="126" y="71" text-anchor="middle">' + n + '</text>' +
+      arw + '</svg>';
+  }
+  function slipArt(o) {
+    function boxes(x0, w, n, y) { var s = '<rect x="' + x0 + '" y="' + y + '" width="' + (w * n) + '" height="34" fill="#fff" stroke="#1b1b1b" stroke-width="1.6"/>'; for (var i = 1; i < n; i++) s += '<path d="M' + (x0 + w * i) + ' ' + y + 'v34" stroke="#1b1b1b" stroke-width="1.2"/>'; return s; }
+    function digits(x0, w, str, y, d0) { return String(str).split('').map(function (ch, i) { return '<text class="hw" style="--d:' + (d0 + i * 0.12).toFixed(2) + 's" x="' + (x0 + w * i + w / 2) + '" y="' + y + '" font-size="23" text-anchor="middle">' + esc(ch) + '</text>'; }).join(''); }
+    function dl(x1, x2, y) { return '<path class="sl-dl" d="M' + x1 + ' ' + y + 'H' + x2 + '"/>'; }
+    function mk(n, x, y, d) { return '<g class="sl-mk" style="--d:' + d + 's"><circle cx="' + x + '" cy="' + y + '" r="15"/><text x="' + x + '" y="' + (y + 6) + '" text-anchor="middle">' + n + '</text></g>'; }
+    function hw(t, x, y, size, d, anchor, extra) { return '<text class="hw" style="--d:' + d + 's" x="' + x + '" y="' + y + '" font-size="' + size + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + (extra || '') + '>' + esc(t) + '</text>'; }
+    function photo(x, y, rot, d) {
+      return '<g class="sl-photo" style="--d:' + d + 's"><g transform="translate(' + x + ' ' + y + ') rotate(' + rot + ' 42 50)"><rect width="84" height="100" rx="2" fill="#dfe6f3" stroke="#aeb9d0" stroke-width="1.5"/>' +
+        '<circle cx="42" cy="40" r="17" fill="#9fb0cf"/><path d="M12 100c2-27 15-38 30-38s28 11 30 38z" fill="#9fb0cf"/></g></g>';
+    }
+    var nameW = Math.min(390, Math.max(60, o.name.length * 10.6)), nameFit = o.name.length * 10.6 > 390 ? ' textLength="390" lengthAdjust="spacingAndGlyphs"' : '';
+    var sig = '<path class="hw-sig" pathLength="1" style="--d:2.05s" d="M300 459c5-17 15-25 15-12s-9 21-1 17 13-22 19-19-1 17 6 13 11-15 17-12 0 11 9 8 16-9 34-11M330 447c14-4 40-6 70-5"/>';
+    return '<svg class="g-art" viewBox="-8 -8 542 616" role="img" aria-label="ตัวอย่างการกรอกใบนำส่งรูปถ่าย เลขคำร้อง ' + esc(o.no) + ' รหัสนักเรียน ' + esc(o.sid) + '">' +
+      '<defs><linearGradient id="slFade" x1="0" y1="0" x2="0" y2="1"><stop offset=".82" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+      '<mask id="slMask"><rect x="-8" y="-8" width="542" height="616" fill="url(#slFade)"/></mask>' +
+      '<filter id="slSh" x="-5%" y="-5%" width="110%" height="110%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#2a1050" flood-opacity=".18"/></filter></defs>' +
+      '<g mask="url(#slMask)"><rect x="0" y="0" width="526" height="620" rx="4" fill="#fff" stroke="#d6cfe3" stroke-width="1.5" filter="url(#slSh)"/>' +
+      // หัวกระดาษ
+      '<image href="assets/emblem-bw.png" x="36" y="26" width="54" height="68"/>' +
+      '<text class="sl-t" x="98" y="55" font-size="19.5" font-weight="700">โรงเรียนพรตพิทยพยัต</text>' +
+      '<text class="sl-s" x="98" y="72" font-size="9.5" letter-spacing="1.6">PROT PITTAYAPAYAT SCHOOL</text>' +
+      '<text class="sl-s" x="98" y="87" font-size="10.5">งานทะเบียน สำนักงานวิชาการ โทร. 0-2326-4050</text>' +
+      '<path d="M32 108H366" stroke="#1b1b1b" stroke-width="1.6"/>' +
+      '<text class="sl-t" x="199" y="141" font-size="27" font-weight="700" text-anchor="middle">ใบนำส่งรูปถ่าย</text>' +
+      '<text class="sl-s" x="199" y="160" font-size="11" text-anchor="middle">ประกอบคำร้องขอ ปพ.1 / ปพ.7 ที่ยื่นผ่านระบบออนไลน์</text>' +
+      '<path d="M32 168H366" stroke="#1b1b1b" stroke-width="1"/>' +
+      '<text class="sl-t" x="32" y="196" font-size="12.5" font-weight="700">เลขคำร้อง (4 หลัก)</text><text class="sl-t" x="175" y="196" font-size="12.5" font-weight="700">รหัสนักเรียน (5 หลัก)</text>' +
+      boxes(32, 30.25, 4, 203) + boxes(175, 30.4, 5, 203) +
+      // มุมหนีบรูป
+      '<path d="M382 0V273a10 10 0 0 0 10 10H526" fill="none" stroke="#666" stroke-width="1.4" stroke-dasharray="5 4"/>' +
+      '<text class="sl-t" x="454" y="214" font-size="12.5" font-weight="700" text-anchor="middle">หนีบรูปถ่าย 1.5 นิ้ว</text><text class="sl-s" x="454" y="232" font-size="10" text-anchor="middle">1 รูป ต่อเอกสาร 1 ชุด</text>' +
+      '<text class="sl-s" x="454" y="254" font-size="10" text-anchor="middle">เขียนชื่อ-รหัส</text><text class="sl-s" x="454" y="268" font-size="10" text-anchor="middle">ด้านหลังรูปทุกใบ</text>' +
+      (o.photos > 1 ? photo(424, 60, 7, 1.6) : '') + photo(404, 52, -4, 1.35) +
+      '<g transform="translate(437 18) scale(3.4)"><path d="M2 9.5V28.6a2.25 2.25 0 0 0 4.5 0V4.4a3 3 0 0 0 -6 0V29.3a3.75 3.75 0 0 0 7.5 0V11.5" fill="none" stroke="#1b1b1b" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round"/></g>' +
+      // บรรทัดข้อมูล
+      '<text class="sl-t" x="32" y="331" font-size="14.5">ชื่อ-สกุล</text>' + dl(92, 493, 334) +
+      '<text class="sl-t" x="32" y="377" font-size="14.5">ชั้น ม.</text>' + dl(76, 106, 380) + '<text class="sl-t" x="111" y="377" font-size="14.5">/</text>' + dl(122, 153, 380) +
+      '<text class="sl-t" x="160" y="377" font-size="14.5">เลขที่</text>' + dl(200, 248, 380) + '<text class="sl-t" x="255" y="377" font-size="14.5">จำนวนรูปที่แนบ</text>' + dl(360, 410, 380) + '<text class="sl-t" x="417" y="377" font-size="14.5">รูป</text>' +
+      '<text class="sl-s" x="32" y="424" font-size="12.5">ข้าพเจ้าขอยืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง</text>' +
+      '<text class="sl-t" x="197" y="465" font-size="14.5">ลงลายมือชื่อ</text>' + dl(279, 455, 468) + '<text class="sl-t" x="461" y="465" font-size="14.5">ผู้ขอ</text>' +
+      '<text class="sl-t" x="245" y="510" font-size="14.5">วันที่</text>' + dl(279, 314, 513) + '<text class="sl-t" x="319" y="510" font-size="14.5">/</text>' + dl(330, 365, 513) + '<text class="sl-t" x="371" y="510" font-size="14.5">/</text>' + dl(383, 441, 513) +
+      '<rect x="32" y="540" width="462" height="140" rx="8" fill="none" stroke="#1b1b1b" stroke-width="1.2"/><rect x="46" y="554" width="34" height="34" fill="none" stroke="#1b1b1b" stroke-width="6"/><rect x="104" y="554" width="34" height="34" fill="none" stroke="#1b1b1b" stroke-width="6"/>' +
+      '<text class="sl-t" x="156" y="568" font-size="13" font-weight="700">ยังไม่ได้ยื่นคำร้อง สแกนที่นี่</text>' +
+      // สิ่งที่นักเรียนเขียน (ลายมือสีน้ำเงิน)
+      digits(32, 30.25, o.no, 229, 0.35) + digits(175, 30.4, o.sid, 229, 0.85) +
+      '<text class="hw" style="--d:1.6s" x="98" y="327" font-size="20"' + nameFit + '>' + esc(o.name) + '</text>' +
+      hw(o.lv, 91, 373, 20, 1.75, 'middle') + hw(o.room, 137, 373, 20, 1.8, 'middle') + (o.num ? hw(o.num, 224, 373, 20, 1.85, 'middle') : '') + hw(String(o.photos), 385, 373, 20, 1.9, 'middle') +
+      sig + hw(o.dd, 296, 506, 19, 2.3, 'middle') + hw(o.mm, 347, 506, 19, 2.35, 'middle') + hw(o.yy, 412, 506, 19, 2.4, 'middle') +
+      '</g>' +
+      // ป้ายชี้ + ลูกศร (เลขคำร้อง / รหัสนักเรียน)
+      '<g class="sl-pill-g" style="--d:.15s"><g class="sl-arw-g"><path class="sl-arw2" d="M92 264V246"/><path class="sl-arw" d="M92 264V246M83 254l9-10 9 10"/></g>' +
+      '<g class="sl-pill"><rect x="20" y="266" width="170" height="44" rx="22" fill="#3A1468"/><circle cx="42" cy="288" r="13" fill="#F5B700"/><text x="42" y="293.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">1</text>' +
+      '<text x="62" y="293" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">เลขคำร้อง</text><text x="178" y="295" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.no) + '</text></g></g>' +
+      '<g class="sl-pill-g" style="--d:.65s"><g class="sl-arw-g"><path class="sl-arw2" d="M251 264V246"/><path class="sl-arw" d="M251 264V246M242 254l9-10 9 10"/></g>' +
+      '<g class="sl-pill"><rect x="186" y="266" width="202" height="44" rx="22" fill="#3A1468"/><circle cx="208" cy="288" r="13" fill="#F5B700"/><text x="208" y="293.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">2</text>' +
+      '<text x="228" y="293" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">รหัสนักเรียน</text><text x="376" y="295" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.sid) + '</text></g></g>' +
+      mk(3, 16, 326, 1.5) + mk(4, 179, 460, 1.95) + mk(5, 396, 30, 1.25) +
+      '</svg>';
+  }
+  function photoGuide(r, play) {
+    var s = P.student || {}, ph = nPhotos(r), cls = String(r.cls || '').split('/'), d = new Date(r.submittedAt || Date.now());
+    var o = { no: r.no, sid: r.sid, name: PP.fullName(s).trim() || '', lv: cls[0] || '', room: cls[1] || '', num: String(s.no || ''), photos: ph,
+      dd: String(d.getDate()), mm: String(d.getMonth() + 1), yy: String(d.getFullYear() + 543) };
+    return '<div class="card guide' + (play ? ' play' : '') + '"><div class="card-h">ส่งรูปถ่าย ' + ph + ' รูป ตามขั้นตอนนี้<em>ภายใน ' + PP.fD(r.photoDue) + '</em></div>' +
+      '<div class="g-step"><div class="g-n">1</div><div class="g-row"><div class="g-t"><b>หยิบใบนำส่งรูปถ่าย</b><span>ที่<b>ลิ้นชักที่ 1</b> ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ</span></div>' + drawerArt(1, 'out', false) + '</div></div>' +
+      '<div class="g-flow" aria-hidden="true"><svg viewBox="0 0 14 30"><path class="fl" d="M7 1v22"/><path d="M1.5 18.5 7 25l5.5-6.5"/></svg></div>' +
+      '<div class="g-step"><div class="g-n">2</div><div class="g-t"><b>กรอกใบนำส่งตามตัวอย่าง</b><span>ลูกศรชี้ช่องที่ต้องเขียนเลขคำร้องและรหัสนักเรียน</span></div>' +
+        '<div class="g-slip">' + slipArt(o) + '<p class="g-cap"><b>ตัวอักษรสีน้ำเงิน</b> คือสิ่งที่นักเรียนเขียนเอง</p></div>' +
+        '<ol class="g-legend">' +
+          '<li><i>1</i><span>เลขคำร้อง <b class="num">' + esc(r.no) + '</b> ลงในช่อง 4 ช่อง ช่องละ 1 ตัว</span></li>' +
+          '<li><i>2</i><span>รหัสนักเรียน <b class="num">' + esc(r.sid) + '</b> ลงในช่อง 5 ช่อง</span></li>' +
+          '<li><i>3</i><span>ชื่อ-สกุล ชั้น เลขที่ และจำนวนรูปที่แนบ <b>' + ph + ' รูป</b></span></li>' +
+          '<li><i>4</i><span><b>ลงลายมือชื่อผู้ขอ</b> และวันที่</span></li>' +
+          '<li><i>5</i><span>หนีบรูป 1.5 นิ้ว <b>' + ph + ' รูป</b> ที่มุมขวาบน เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ</span></li>' +
+        '</ol></div>' +
+      '<div class="g-flow" aria-hidden="true"><svg viewBox="0 0 14 30"><path class="fl" d="M7 1v22"/><path d="M1.5 18.5 7 25l5.5-6.5"/></svg></div>' +
+      '<div class="g-step"><div class="g-n">3</div><div class="g-row"><div class="g-t"><b>ใส่ลิ้นชักที่ 2</b><span>ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</span></div>' + drawerArt(2, 'in', true) + '</div></div>' +
+      '</div>';
+  }
 
   /* ---------- rendering ---------- */
   function stepsBar() {
@@ -356,7 +518,7 @@
     var g6 = PP.pp6Opts(c, lv()), n6 = d.pp6Sems.length, show6 = d.pp6Open || n6 > 0, ph = d.pp1 + d.pp7;
     return '<h2 class="h">เลือกเอกสาร</h2><p class="p" style="margin-top:-6px">แตะภาพเอกสารเพื่อดูตัวอย่างว่าหน้าตาเป็นอย่างไร</p>' +
       '<div class="doc' + (d.pp1 ? ' on' : '') + '"><div class="doc-h">' + docTh('pp1') + '<div class="doc-t"><b>ปพ.1</b><span>ใบรับรองผลการเรียน (ใบเกรด)</span>' + exLink('pp1') + '</div>' + stepper('pp1', d.pp1) + '</div>' +
-      (d.pp1 > 0 ? '<fieldset class="sub"><legend>ช่วงผลการเรียน</legend>' + opts.map(function (o) { return '<label class="rad"><input type="radio" name="scope" value="' + o.v + '"' + (d.scope === o.v ? ' checked' : '') + ' data-change="scope"><span><b>' + o.l + '</b><small>' + o.s + '</small></span></label>'; }).join('') + '</fieldset>' +
+      (d.pp1 > 0 ? '<fieldset class="sub"><legend>ช่วงผลการเรียน</legend>' + opts.map(function (o) { return '<label class="rad"><input type="radio" name="scope" value="' + o.v + '"' + (d.scope === o.v ? ' checked' : '') + ' data-change="scope"><span><b>' + o.l + '</b>' + (o.s ? '<small>' + o.s + '</small>' : '') + '</span></label>'; }).join('') + '</fieldset>' +
         (c.allowEnglish ? '<fieldset class="sub"><legend>ภาษา</legend><div class="rads"><label class="rad"><input type="radio" name="lang" value="th"' + (d.lang !== 'en' ? ' checked' : '') + ' data-change="lang"><span>ภาษาไทย</span></label><label class="rad"><input type="radio" name="lang" value="en"' + (d.lang === 'en' ? ' checked' : '') + ' data-change="lang"><span>ภาษาอังกฤษ</span></label></div></fieldset>' : '') : '') +
       '</div>' +
       '<div class="doc' + (n6 ? ' on' : '') + '" id="doc-pp6"><div class="doc-h">' + docTh('pp6') + '<div class="doc-t"><b>ปพ.6</b><span>รายงานผลการเรียนรายภาคเรียน · ไม่ต้องใช้รูป</span>' + exLink('pp6') + '</div><output class="cnt6' + (n6 ? '' : ' zero') + '" id="cnt6">' + n6 + ' แผ่น</output></div>' +
@@ -364,7 +526,7 @@
         (g6.length ? g6.map(function (g) {
           return '<div class="semg"><span>ปีการศึกษา ' + g.year + ' · ม.' + g.lv + '</span><div class="semc">' + g.sems.map(function (v) { var on = d.pp6Sems.indexOf(v) > -1; return '<button type="button" class="sem' + (on ? ' on' : '') + '" data-act="sem" data-v="' + v + '" aria-pressed="' + on + '">ภาคเรียนที่ ' + v.split('/')[0] + '</button>'; }).join('') + '</div></div>';
         }).join('') : '<p class="small">ยังไม่มีภาคเรียนที่ผลการเรียนเข้าระบบ</p>') +
-        '<p class="small">เลือกเฉพาะภาคเรียนที่เรียนที่โรงเรียนพรตพิทยพยัต' + (c.pending ? ' · ภาคเรียนที่ ' + c.pending + ' ขอได้เมื่อผลการเรียนเข้าระบบแล้ว' : '') + '</p></fieldset>'
+        '<p class="small">' + (PP.pp6Start(lv()) === 4 ? 'ระดับ ม.ปลาย ขอได้ตั้งแต่ ม.4 ภาคเรียนที่ 1' : 'ระดับ ม.ต้น ขอได้ตั้งแต่ ม.1 ภาคเรียนที่ 1') + ' · เลือกเฉพาะภาคเรียนที่เรียนที่โรงเรียนพรตพิทยพยัต' + (c.pending ? ' · ภาคเรียนที่ ' + c.pending + ' ขอได้เมื่อผลการเรียนเข้าระบบแล้ว' : '') + '</p></fieldset>'
         : '<button type="button" class="btn btn-sm btn-sec doc-open" data-act="pp6-open">ขอ ปพ.6 · เลือกภาคเรียน</button>') + '</div>' +
       '<div class="doc' + (d.pp7 ? ' on' : '') + '"><div class="doc-h">' + docTh('pp7') + '<div class="doc-t"><b>ปพ.7</b><span>ใบรับรองสภาพการเป็นนักเรียน</span>' + exLink('pp7') + '</div>' + stepper('pp7', d.pp7) + '</div></div>' +
       '<p class="small">ปพ.1 และ ปพ.7 ขอได้ชนิดละไม่เกิน 2 ชุดต่อครั้ง</p>' +
@@ -410,17 +572,18 @@
   S.done = function () {
     var r = findReq(P.lastNo); if (!r) return S.home();
     var ph = nPhotos(r), c = P.cfg, drawer = 'ม.' + String(r.cls).split('/')[0];
-    var todo = ph
-      ? '<li>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียน<b>เลขคำร้อง ' + esc(r.no) + '</b> <b>รหัสนักเรียน ' + esc(r.sid) + '</b> แล้ว<b>ลงลายมือชื่อผู้ขอ</b></li>' +
-        '<li>เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ หนีบรูป <b>' + ph + ' รูป</b> กับใบนำส่ง</li>' +
-        '<li>ใส่ลิ้นชักที่ 2 ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</li>' + (r.pp6 ? '<li>ปพ.6 ไม่ต้องใช้รูป จัดทำพร้อมเอกสารอื่นในคำร้องนี้</li>' : '')
-      : '<li><b>ไม่ต้องส่งรูปถ่ายและใบนำส่ง</b> งานทะเบียนเริ่มจัดทำเอกสารได้ทันที</li>' +
+    var play = !(P.played || (P.played = {}))['g' + r.no]; P.played['g' + r.no] = 1;
+    var after = ph
+      ? photoGuide(r, play) +
+        '<div class="note n-info"><span>รูปถ่าย 1.5 นิ้ว ชุดนักเรียน ทรงผมถูกระเบียบ ไม่สวมเครื่องประดับ</span></div>' +
+        (r.pp6 ? '<div class="note n-info"><span>ปพ.6 ไม่ต้องใช้รูป จัดทำพร้อมเอกสารอื่นในคำร้องนี้</span></div>' : '')
+      : '<div class="card"><div class="card-h">สิ่งที่ต้องทำต่อ</div><ol class="ol">' +
+        '<li><b>ไม่ต้องส่งรูปถ่ายและใบนำส่ง</b> งานทะเบียนเริ่มจัดทำเอกสารได้ทันที</li>' +
         '<li>ติดตามสถานะในหน้านี้ คาดว่าพร้อมรับระหว่าง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMin)) + '</b> ถึง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMax)) + '</b></li>' +
-        '<li>รับเอกสารที่<b>ลิ้นชัก ' + drawer + '</b> หน้าห้องสำนักงานวิชาการ แล้วกดยืนยันรับ</li>';
+        '<li>รับเอกสารที่<b>ลิ้นชัก ' + drawer + '</b> หน้าห้องสำนักงานวิชาการ แล้วกดยืนยันรับ</li></ol></div>';
     return '<h2 class="h">ยื่นคำร้องเรียบร้อยแล้ว</h2>' +
       '<div class="bigno"><span>เลขคำร้อง</span><b>' + esc(r.no) + '</b><small class="small">ยื่นเมื่อ ' + PP.fDT(r.submittedAt) + '</small></div>' +
-      '<div class="card"><div class="card-h">สิ่งที่ต้องทำต่อ</div><ol class="ol">' + todo + '</ol></div>' +
-      (ph ? '<div class="note n-info"><span>รูปถ่าย 1.5 นิ้ว ชุดนักเรียน ทรงผมถูกระเบียบ ไม่สวมเครื่องประดับ</span></div>' : '') +
+      after +
       '<button class="btn btn-pri btn-blk" data-act="open" data-no="' + esc(r.no) + '">ดูสถานะคำร้อง</button>' +
       '<p class="small" style="text-align:center">บันทึกภาพหน้าจอนี้ไว้ หรือเปิดดูภายหลังจากปุ่ม "ติดตามคำร้อง" ที่หน้าแรก</p>';
   };
@@ -439,7 +602,8 @@
     var drawer = 'ม.' + String(r.cls).split('/')[0], canCancel = r.status === 'photo' || (r.status === 'work' && !ph);
     var confirmBox = canCancel && P.confirmCancel === r.no ? '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' หรือไม่</span><div><button class="btn btn-sm btn-warn" data-act="cancel-yes" data-no="' + esc(r.no) + '">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="cancel-no">ไม่ยกเลิก</button></div></div>' : '';
     if (r.status === 'photo') {
-      card = '<div class="note n-wait"><b>สิ่งที่ต้องทำ</b><span>ส่งรูปถ่าย 1.5 นิ้ว จำนวน ' + ph + ' รูป หนีบกับใบนำส่งที่เขียนเลขคำร้อง ' + esc(r.no) + ' และลงลายมือชื่อแล้ว ใส่ลิ้นชักที่ 2 ภายใน ' + PP.fD(r.photoDue) + '</span></div>';
+      var play = !(P.played || (P.played = {}))['g' + r.no]; P.played['g' + r.no] = 1;
+      card = '<div class="note n-wait"><b>สิ่งที่ต้องทำ</b><span>ส่งรูปถ่าย 1.5 นิ้ว จำนวน ' + ph + ' รูป หนีบกับใบนำส่งที่เขียนเลขคำร้อง ' + esc(r.no) + ' และลงลายมือชื่อแล้ว ใส่ลิ้นชักที่ 2 ภายใน ' + PP.fD(r.photoDue) + ' ดูวิธีกรอกด้านล่าง</span></div>' + photoGuide(r, play);
     }
     if (r.status === 'fix' && r.issue) card = '<div class="note n-alert"><b>ต้องแก้ไข: ' + esc(r.issue.reason) + '</b>' + (r.issue.todo ? '<span>' + esc(r.issue.todo) + '</span>' : '') + (r.issue.text ? '<span>หมายเหตุจากเจ้าหน้าที่: ' + esc(r.issue.text) + '</span>' : '') + '</div>';
     if (r.status === 'hold') card = '<div class="note n-wait"><b>รอผลการเรียนภาคเรียนที่ ' + esc(r.scope) + ' เข้าระบบ</b><span>งานทะเบียนได้รับรูปแล้ว จะจัดพิมพ์ต่อทันทีเมื่อผลการเรียนเข้าระบบ SGS</span></div>';

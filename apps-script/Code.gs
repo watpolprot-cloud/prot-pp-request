@@ -388,14 +388,16 @@ function me_(b) { return meData_(needStudent_(b.token)); }
 
 function validateReq_(p, s) {
   var pp1 = clampInt_(p.pp1, 0, 2), pp7 = clampInt_(p.pp7, 0, 2);
-  // ปพ.6: 1 ภาคเรียน = 1 แผ่น ต้องเป็นภาคเรียนที่ผลการเรียนเข้า SGS แล้ว และอยู่ในช่วง 6 ปีการศึกษาล่าสุด
-  var yr = parseInt(sv_('year'), 10) || 0, maxK = semKey_(sv_('latest')), minK = (yr - 5) * 10 + 1, seen = {};
-  var sems = (Array.isArray(p.pp6Sems) ? p.pp6Sems : []).map(function (x) { return str_(x, 10); }).filter(function (x) {
-    var k = semKey_(x);
-    if (!k || seen[x] || k > maxK || k < minK || !/^[12]\//.test(x)) return false;
-    seen[x] = true; return true;
-  }).sort(function (a, b) { return semKey_(a) - semKey_(b); }).slice(0, 12);
-  if ((p.pp6Sems || []).length && !sems.length) throw userErr_('ภาคเรียนของ ปพ.6 ไม่ถูกต้อง กรุณาเลือกใหม่');
+  // ปพ.6: 1 ภาคเรียน = 1 แผ่น ต้องเป็นภาคเรียนที่ผลการเรียนเข้า SGS แล้ว และอยู่ในช่วงชั้นปัจจุบัน
+  // ม.ต้น (ม.1-3) ขอได้ตั้งแต่ ม.1 ภาคเรียนที่ 1 · ม.ปลาย (ม.4-6) ขอได้ตั้งแต่ ม.4 ภาคเรียนที่ 1
+  var yr = parseInt(sv_('year'), 10) || 0, maxK = semKey_(sv_('latest')), lv = parseInt(s && s.level, 10) || 0;
+  var minK = lv >= 1 && lv <= 6 ? (yr - (lv - (lv >= 4 ? 4 : 1))) * 10 + 1 : (yr - 5) * 10 + 1, seen = {}, sems = [];
+  (Array.isArray(p.pp6Sems) ? p.pp6Sems : []).slice(0, 20).forEach(function (x) {
+    x = str_(x, 10); var k = semKey_(x);
+    if (!k || k > maxK || k < minK || !/^[12]\//.test(x)) throw userErr_('ภาคเรียนของ ปพ.6 ไม่ถูกต้อง กรุณาเลือกใหม่');
+    if (!seen[x]) { seen[x] = true; sems.push(x); }
+  });
+  sems.sort(function (a, b) { return semKey_(a) - semKey_(b); });
   if (pp1 + pp7 + sems.length < 1) throw userErr_('เลือกเอกสารอย่างน้อย 1 ชนิด');
   var scope = '';
   if (pp1) {

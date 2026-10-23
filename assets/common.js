@@ -97,9 +97,11 @@
     return a.join(' · ');
   };
   // ปพ.6 เลือกได้ทีละภาคเรียน ตั้งแต่ปีที่นักเรียนน่าจะเข้า ม.1 (ไม่เกิน 6 ปี) จนถึงภาคเรียนล่าสุดที่ผลเข้า SGS
+  // ปพ.6 ขอได้เฉพาะช่วงชั้นปัจจุบัน: ม.ต้นเริ่มที่ ม.1 ภาคเรียนที่ 1 · ม.ปลายเริ่มที่ ม.4 ภาคเรียนที่ 1
+  PP.pp6Start = function (level) { var L = parseInt(level, 10) || 1; return L >= 4 ? 4 : 1; };
   PP.pp6Opts = function (cfg, level) {
-    var y = parseInt(cfg.year, 10), L = parseInt(level, 10) || 1, max = PP.semKey(cfg.latest), out = [];
-    for (var yr = y; yr >= y - (L - 1) && yr >= y - 5; yr--) {
+    var y = parseInt(cfg.year, 10), L = Math.min(6, Math.max(1, parseInt(level, 10) || 1)), max = PP.semKey(cfg.latest), out = [];
+    for (var yr = y; yr >= y - (L - PP.pp6Start(L)); yr--) {
       var sems = [1, 2].map(function (t) { return t + '/' + yr; }).filter(function (v) { return PP.semKey(v) <= max; });
       if (sems.length) out.push({ year: yr, lv: L - (y - yr), sems: sems });
     }
@@ -132,7 +134,7 @@
       if (n) return 'ผลการเรียน ' + n + ' ภาคเรียน (' + (pending ? 'รวม ' : 'ถึง ') + s + ')';
       return pending ? 'รวมภาคเรียนที่ ' + s : 'ผลการเรียนถึงภาคเรียนที่ ' + s;
     }
-    out.push({ v: cfg.latest, l: lab(cfg.latest, false), s: 'ออกเอกสารได้ตามปกติ' });
+    out.push({ v: cfg.latest, l: lab(cfg.latest, false), s: '' });
     if (cfg.pending) out.push({ v: cfg.pending, l: lab(cfg.pending, true), s: 'ต้องรอผลการเรียนเข้าระบบก่อน จึงได้ช้ากว่าปกติ' });
     return out;
   };
