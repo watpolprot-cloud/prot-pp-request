@@ -126,6 +126,11 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
 .qrbox .qr svg,.qrbox .qr img{width:100%;height:auto;display:block}
 .urlbox{font:500 14px var(--f-label);word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .center{display:grid;place-items:center;gap:10px;padding:60px 0;color:var(--ink-2)}
+.sems6{display:grid;gap:4px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface-2)}
+.sems6>div{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px}
+.sems6>div>span{font:600 13px var(--f-head);color:var(--ink-3);min-width:96px}
+.chk6{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.chk6 input{width:16px;height:16px;accent-color:var(--teal)}
 </style>
 <script src="config.js"></script>
 <script src="assets/common.js"></script>
@@ -220,7 +225,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   var TABS = [['queue', 'คิวงาน'], ['manual', 'บันทึกคำร้องแทน'], ['report', 'รายงาน'], ['settings', 'ตั้งค่า'], ['media', 'สื่อสำหรับตู้ลิ้นชัก']];
   function openCount() { return A.list.filter(PP.isOpen).length; }
   function renderShell() {
-    $('app').innerHTML = '<header class="atop wrapc"><div class="abrand"><img src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="34" height="42"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · ระบบคำร้อง ปพ.1 / ปพ.7</span></div></div><div class="auser"><div><b>' + esc(A.me.displayName) + '</b><small>' + (A.me.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่') + '</small></div><button class="btn btn-sm" data-act="logout">ออกจากระบบ</button></div></header><div class="stripe"></div>' +
+    $('app').innerHTML = '<header class="atop wrapc"><div class="abrand"><img src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="34" height="42"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · ระบบคำร้อง ปพ.1 / ปพ.6 / ปพ.7</span></div></div><div class="auser"><div><b>' + esc(A.me.displayName) + '</b><small>' + (A.me.role === 'admin' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่') + '</small></div><button class="btn btn-sm" data-act="logout">ออกจากระบบ</button></div></header><div class="stripe"></div>' +
       '<nav class="anav wrapc" id="nav" aria-label="เมนูหลังบ้าน"></nav><main class="abody wrapc" id="body"></main>';
     renderNav(); renderBody();
   }
@@ -278,7 +283,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     h += rows.map(function (r) {
       return '<tr class="' + (A.open === r.no ? 'is-open' : '') + '" data-act="open" data-no="' + esc(r.no) + '"><td class="c-chk"><input type="checkbox" data-change="sel" data-no="' + esc(r.no) + '"' + (A.sel[r.no] ? ' checked' : '') + ' aria-label="เลือกคำร้อง ' + esc(r.no) + '"></td>' +
         '<td class="no">' + esc(r.no) + '</td><td><b>' + esc(r.name) + '</b><small>ม.' + esc(r.cls) + ' · ' + esc(r.sid) + '</small></td>' +
-        '<td>' + PP.docsText(r) + '<small>รูป ' + nPhotos(r) + ' รูป</small></td><td>' + PP.fD(r.submittedAt) + '<small>' + PP.fT(r.submittedAt) + '</small></td>' +
+        '<td>' + PP.docsText(r) + '<small>' + (nPhotos(r) ? 'รูป ' + nPhotos(r) + ' รูป' : 'ไม่ใช้รูปถ่าย') + '</small></td><td>' + PP.fD(r.submittedAt) + '<small>' + PP.fT(r.submittedAt) + '</small></td>' +
         '<td>' + (r.needBy ? PP.fD(PP.parseISO(r.needBy)) : '<span class="muted">–</span>') + '</td><td>' + PP.pill(r) + '</td><td>' + chips(flags(r)) + '</td></tr>';
     }).join('');
     h += '</tbody></table>' + (rows.length ? '' : '<div class="empty">ไม่มีคำร้องในรายการนี้</div>') + '</div>';
@@ -299,6 +304,10 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
       else if (n === 4 || n === 5) L.push(['ปพ.1', 'รายงาน → พิมพ์ ปพ.1 4/5 ภาคเรียน · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ภาคเรียน ' + n]);
       else L.push(['ปพ.1', 'รายงาน → ปพ.1 · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ปีการศึกษาสุดท้าย ' + p[1] + ' ภาคเรียน ' + p[0]]);
     }
+    (r.pp6Sems || []).forEach(function (v) {
+      var t = v.split('/'), lvAt = (+lvn) - ((+c.year) - (+t[1]));
+      L.push(['ปพ.6 (' + v + ')', 'แถบบนเลือก ปี ' + t[1] + ' ภาค ' + t[0] + (lvAt >= 1 ? ' ชั้น ม.' + lvAt : '') + ' → รายงาน → ปพ.6 · ห้องที่เรียนในปีนั้น · รหัส ' + r.sid]);
+    });
     if (r.pp7) { var cur = String(c.pending || c.latest).split('/'); L.push(['ปพ.7', 'รายงาน → ปพ.7 (รับรองสภาพการเป็นนักเรียน) · ห้อง ' + room + ' · รหัส ' + r.sid + ' · ปีการศึกษาสุดท้าย ' + cur[1] + ' ภาคเรียน ' + cur[0]]); }
     return '<div class="kv">' + L.map(function (x) { return '<span>' + x[0] + '</span><div>' + esc(x[1]) + '</div>'; }).join('') + '</div><p class="muted" style="font-size:13px;margin-top:6px">แถบบนของ SGS เลือกชั้น ม.' + lvn + ' ก่อน · <button class="cp" data-act="copy" data-v="' + esc(r.sid) + '">คัดลอกรหัส ' + esc(r.sid) + '</button></p>';
   }
@@ -340,8 +349,8 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     d.innerHTML = '<div class="dt-h"><div><span class="dt-ey">คำร้องเลขที่</span><b class="dt-no">' + esc(r.no) + '/' + esc(r.year) + '</b></div>' + PP.pill(r) + '<button class="btn btn-sm btn-ghost" data-act="close">ปิด</button></div><div class="dt-b">' +
       (fl.length || r.status === 'fix' ? '<div>' + chips(fl) + (r.status === 'fix' && r.issue ? '<div class="note n-alert" style="margin-top:6px"><b>ส่งกลับแล้ว: ' + esc(r.issue.reason) + '</b>' + (r.issue.text ? '<span>' + esc(r.issue.text) + '</span>' : '') + '</div>' : '') + '</div>' : '') +
       '<section><h5>ข้อมูลนักเรียน (กดคัดลอกไปวางใน SGS)</h5>' + fields + '</section>' +
-      '<section><h5>เอกสารที่ขอ</h5><div class="kv">' + (r.pp1 ? '<span>ปพ.1</span><div>' + r.pp1 + ' ชุด · ' + esc(PP.scopeText(r.scope, lvOf(r), A.cfg.year)) + (r.lang === 'en' ? ' · ภาษาอังกฤษ' : '') + '</div>' : '') + (r.pp7 ? '<span>ปพ.7</span><div>' + r.pp7 + ' ชุด</div>' : '') +
-      '<span>รูปถ่าย</span><div>' + nPhotos(r) + ' รูป' + (r.status === 'photo' ? ' · ส่งภายใน ' + PP.fD(r.photoDue) : '') + '</div><span>เพื่อ</span><div>' + esc(purpose) + '</div><span>ต้องใช้</span><div>' + (r.needBy ? PP.fWeek(PP.parseISO(r.needBy)) : 'ไม่ระบุ') + '</div>' +
+      '<section><h5>เอกสารที่ขอ</h5><div class="kv">' + (r.pp1 ? '<span>ปพ.1</span><div>' + r.pp1 + ' ชุด · ' + esc(PP.scopeText(r.scope, lvOf(r), A.cfg.year)) + (r.lang === 'en' ? ' · ภาษาอังกฤษ' : '') + '</div>' : '') + (r.pp7 ? '<span>ปพ.7</span><div>' + r.pp7 + ' ชุด</div>' : '') + (r.pp6 ? '<span>ปพ.6</span><div>' + r.pp6 + ' แผ่น · ภาคเรียน ' + esc(PP.semsText(r.pp6Sems)) + '</div>' : '') +
+      '<span>รูปถ่าย</span><div>' + (nPhotos(r) ? nPhotos(r) + ' รูป' + (r.status === 'photo' ? ' · ส่งภายใน ' + PP.fD(r.photoDue) : '') : 'ไม่ต้องใช้รูปถ่าย') + '</div><span>เพื่อ</span><div>' + esc(purpose) + '</div><span>ต้องใช้</span><div>' + (r.needBy ? PP.fWeek(PP.parseISO(r.needBy)) : 'ไม่ระบุ') + '</div>' +
       '<span>โทรศัพท์</span><div class="num">' + esc(PP.telFmt(r.phone)) + ' <button class="cp" data-act="copy" data-v="' + esc(r.phone) + '">คัดลอก</button></div><span>ช่องทาง</span><div>' + (r.channel === 'paper' ? 'ใบคำร้องกระดาษ (บันทึกโดย ' + esc(r.createdBy) + ')' : 'ยื่นออนไลน์') + '</div></div></section>' +
       '<section><h5>วิธีพิมพ์ใน SGS</h5>' + sgsRecipe(r) + '</section>' +
       '<section><h5>ดำเนินการ</h5>' + acts + '</section>' +
@@ -368,7 +377,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     return '<div class="sheet"><div class="sheet-top"><div><b>คำร้องเลขที่ ' + esc(r.no) + '/' + esc(r.year) + '</b><br>' + (r.channel === 'paper' ? 'บันทึกจากใบคำร้องกระดาษ' : 'ยื่นผ่านระบบออนไลน์') + '<br>' + PP.fDT(r.submittedAt) + '</div><img class="sheet-emb" src="assets/emblem-bw.png" alt="">' + (qr ? '<div class="sheet-qr">' + qr + 'สแกนเปิดคำร้อง</div>' : '<div class="sheet-qr"></div>') + '</div>' +
       '<div class="sheet-title">แบบคำร้องขอใบรับรอง</div>' +
       '<span class="r right">วันที่ <span class="fl">' + sp.d + '</span> เดือน <span class="fl">' + sp.m + '</span> พ.ศ. <span class="fl">' + sp.y + '</span></span>' +
-      '<span class="r">สิ่งที่ส่งมาด้วย <u>รูปถ่ายขนาด 1.5 นิ้ว</u> จำนวน <span class="fl">' + nPhotos(r) + '</span> รูป (ทรงผมต้องถูกระเบียบ/ไม่สวมเครื่องประดับ)</span>' +
+      (nPhotos(r) ? '<span class="r">สิ่งที่ส่งมาด้วย <u>รูปถ่ายขนาด 1.5 นิ้ว</u> จำนวน <span class="fl">' + nPhotos(r) + '</span> รูป (ทรงผมต้องถูกระเบียบ/ไม่สวมเครื่องประดับ)</span>' : '<span class="r">สิ่งที่ส่งมาด้วย <span class="fl">ไม่มี (ปพ.6 ไม่ต้องใช้รูปถ่าย)</span></span>') +
       '<span class="r">ชื่อนักเรียน <span class="fl">' + esc(name) + '</span></span>' +
       '<span class="r">ชั้น ม. <span class="fl">' + esc(r.cls) + '</span> เลขที่ <span class="fl blank">' + esc(s.no || '') + '</span> รหัสนักเรียน <span class="fl">' + esc(r.sid) + '</span></span>' +
       (c.dob ? '<span class="r">เกิดวันที่ <span class="fl">' + esc(c.dob.to) + '</span></span>' : '<span class="r">เกิดวันที่ <span class="fl blank">' + dp.d + '</span> เดือน <span class="fl blank">' + dp.m + '</span> พ.ศ. <span class="fl blank">' + dp.y + '</span></span>') +
@@ -377,9 +386,10 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
       '<span class="r">มีความประสงค์ขอเอกสาร</span>' +
       '<span class="r ind">' + bx(r.pp7) + 'ใบรับรองการเป็นนักเรียน (ปพ.7) จำนวน <span class="fl">' + (r.pp7 || '–') + '</span> ใบ</span>' +
       '<span class="r ind">' + bx(r.pp1) + 'ใบรับรองผลการเรียน (ปพ.1) จำนวน <span class="fl">' + (r.pp1 || '–') + '</span> ใบ' + (r.pp1 ? ' (' + esc(PP.scopeText(r.scope, lvOf(r), A.cfg.year)) + (r.lang === 'en' ? ' ภาษาอังกฤษ' : '') + ')' : '') + '</span>' +
+      '<span class="r ind">' + bx(r.pp6) + 'รายงานผลการเรียนรายภาคเรียน (ปพ.6) จำนวน <span class="fl">' + (r.pp6 || '–') + '</span> แผ่น' + (r.pp6 ? ' (ภาคเรียน ' + esc(PP.semsText(r.pp6Sems)) + ')' : '') + '</span>' +
       '<span class="r">เพื่อ ' + bx(p === 'ขอทุนการศึกษา') + 'ขอทุนการศึกษา &nbsp;' + bx(p === 'ศึกษาต่อ') + 'ศึกษาต่อ &nbsp;' + bx(p === 'สมัครงาน') + 'สมัครงาน</span>' +
       '<span class="r ind">' + bx(p === 'อื่น ๆ') + 'อื่น ๆ (ระบุ) <span class="fl">' + (p === 'อื่น ๆ' ? esc(r.other) : '') + '</span></span>' +
-      '<span class="r right">ลงชื่อ <span class="fl">' + (r.channel === 'paper' ? 'ตามใบคำร้องกระดาษที่แนบ' : 'ลงนามในใบนำส่งรูปถ่ายที่แนบ') + '</span> ผู้ขอ<br>(' + esc(name) + ')<br>เบอร์โทร <span class="fl">' + esc(PP.telFmt(r.phone)) + '</span></span>' +
+      '<span class="r right">ลงชื่อ <span class="fl">' + (r.channel === 'paper' ? 'ตามใบคำร้องกระดาษที่แนบ' : (nPhotos(r) ? 'ลงนามในใบนำส่งรูปถ่ายที่แนบ' : 'ยื่นออนไลน์ ยืนยันตัวตนแล้ว')) + '</span> ผู้ขอ<br>(' + esc(name) + ')<br>เบอร์โทร <span class="fl">' + esc(PP.telFmt(r.phone)) + '</span></span>' +
       (notes.length ? '<div class="sheet-note"><b>หมายเหตุ ข้อมูลที่นักเรียนขอแก้ไข</b><br>' + notes.map(esc).join('<br>') + '</div>' : '') +
       '<div class="sig"><div>งานทะเบียนและสำมะโนนักเรียน<br>เจ้าหน้าที่ <span class="dots">..............................</span>(' + esc(S.staffName || '') + ')<br><span class="dots">..............................</span>(' + esc(S.registrarName || '') + ')<br>นายทะเบียน</div>' +
       '<div>เรียน ผู้อำนวยการ<br>เห็นควร ○ อนุมัติ &nbsp; ○ ไม่อนุมัติ<br><span class="dots">..............................</span>(' + esc(S.approverName || '') + ')<br>' + esc(S.approverTitle || '') + '</div></div></div>';
@@ -413,9 +423,9 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   function posterHTML() {
     var url = A.settings.studentUrl || '', qr = qrSvg(url, 8);
     return '<div class="poster"><div class="poster-top"><img src="assets/emblem-gold.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span></div></div>' +
-      '<div class="poster-b"><span class="ey">งานทะเบียน สำนักงานวิชาการ</span><h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7 ออนไลน์</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
+      '<div class="poster-b"><span class="ey">งานทะเบียน สำนักงานวิชาการ</span><h1>ขอใบเกรด ปพ.1 · ปพ.6<br>และใบรับรอง ปพ.7 ออนไลน์</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
       '<div class="poster-qr">' + (qr || '') + '</div><div class="poster-url">' + esc(url) + '</div></div>' +
-      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</div><div><b>2</b>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 กรอกและลงชื่อ</div><div><b>3</b>หนีบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
+      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</div><div><b>2</b>ขอ ปพ.1 หรือ ปพ.7 หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ</div><div><b>3</b>หนีบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2 (ปพ.6 ไม่ต้องใช้รูป)</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
       '<div class="poster-foot">สอบถาม สำนักงานวิชาการ โทร. 0-2326-4050</div></div>';
   }
   function signListHTML(list) {
@@ -448,7 +458,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   }
 
   /* ===================== Manual entry ===================== */
-  function manReset() { A.man = { sid: '', looked: false, student: null, openNos: [], m: { prefix: 'นาย', fname: '', lname: '', level: '1', room: '1' }, pp1: 1, scope: A.cfg.latest, lang: 'th', pp7: 0, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', err: '' }; }
+  function manReset() { A.man = { sid: '', looked: false, student: null, openNos: [], m: { prefix: 'นาย', fname: '', lname: '', level: '1', room: '1' }, pp1: 1, scope: A.cfg.latest, lang: 'th', pp7: 0, pp6Sems: [], purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', err: '' }; }
   function manualHTML() {
     if (!A.man) manReset();
     var M = A.man, level = M.student ? M.student.level : M.m.level, opts = PP.scopeOpts(A.cfg, level);
@@ -460,6 +470,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
       '<div class="tool"><label class="lbl" for="m-sid" style="margin:0">รหัสนักเรียน</label><input class="inp num" id="m-sid" inputmode="numeric" maxlength="5" style="max-width:160px" value="' + esc(M.sid) + '" data-man="sid"><button class="btn btn-sm btn-sec" data-act="man-find">ค้นหาในทะเบียน</button></div>' + who +
       (M.looked ? '<div class="grid3"><div><label class="lbl" for="m-pp1">ปพ.1 (ชุด)</label>' + sel('m-pp1', 'pp1', [0, 1, 2], M.pp1) + '</div><div><label class="lbl" for="m-scope">ช่วงผลการเรียน</label>' + sel('m-scope', 'scope', opts, M.scope) + '</div><div><label class="lbl" for="m-lang">ภาษา ปพ.1</label>' + sel('m-lang', 'lang', [{ v: 'th', l: 'ภาษาไทย' }, { v: 'en', l: 'ภาษาอังกฤษ' }], M.lang) + '</div>' +
         '<div><label class="lbl" for="m-pp7">ปพ.7 (ชุด)</label>' + sel('m-pp7', 'pp7', [0, 1, 2], M.pp7) + '</div><div><label class="lbl" for="m-pur">เพื่อ</label>' + sel('m-pur', 'purpose', PP.PURPOSES, M.purpose) + '</div><div><label class="lbl" for="m-oth">ระบุอื่น ๆ</label><input class="inp" id="m-oth" value="' + esc(M.other) + '" data-man="other"></div>' +
+        '<div style="grid-column:1/-1"><span class="lbl">ปพ.6 (เลือกภาคเรียน 1 ภาคเรียน = 1 แผ่น ไม่ต้องใช้รูป)</span><div class="sems6">' + PP.pp6Opts(A.cfg, level).map(function (g) { return '<div><span>' + g.year + ' · ม.' + g.lv + '</span>' + g.sems.map(function (v) { return '<label class="chk6"><input type="checkbox" data-change="man6" value="' + v + '"' + (M.pp6Sems.indexOf(v) > -1 ? ' checked' : '') + '> ภาค ' + v.split('/')[0] + '</label>'; }).join('') + '</div>'; }).join('') + '</div></div>' +
         '<div><label class="lbl" for="m-need">ต้องใช้ภายใน (ไม่บังคับ)</label><input class="inp" id="m-need" type="date" value="' + esc(M.needBy) + '" data-man="needBy"></div><div><label class="lbl" for="m-tel">เบอร์โทรศัพท์</label><input class="inp num" id="m-tel" inputmode="tel" value="' + esc(M.phone) + '" data-man="phone"></div></div>' +
         (M.err ? '<div class="note n-alert"><span>' + esc(M.err) + '</span></div>' : '') +
         '<div class="acts"><button class="btn btn-pri" data-act="man-save"' + (A.busy ? ' disabled' : '') + '>' + (A.busy ? '<span class="spin"></span> กำลังบันทึก' : 'บันทึกคำร้อง') + '</button><button class="btn btn-ghost" data-act="man-reset">ล้างฟอร์ม</button></div>' : '') + '</div>';
@@ -471,14 +482,14 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     if (!R) { loadReport(); return '<div class="center"><span class="spin"></span><span>กำลังคำนวณรายงาน</span></div>'; }
     function tbl(head, rows) { return '<table class="mini"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="r"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + (rows.length ? rows.join('') : '<tr><td colspan="' + head.length + '" class="muted">ยังไม่มีข้อมูล</td></tr>') + '</tbody></table>'; }
     var st = Object.keys(R.byStatus).map(function (k) { return '<tr><td>' + ((PP.ST[k] || {}).label || k) + '</td><td class="r">' + R.byStatus[k] + '</td></tr>'; });
-    var lvs = Object.keys(R.byLevel).sort().map(function (k) { var x = R.byLevel[k]; return '<tr><td>ม.' + k + '</td><td class="r">' + x.n + '</td><td class="r">' + x.pp1 + '</td><td class="r">' + x.pp7 + '</td></tr>'; });
+    var lvs = Object.keys(R.byLevel).sort().map(function (k) { var x = R.byLevel[k]; return '<tr><td>ม.' + k + '</td><td class="r">' + x.n + '</td><td class="r">' + x.pp1 + '</td><td class="r">' + (x.pp6 || 0) + '</td><td class="r">' + x.pp7 + '</td></tr>'; });
     var ms = Object.keys(R.byMonth).sort().map(function (k) { var p = k.split('-'); return '<tr><td>' + new Intl.DateTimeFormat('th-TH-u-ca-buddhist', { month: 'long', year: 'numeric' }).format(new Date(+p[0], +p[1] - 1, 1)) + '</td><td class="r">' + R.byMonth[k] + '</td></tr>'; });
     var fx = Object.keys(R.fixes).map(function (k) { return '<tr><td>' + esc(k) + '</td><td class="r">' + R.fixes[k] + '</td></tr>'; });
-    return '<div class="stats"><div><span>คำร้องทั้งหมด</span><b>' + R.total + '</b><small>ปพ.1 ' + R.pp1 + ' ชุด · ปพ.7 ' + R.pp7 + ' ชุด</small></div>' +
-      '<div><span>เวลาเฉลี่ย ได้รูปถึงพร้อมรับ</span><b>' + (R.avgWorkdays === null ? '–' : R.avgWorkdays) + '</b><small>วันทำการ (' + R.timedCount + ' คำร้อง)</small></div>' +
+    return '<div class="stats"><div><span>คำร้องทั้งหมด</span><b>' + R.total + '</b><small>ปพ.1 ' + R.pp1 + ' ชุด · ปพ.6 ' + (R.pp6 || 0) + ' แผ่น · ปพ.7 ' + R.pp7 + ' ชุด</small></div>' +
+      '<div><span>เวลาเฉลี่ย เริ่มจัดทำถึงพร้อมรับ</span><b>' + (R.avgWorkdays === null ? '–' : R.avgWorkdays) + '</b><small>วันทำการ (' + R.timedCount + ' คำร้อง)</small></div>' +
       '<div><span>เสร็จภายใน ' + R.workMax + ' วันทำการ</span><b>' + (R.withinPct === null ? '–' : R.withinPct + '%') + '</b><small>ของคำร้องที่พร้อมรับแล้ว</small></div>' +
       '<div><span>ความพึงพอใจเฉลี่ย</span><b>' + (R.avgRating === null ? '–' : R.avgRating) + '</b><small>จาก 5 (' + R.ratingCount + ' คะแนน)</small></div></div>' +
-      '<div class="grid2"><div>' + tbl(['สถานะ', 'คำร้อง'], st) + '</div><div>' + tbl(['ระดับชั้น', 'คำร้อง', 'ปพ.1', 'ปพ.7'], lvs) + '</div><div>' + tbl(['เดือน', 'คำร้อง'], ms) + '</div><div>' + tbl(['เหตุผลที่ส่งกลับให้แก้ไข', 'ครั้ง'], fx) +
+      '<div class="grid2"><div>' + tbl(['สถานะ', 'คำร้อง'], st) + '</div><div>' + tbl(['ระดับชั้น', 'คำร้อง', 'ปพ.1', 'ปพ.6', 'ปพ.7'], lvs) + '</div><div>' + tbl(['เดือน', 'คำร้อง'], ms) + '</div><div>' + tbl(['เหตุผลที่ส่งกลับให้แก้ไข', 'ครั้ง'], fx) +
       '<p class="muted" style="font-size:13px;margin-top:8px">ช่องทาง: ออนไลน์ ' + R.channel.online + ' · ใบกระดาษ ' + R.channel.paper + ' · พิมพ์เอกสารใหม่ ' + R.reprint + ' ครั้ง</p></div></div>' +
       '<div><button class="btn btn-sm btn-sec" data-act="report-reload">คำนวณใหม่</button></div>';
   }
@@ -566,7 +577,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   };
   ACT['man-save'] = function () {
     var M = A.man; if (A.busy) return;
-    var req = { pp1: +M.pp1, scope: M.scope, lang: M.lang, pp7: +M.pp7, purpose: M.purpose, other: M.other, needBy: M.needBy, phone: String(M.phone).replace(/\D/g, '') };
+    var req = { pp1: +M.pp1, scope: M.scope, lang: M.lang, pp7: +M.pp7, pp6Sems: M.pp6Sems.slice(), purpose: M.purpose, other: M.other, needBy: M.needBy, phone: String(M.phone).replace(/\D/g, '') };
     A.busy = true; M.err = ''; renderBody();
     apiAdmin('adminCreate', { sid: M.sid.replace(/\D/g, ''), req: req, manual: M.student ? null : M.m }).then(function (r) {
       A.busy = false; PP.toast('บันทึกคำร้อง ' + r.request.no + ' แล้ว'); manReset(); A.view = 'queue'; A.open = r.request.no; renderNav();
@@ -592,6 +603,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   document.addEventListener('change', function (e) {
     var t = e.target, k = t.dataset && t.dataset.change;
     if (k === 'sel') { A.sel[t.dataset.no] = t.checked; renderBody(); }
+    if (k === 'man6') { var L6 = A.man.pp6Sems, i6 = L6.indexOf(t.value); if (t.checked && i6 < 0) L6.push(t.value); if (!t.checked && i6 > -1) L6.splice(i6, 1); L6.sort(function (x, y) { return PP.semKey(x) - PP.semKey(y); }); }
     else if (k === 'all') { A.list.filter(function (r) { return match(r, A.filter) && searchOk(r); }).forEach(function (r) { A.sel[r.no] = t.checked; }); renderBody(); }
     else if (k === 'fix-r') { A.fixIdx = Number(t.value); A.keepScroll = true; renderDrawer(); }
     if (t.dataset && t.dataset.man && t.tagName === 'SELECT') { setMan(t); if (t.dataset.man === 'm.level') renderBody(); }

@@ -1,5 +1,5 @@
 /**
- * ระบบคำร้อง ปพ.1 / ปพ.7 ออนไลน์ — งานทะเบียน โรงเรียนพรตพิทยพยัต
+ * ระบบคำร้อง ปพ.1 / ปพ.6 / ปพ.7 ออนไลน์ — งานทะเบียน โรงเรียนพรตพิทยพยัต
  *
  * Google Apps Script เว็บแอป (Deploy: Execute as "Me", Who has access "Anyone")
  * - หน้าเว็บนักเรียนและหลังบ้านอยู่บน GitHub Pages เรียกใช้ผ่าน doPost (JSON)
@@ -37,7 +37,8 @@ var COLS = {
     ['fixAt', 'ส่งกลับแก้ไขเมื่อ', ''], ['resume', 'สถานะก่อนส่งกลับ', '@'],
     ['issueReason', 'เหตุผลที่ต้องแก้ไข', '@'], ['issueTodo', 'สิ่งที่นักเรียนต้องทำ', '@'], ['issueText', 'ข้อความถึงนักเรียน', '@'],
     ['note', 'บันทึกภายใน', '@'], ['rating', 'คะแนนความพึงพอใจ', ''], ['reprint', 'พิมพ์ใหม่ (ครั้ง)', ''],
-    ['fixCount', 'ส่งกลับ (ครั้ง)', ''], ['createdBy', 'ผู้บันทึก', '@'], ['updatedAt', 'แก้ไขล่าสุด', '']
+    ['fixCount', 'ส่งกลับ (ครั้ง)', ''], ['createdBy', 'ผู้บันทึก', '@'], ['updatedAt', 'แก้ไขล่าสุด', ''],
+    ['pp6', 'ปพ.6 (แผ่น)', ''], ['pp6Sems', 'ปพ.6 ภาคเรียนที่ขอ', '@']
   ],
   LOG: [['time', 'เวลา', ''], ['no', 'เลขคำร้อง', '@'], ['who', 'ผู้ทำ', '@'], ['action', 'การกระทำ', '@'], ['detail', 'รายละเอียด', '@']],
   SET: [['key', 'ชื่อค่า', '@'], ['value', 'ค่า', '@'], ['desc', 'คำอธิบาย', '@']],
@@ -149,7 +150,23 @@ function ss_() {
   }
   return _ss;
 }
-function sh_(key) { return ss_().getSheetByName(SHEETS[key]); }
+var _colsOk = {};
+function sh_(key) {
+  var sh = ss_().getSheetByName(SHEETS[key]);
+  if (!_colsOk[key] && sh) {
+    var need = COLS[key].length, have = sh.getMaxColumns();
+    if (have < need) {
+      sh.insertColumnsAfter(have, need - have);
+      sh.getRange(1, have + 1, 1, need - have).setValues([COLS[key].slice(have).map(function (c) { return c[1]; })])
+        .setFontWeight('bold').setBackground('#3A1468').setFontColor('#FFFFFF').setWrap(true);
+      COLS[key].slice(have).forEach(function (c, j) { if (c[2] === '@') sh.getRange(2, have + j + 1, Math.max(1, sh.getMaxRows() - 1), 1).setNumberFormat('@'); });
+    } else if (sh.getRange(1, need).getValues()[0][0] === '') {
+      sh.getRange(1, 1, 1, need).setValues([COLS[key].map(function (c) { return c[1]; })]);
+    }
+    _colsOk[key] = true;
+  }
+  return sh;
+}
 function rows_(key) {
   var sh = sh_(key), cols = COLS[key], n = sh.getLastRow() - 1;
   if (n < 1) return [];
@@ -286,6 +303,9 @@ function log_(no, who, action, detail) { add_('LOG', { time: new Date(), no: no 
 function setStatus_(r, st) { r.status = st; r.statusTh = ST[st]; r.updatedAt = new Date(); }
 function parseJson_(s) { try { return s ? JSON.parse(String(s)) : {}; } catch (e) { return {}; } }
 function needsHold_(r) { return (+r.pp1 > 0) && r.scope && semKey_(r.scope) > semKey_(sv_('latest')); }
+// รูปถ่ายใช้เฉพาะ ปพ.1 และ ปพ.7 (1 รูปต่อ 1 ชุด) ส่วน ปพ.6 ไม่ต้องใช้รูป
+function photosOf_(r) { return (+r.pp1 || 0) + (+r.pp7 || 0); }
+function semsOf_(r) { return String(r.pp6Sems || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean); }
 function reqBy_(no) {
   no = String(no || '');
   var list = rows_('REQ');
@@ -318,6 +338,7 @@ function pubReq_(r) {
   return {
     no: String(r.no), year: String(r.year), sid: String(r.sid), cls: String(r.cls), status: String(r.status),
     pp1: +r.pp1 || 0, scope: String(r.scope || ''), lang: String(r.lang || 'th'), pp7: +r.pp7 || 0,
+    pp6: +r.pp6 || 0, pp6Sems: semsOf_(r),
     purpose: String(r.purpose || ''), other: String(r.other || ''), needBy: String(r.needBy || ''),
     submittedAt: iso_(r.submittedAt), photoDue: iso_(r.photoDue), photoAt: iso_(r.photoAt), signAt: iso_(r.signAt),
     readyAt: iso_(r.readyAt), doneAt: iso_(r.doneAt), fixAt: iso_(r.fixAt), resume: String(r.resume || ''),
@@ -367,7 +388,15 @@ function me_(b) { return meData_(needStudent_(b.token)); }
 
 function validateReq_(p, s) {
   var pp1 = clampInt_(p.pp1, 0, 2), pp7 = clampInt_(p.pp7, 0, 2);
-  if (pp1 + pp7 < 1) throw userErr_('เลือกเอกสารอย่างน้อย 1 ชนิด');
+  // ปพ.6: 1 ภาคเรียน = 1 แผ่น ต้องเป็นภาคเรียนที่ผลการเรียนเข้า SGS แล้ว และอยู่ในช่วง 6 ปีการศึกษาล่าสุด
+  var yr = parseInt(sv_('year'), 10) || 0, maxK = semKey_(sv_('latest')), minK = (yr - 5) * 10 + 1, seen = {};
+  var sems = (Array.isArray(p.pp6Sems) ? p.pp6Sems : []).map(function (x) { return str_(x, 10); }).filter(function (x) {
+    var k = semKey_(x);
+    if (!k || seen[x] || k > maxK || k < minK || !/^[12]\//.test(x)) return false;
+    seen[x] = true; return true;
+  }).sort(function (a, b) { return semKey_(a) - semKey_(b); }).slice(0, 12);
+  if ((p.pp6Sems || []).length && !sems.length) throw userErr_('ภาคเรียนของ ปพ.6 ไม่ถูกต้อง กรุณาเลือกใหม่');
+  if (pp1 + pp7 + sems.length < 1) throw userErr_('เลือกเอกสารอย่างน้อย 1 ชนิด');
   var scope = '';
   if (pp1) {
     scope = str_(p.scope, 10);
@@ -401,7 +430,7 @@ function validateReq_(p, s) {
       ch[k] = { from: from, to: t, reason: reason };
     }
   });
-  return { pp1: pp1, pp7: pp7, scope: scope, lang: lang, purpose: purpose, other: other, needBy: needBy, phone: phone, changes: ch };
+  return { pp1: pp1, pp7: pp7, pp6: sems.length, pp6Sems: sems.join(','), scope: scope, lang: lang, purpose: purpose, other: other, needBy: needBy, phone: phone, changes: ch };
 }
 function nextNo_() {
   var n = int_('nextNo', 1);
@@ -413,13 +442,14 @@ function newRequest_(s, v, channel, who, manual) {
   var r = {
     no: nextNo_(), year: sv_('year'), sid: s ? String(s.sid) : String(manual.sid),
     name: s ? fullName_(s) : fullName_(manual), cls: s ? s.level + '/' + s.room : manual.level + '/' + manual.room,
-    pp1: v.pp1, scope: v.scope, lang: v.lang, pp7: v.pp7, purpose: v.purpose, other: v.other, needBy: v.needBy,
+    pp1: v.pp1, scope: v.scope, lang: v.lang, pp7: v.pp7, pp6: v.pp6, pp6Sems: v.pp6Sems, purpose: v.purpose, other: v.other, needBy: v.needBy,
     phone: v.phone, changes: JSON.stringify(v.changes), channel: channel, submittedAt: now,
-    photoDue: new Date(now.getTime() + int_('photoDays', 7) * 864e5), reprint: 0, fixCount: 0, createdBy: who, updatedAt: now
+    photoDue: '', reprint: 0, fixCount: 0, createdBy: who, updatedAt: now
   };
-  setStatus_(r, 'photo');
+  if (photosOf_(r) > 0) { r.photoDue = new Date(now.getTime() + int_('photoDays', 7) * 864e5); setStatus_(r, 'photo'); }
+  else setStatus_(r, 'work');
   add_('REQ', r);
-  log_(r.no, who, 'ยื่นคำร้อง', channel === 'online' ? 'ยื่นผ่านระบบออนไลน์' : 'บันทึกจากใบคำร้องกระดาษ' + (s ? '' : ' (ไม่พบในทะเบียน)'));
+  log_(r.no, who, 'ยื่นคำร้อง', (channel === 'online' ? 'ยื่นผ่านระบบออนไลน์' : 'บันทึกจากใบคำร้องกระดาษ' + (s ? '' : ' (ไม่พบในทะเบียน)')) + (photosOf_(r) ? '' : ' · ไม่ต้องใช้รูปถ่าย'));
   return r;
 }
 function submit_(b) {
@@ -443,7 +473,7 @@ function studentCancel_(b) {
   return lock_(function () {
     var r = reqBy_(b.no);
     if (!r || String(r.sid) !== sid) throw userErr_('ไม่พบคำร้องนี้');
-    if (r.status !== 'photo') throw userErr_('ยกเลิกเองได้เฉพาะคำร้องที่ยังไม่ได้ส่งรูปถ่าย ถ้าต้องการยกเลิก กรุณาติดต่อครูปรางทอง');
+    if (!(r.status === 'photo' || (r.status === 'work' && photosOf_(r) === 0))) throw userErr_('ยกเลิกเองได้เฉพาะคำร้องที่ยังไม่ได้ส่งรูปถ่ายหรือยังไม่เริ่มจัดทำ ถ้าต้องการยกเลิก กรุณาติดต่อครูปรางทอง');
     setStatus_(r, 'cancel'); r.doneAt = new Date(); put_('REQ', r);
     log_(r.no, 'นักเรียน', 'ยกเลิกคำร้อง', '');
     return { request: pubReq_(r) };
@@ -566,13 +596,17 @@ function doAct_(r, act) {
   else if (act === 'staffdone') { r.doneAt = now; setStatus_(r, 'done'); }
   else if (act === 'resume') {
     var back = String(r.resume || 'work');
-    if (back === 'photo' || !r.photoAt) setStatus_(r, 'photo');
+    if (back === 'photo' || (photosOf_(r) > 0 && !r.photoAt)) setStatus_(r, 'photo');
     else if ((back === 'work' || back === 'hold') && needsHold_(r)) setStatus_(r, 'hold');
     else setStatus_(r, back === 'hold' ? 'work' : back);
     r.issueTodo = '';
   }
   else if (act === 'cancel') { r.doneAt = now; setStatus_(r, 'cancel'); }
-  else if (act === 'reopen') { r.doneAt = ''; r.photoDue = new Date(now.getTime() + int_('photoDays', 7) * 864e5); setStatus_(r, 'photo'); }
+  else if (act === 'reopen') {
+    r.doneAt = '';
+    if (photosOf_(r) > 0 && !r.photoAt) { r.photoDue = new Date(now.getTime() + int_('photoDays', 7) * 864e5); setStatus_(r, 'photo'); }
+    else setStatus_(r, needsHold_(r) ? 'hold' : 'work');
+  }
   else if (act === 'reprint') { r.reprint = (+r.reprint || 0) + 1; r.updatedAt = now; }
   return detail;
 }
@@ -680,18 +714,19 @@ function adminReport_(b) {
   var hol = {};
   holidays_().forEach(function (h) { hol[h.d] = true; });
   var all = rows_('REQ'), byStatus = {}, byLevel = {}, byMonth = {}, fixes = {}, chan = { online: 0, paper: 0 };
-  var durs = [], ratings = [], within = 0, maxW = int_('workMax', 5), reprint = 0, pp1 = 0, pp7 = 0;
+  var durs = [], ratings = [], within = 0, maxW = int_('workMax', 5), reprint = 0, pp1 = 0, pp7 = 0, pp6 = 0;
   all.forEach(function (r) {
     byStatus[r.status] = (byStatus[r.status] || 0) + 1;
     var lv = String(r.cls).split('/')[0];
-    byLevel[lv] = byLevel[lv] || { n: 0, pp1: 0, pp7: 0 };
-    byLevel[lv].n++; byLevel[lv].pp1 += +r.pp1 || 0; byLevel[lv].pp7 += +r.pp7 || 0;
-    pp1 += +r.pp1 || 0; pp7 += +r.pp7 || 0;
+    byLevel[lv] = byLevel[lv] || { n: 0, pp1: 0, pp7: 0, pp6: 0 };
+    byLevel[lv].n++; byLevel[lv].pp1 += +r.pp1 || 0; byLevel[lv].pp7 += +r.pp7 || 0; byLevel[lv].pp6 += +r.pp6 || 0;
+    pp1 += +r.pp1 || 0; pp7 += +r.pp7 || 0; pp6 += +r.pp6 || 0;
     if (r.submittedAt instanceof Date) { var m = Utilities.formatDate(r.submittedAt, 'Asia/Bangkok', 'yyyy-MM'); byMonth[m] = (byMonth[m] || 0) + 1; }
     chan[String(r.channel) === 'paper' ? 'paper' : 'online']++;
     if (r.issueReason && +r.fixCount) fixes[r.issueReason] = (fixes[r.issueReason] || 0) + (+r.fixCount);
-    if (r.photoAt instanceof Date && r.readyAt instanceof Date && r.readyAt > r.photoAt) {
-      var d = workBetween_(r.photoAt, r.readyAt, hol); durs.push(d); if (d <= maxW) within++;
+    var start = r.photoAt instanceof Date ? r.photoAt : (photosOf_(r) === 0 && r.submittedAt instanceof Date ? r.submittedAt : null);
+    if (start && r.readyAt instanceof Date && r.readyAt > start) {
+      var d = workBetween_(start, r.readyAt, hol); durs.push(d); if (d <= maxW) within++;
     }
     if (+r.rating) ratings.push(+r.rating);
     reprint += +r.reprint || 0;
@@ -700,7 +735,7 @@ function adminReport_(b) {
   return {
     total: all.length, byStatus: byStatus, byLevel: byLevel, byMonth: byMonth, fixes: fixes, channel: chan,
     avgWorkdays: avg(durs), withinPct: durs.length ? Math.round(within / durs.length * 100) : null, timedCount: durs.length,
-    avgRating: avg(ratings), ratingCount: ratings.length, reprint: reprint, pp1: pp1, pp7: pp7, workMax: maxW
+    avgRating: avg(ratings), ratingCount: ratings.length, reprint: reprint, pp1: pp1, pp7: pp7, pp6: pp6, workMax: maxW
   };
 }
 function workBetween_(a, b, hol) {
@@ -796,7 +831,7 @@ function setup() {
     var cols = COLS[k];
     if (sh.getMaxColumns() < cols.length) sh.insertColumnsAfter(sh.getMaxColumns(), cols.length - sh.getMaxColumns());
     sh.getRange(1, 1, 1, cols.length).setValues([cols.map(function (c) { return c[1]; })])
-      .setFontWeight('bold').setBackground('#142B4D').setFontColor('#FFFFFF').setWrap(true);
+      .setFontWeight('bold').setBackground('#3A1468').setFontColor('#FFFFFF').setWrap(true);
     sh.setFrozenRows(1);
     textFormat_(sh, cols, 2, sh.getMaxRows() - 1);
   });

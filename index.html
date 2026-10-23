@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ขอใบเกรด ปพ.1 / ปพ.7 · งานทะเบียน พรตพิทยพยัต</title>
-<meta name="description" content="ยื่นคำร้องขอ ปพ.1 และ ปพ.7 ออนไลน์ และติดตามสถานะเอกสาร งานทะเบียน โรงเรียนพรตพิทยพยัต">
+<title>ขอเอกสาร ปพ.1 / ปพ.6 / ปพ.7 · งานทะเบียน พรตพิทยพยัต</title>
+<meta name="description" content="ยื่นคำร้องขอ ปพ.1 ปพ.6 และ ปพ.7 ออนไลน์ และติดตามสถานะเอกสาร งานทะเบียน โรงเรียนพรตพิทยพยัต">
 <meta name="theme-color" content="#3A1468">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/favicon.png">
@@ -88,10 +88,30 @@
 .seg button+button{border-left:1px solid var(--line)}
 .seg button.on{background:var(--teal-soft);color:var(--teal-ink)}
 .seg button.on.edit{background:var(--amber-soft);color:var(--amber-ink)}
-.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:10px}
-.doc-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.doc{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:10px;transition:border-color .25s,box-shadow .25s}
+.doc-h{display:grid;grid-template-columns:50px minmax(0,1fr) auto;align-items:center;gap:12px}
+.doc-t{display:grid;justify-items:start;min-width:0}
 .doc-h b{font:700 17px/1.3 var(--f-label);display:block}
-.doc-h span{font-size:14px;color:var(--ink-2)}
+.doc-h span{font-size:14px;color:var(--ink-2);line-height:1.45}
+.doc-th{width:50px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff;position:relative;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.doc-th img{display:block;width:100%;aspect-ratio:1/1.41;object-fit:cover;object-position:top}
+.doc-th i{position:absolute;left:0;right:0;bottom:0;background:rgba(58,20,104,.88);color:#fff;font:600 9px/1.7 var(--f-head);font-style:normal;text-align:center}
+.doc-th:hover{transform:translateY(-2px) rotate(-2deg);box-shadow:0 6px 14px rgba(58,20,104,.2)}
+.link.sm{font-size:12.5px;padding:2px 0 0}
+.cnt6{font:700 16px/1 var(--f-label);color:var(--teal-ink);background:var(--teal-soft);border-radius:999px;padding:7px 12px;white-space:nowrap}
+.cnt6.zero{color:var(--ink-3);background:var(--grey-soft)}
+.semg{display:grid;gap:6px;padding:6px 0;border-top:1px dashed var(--line-2)}
+.semg:first-of-type{border-top:0}
+.semg>span{font:600 12.5px var(--f-head);color:var(--ink-2)}
+.semc{display:flex;gap:8px;flex-wrap:wrap}
+.sem{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font:600 13.5px var(--f-head);cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .12s}
+.sem:hover{border-color:var(--teal)}
+.sem:active{transform:scale(.95)}
+.sem.on{background:var(--teal);border-color:var(--teal);color:var(--btn-ink)}
+.sem.pop{animation:chipPop .28s cubic-bezier(.2,1.5,.4,1)}
+.sem.on::before{content:"✓ ";font-weight:700}
+@keyframes chipPop{from{transform:scale(.86)}}
+.doc-open{justify-self:start}
 .stp{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
 .stp button{width:42px;height:40px;border:0;background:var(--surface-2);font:600 20px/1 var(--f-label);cursor:pointer;color:var(--ink)}
 .stp button:disabled{color:var(--ink-3);cursor:not-allowed;opacity:.5}
@@ -115,10 +135,12 @@
 .chk input{margin-top:5px;accent-color:var(--teal);width:18px;height:18px;flex:none}
 .bigno{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
 .bigno span{font:600 13.5px var(--f-head);color:var(--ink-3)}
-.bigno b{display:block;font:700 50px/1.1 var(--f-label);letter-spacing:.08em;color:var(--navy);margin:4px 0}
+.bigno b{display:block;font:700 50px/1.1 var(--f-label);letter-spacing:.08em;color:var(--navy);margin:4px 0;background:linear-gradient(90deg,#3A1468,#7A44C9,#E2A800,#7A44C9,#3A1468);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:pop .7s cubic-bezier(.2,1.5,.4,1) both .15s,flow 7s linear infinite}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+@keyframes flow{to{background-position:300% 0}}
 @media (prefers-color-scheme: dark){.bigno b{color:var(--teal-ink)}}
 .req{display:grid;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;width:100%}
-.req:hover{border-color:var(--teal)}
+.req:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:var(--shadow)}
 .req-t{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .req-t b{font:700 16px var(--f-head)}
 .req-d{font-size:14.5px} .req-m{font-size:13px;color:var(--ink-3)}
@@ -134,18 +156,71 @@
 .center{display:grid;place-items:center;gap:10px;padding:40px 0;color:var(--ink-2)}
 .who{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
 .who b{font-family:var(--f-head)}
+/* ตัวอย่างเอกสาร */
+.exs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ex{border:1px solid var(--line);border-radius:12px;background:var(--surface-2);padding:8px 8px 10px;display:grid;gap:6px;align-content:start;cursor:pointer;text-align:center;justify-items:center;transition:transform .22s,box-shadow .22s,border-color .22s}
+.ex img{width:100%;height:auto;aspect-ratio:1/1.3;object-fit:cover;object-position:top;border-radius:6px;box-shadow:0 2px 8px rgba(31,22,51,.12);background:#fff}
+.ex b{font:700 15px/1.2 var(--f-label);color:var(--ink)}
+.ex span{font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.ex:hover{transform:translateY(-3px);border-color:var(--teal);box-shadow:var(--shadow)}
+.mdl{position:fixed;inset:0;z-index:50;background:rgba(20,6,40,.62);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .25s ease both}
+.mdl-card{width:min(560px,100%);max-height:94vh;max-height:94dvh;background:var(--surface);border-radius:18px 18px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -10px 40px rgba(10,0,30,.35);animation:sheetUp .38s cubic-bezier(.2,.8,.2,1) both}
+@media (min-width:600px){.mdl{align-items:center;padding:20px}.mdl-card{border-radius:18px}}
+.mdl-h{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff}
+.mdl-h div{flex:1;display:grid;line-height:1.35;min-width:0}
+.mdl-h b{font:700 17px var(--f-head)}
+.mdl-h span{font-size:13px;color:var(--band-sub)}
+.mdl-x{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:6px 12px;font:600 13.5px var(--f-head);cursor:pointer}
+.mdl-tabs{display:flex;gap:6px;padding:10px 16px 0;background:var(--surface)}
+.mdl-tabs button{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 4px;font:700 15px var(--f-label);color:var(--ink-2);cursor:pointer;transition:all .2s}
+.mdl-tabs button.on{background:var(--teal-soft);border-color:var(--teal);color:var(--teal-ink)}
+.mdl-note{padding:8px 16px 0;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.mdl-pages{display:flex;gap:6px;padding:8px 16px 0}
+.mdl-pages button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 12px;font:600 12.5px var(--f-head);color:var(--ink-2);cursor:pointer}
+.mdl-pages button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.mdl-img{flex:1;overflow:auto;background:var(--grey-soft);margin:10px 0 0;padding:12px;-webkit-overflow-scrolling:touch}
+.mdl-img a{display:block}
+.mdl-img img{display:block;width:100%;height:auto;border-radius:4px;box-shadow:0 6px 24px rgba(31,22,51,.22);animation:fadeIn .35s ease both}
+.mdl-foot{padding:8px 16px calc(12px + env(safe-area-inset-bottom,0px));font-size:12px;color:var(--ink-3);text-align:center}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}}
+/* ลูกเล่นการเคลื่อนไหว */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.doc.on{border-color:transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,conic-gradient(from var(--ang),#5B2A9E,#F5B700,#B07CFF,#F5B700,#5B2A9E) border-box;box-shadow:0 8px 22px rgba(91,42,158,.13);animation:spinb 5s linear infinite}
+@keyframes spinb{to{--ang:360deg}}
+.enter>*{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.enter>.hero{animation:none}
+.mdl.still,.mdl.still .mdl-card{animation:none}
+.enter>:nth-child(2){animation-delay:.05s}.enter>:nth-child(3){animation-delay:.1s}.enter>:nth-child(4){animation-delay:.15s}.enter>:nth-child(5){animation-delay:.2s}.enter>:nth-child(6){animation-delay:.25s}.enter>:nth-child(7){animation-delay:.3s}.enter>:nth-child(8){animation-delay:.35s}.enter>:nth-child(n+9){animation-delay:.4s}
+.steps.enter .steps-bar i{animation:barIn .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes barIn{from{transform:scaleX(.25)}}
+.steps-bar i{transform-origin:left}
+.btn{transition:transform .12s,filter .2s,box-shadow .2s,background .2s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn-gold{position:relative;overflow:hidden}
+.btn-gold::after{content:"";position:absolute;top:-30%;bottom:-30%;left:-60%;width:38%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.6),rgba(255,255,255,0));transform:skewX(-20deg);animation:shine 4s ease-in-out infinite 1.4s;pointer-events:none}
+@keyframes shine{0%{left:-60%}55%,100%{left:135%}}
+.btn-pri:not(:disabled):hover{box-shadow:0 6px 18px rgba(91,42,158,.28)}
+.card,.contact,.who,.rv,.dv{transition:box-shadow .25s,border-color .25s,transform .25s}
+.contact:hover,.card:hover{box-shadow:var(--shadow)}
+.vstep li.cur .dot{animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,168,0,.55)}100%{box-shadow:0 0 0 10px rgba(226,168,0,0)}}
+.enter .vstep li.done .dot{animation:dotIn .4s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes dotIn{from{transform:scale(.5)}}
+@media (prefers-reduced-motion: reduce){.enter>*,.doc.on,.btn-gold::after,.bigno b,.vstep li .dot,.mdl,.mdl-card,.mdl-img img,.sem.pop,.steps.enter .steps-bar i{animation:none!important}}
 </style>
 <script src="config.js"></script>
 <script src="assets/common.js"></script>
 </head>
 <body>
 <div class="app" id="app">
-  <header class="top"><div class="brand"><img class="brand-emb" src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="33" height="40"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · คำร้อง ปพ.1 / ปพ.7</span></div></div><button class="top-btn" id="btn-home" data-act="home" hidden>หน้าแรก</button></header>
+  <header class="top"><div class="brand"><img class="brand-emb" src="assets/emblem-gold.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="33" height="40"><div><b>โรงเรียนพรตพิทยพยัต</b><span>งานทะเบียน · คำร้อง ปพ.1 / ปพ.6 / ปพ.7</span></div></div><button class="top-btn" id="btn-home" data-act="home" hidden>หน้าแรก</button></header>
   <div class="stripe"></div>
   <div class="steps" id="steps" hidden></div>
   <main class="body" id="view"><div class="center"><span class="spin"></span><span>กำลังเชื่อมต่อระบบ</span></div></main>
 </div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="modal"></div>
 <script>
 (function () {
   'use strict';
@@ -174,7 +249,29 @@
     stepsBar();
     var html = (S[P.screen] || S.home)();
     $('view').innerHTML = html;
-    if (P.last !== P.screen) { window.scrollTo(0, 0); P.last = P.screen; }
+    if (P.last !== P.screen) { window.scrollTo(0, 0); P.last = P.screen; animIn(); }
+  }
+  // เล่นแอนิเมชันเข้าเฉพาะตอนเปลี่ยนหน้า (ไม่เล่นซ้ำทุกครั้งที่กดปุ่ม)
+  function animIn() {
+    [$('view'), $('steps')].forEach(function (el) { el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter'); });
+    clearTimeout(P.animT);
+    P.animT = setTimeout(function () { $('view').classList.remove('enter'); $('steps').classList.remove('enter'); }, 1200);
+  }
+  function docTh(k) { var D = PP.DOCS[k]; return '<button type="button" class="doc-th" data-act="sample" data-doc="' + k + '" aria-label="ดูตัวอย่าง ' + D.code + '"><img src="' + D.thumb + '" alt="" loading="lazy" width="50" height="70"><i>ตัวอย่าง</i></button>'; }
+  function exLink(k) { return '<button type="button" class="link sm" data-act="sample" data-doc="' + k + '">ดูตัวอย่างเอกสาร</button>'; }
+  function renderModal() {
+    var m = $('modal'), st = P.sample;
+    if (!st) { m.innerHTML = ''; document.body.style.overflow = ''; return; }
+    var D = PP.DOCS[st.doc], src = D.imgs[st.page] || D.imgs[0];
+    m.innerHTML = '<div class="mdl' + (st.anim ? '' : ' still') + '" role="dialog" aria-modal="true" aria-label="ตัวอย่างเอกสาร ' + D.code + '"><div class="mdl-card">' +
+      '<div class="mdl-h"><div><b>ตัวอย่าง ' + D.code + '</b><span>' + esc(D.name) + '</span></div><button class="mdl-x" data-act="sample-close">ปิด</button></div>' +
+      '<div class="mdl-tabs" role="tablist">' + ['pp1', 'pp6', 'pp7'].map(function (k) { return '<button role="tab" aria-selected="' + (k === st.doc) + '" class="' + (k === st.doc ? 'on' : '') + '" data-act="sample-tab" data-doc="' + k + '">' + PP.DOCS[k].code + '</button>'; }).join('') + '</div>' +
+      '<p class="mdl-note">' + esc(D.note) + '</p>' +
+      (D.imgs.length > 1 ? '<div class="mdl-pages">' + D.imgs.map(function (x, i) { return '<button class="' + (i === st.page ? 'on' : '') + '" data-act="sample-page" data-p="' + i + '">หน้า ' + (i + 1) + '</button>'; }).join('') + '</div>' : '') +
+      '<div class="mdl-img"><a href="' + src + '" target="_blank" rel="noopener"><img src="' + src + '" alt="ตัวอย่างเอกสาร ' + D.code + (D.imgs.length > 1 ? ' หน้า ' + (st.page + 1) : '') + '"></a></div>' +
+      '<p class="mdl-foot">ภาพตัวอย่าง ข้อมูลส่วนบุคคลถูกเบลอไว้ · แตะภาพเพื่อเปิดขนาดเต็มแล้วซูมดูได้</p></div></div>';
+    document.body.style.overflow = 'hidden';
+    st.anim = false;
   }
   function go(s) { P.screen = s; P.err = ''; P.confirmCancel = null; if (P.draft) P.draft.err = ''; render(); }
   function busyBtn(label) { return P.busy ? '<span class="spin"></span> กำลังส่งข้อมูล' : label; }
@@ -196,14 +293,15 @@
       '<div class="hero-sch"><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span></div>' +
       '<div class="hero-line"></div>' +
       '<span class="hero-ey">งานทะเบียน สำนักงานวิชาการ</span>' +
-      '<h1>ขอใบเกรด ปพ.1<br>และใบรับรอง ปพ.7 ออนไลน์</h1>' +
+      '<h1>ขอใบเกรด ปพ.1 · ปพ.6<br>และใบรับรอง ปพ.7 ออนไลน์</h1>' +
       '<p>กรอกคำร้องบนมือถือ ส่งรูปถ่ายที่ตู้ลิ้นชัก และดูได้ว่าเอกสารของตนเองถึงขั้นไหนแล้ว</p>' +
       '<div class="hero-acts"><button class="btn btn-gold btn-blk" data-act="start"' + (c.open ? '' : ' disabled') + '>ยื่นคำร้องใหม่</button><button class="btn btn-glass btn-blk" data-act="track">ติดตามคำร้อง</button></div>' +
       (P.student ? '<div class="who-in">เข้าสู่ระบบเป็น ' + esc(PP.fullName(P.student)) + '<button data-act="list">คำร้องของฉัน</button></div>' : '') +
       '</div></section>' +
       (c.announce ? '<div class="note n-wait"><b>ประกาศจากงานทะเบียน</b><span>' + esc(c.announce) + '</span></div>' : '') +
       (c.open ? '' : '<div class="note n-alert"><b>ปิดรับคำร้องออนไลน์ชั่วคราว</b><span>ยังติดตามคำร้องเดิมได้ตามปกติ</span></div>') +
-      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="olx"><li><span>กรอกคำร้องในระบบ ได้<b>เลขคำร้อง 4 หลัก</b></span></li><li><span>หยิบ<b>ใบนำส่งรูปถ่าย</b>จากลิ้นชักที่ 1 กรอกและลงชื่อ หนีบรูปถ่าย 1.5 นิ้ว แล้วใส่<b>ลิ้นชักที่ 2</b></span></li><li><span>ติดตามสถานะในหน้านี้</span></li><li><span>รับเอกสารที่<b>ลิ้นชักระดับชั้น</b>ของตนเอง แล้วกดยืนยันรับ</span></li></ol></div>' +
+      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="olx"><li><span>กรอกคำร้องในระบบ ได้<b>เลขคำร้อง 4 หลัก</b></span></li><li><span>ถ้าขอ ปพ.1 หรือ ปพ.7 หยิบ<b>ใบนำส่งรูปถ่าย</b>จากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ หนีบรูปถ่าย 1.5 นิ้ว แล้วใส่<b>ลิ้นชักที่ 2</b> (ปพ.6 ไม่ต้องใช้รูป)</span></li><li><span>ติดตามสถานะในหน้านี้</span></li><li><span>รับเอกสารที่<b>ลิ้นชักระดับชั้น</b>ของตนเอง แล้วกดยืนยันรับ</span></li></ol></div>' +
+      '<div class="card"><div class="card-h">ตัวอย่างเอกสารที่ขอได้</div><div class="exs">' + [['pp1', 'ผลการเรียนทุกภาคเรียน'], ['pp6', 'ผลการเรียนรายภาคเรียน'], ['pp7', 'รับรองการเป็นนักเรียน']].map(function (x) { return '<button class="ex" data-act="sample" data-doc="' + x[0] + '"><img src="' + PP.DOCS[x[0]].thumb + '" alt="" loading="lazy" width="240" height="351"><b>' + PP.DOCS[x[0]].code + '</b><span>' + x[1] + '</span></button>'; }).join('') + '</div><p class="small" style="text-align:center">แตะเพื่อดูตัวอย่างขนาดใหญ่</p></div>' +
       contact() +
       '<p class="foot">ไม่มีมือถือ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 ได้ตามเดิม<br>ข้อมูลใช้เพื่อจัดทำเอกสารของงานทะเบียนเท่านั้น</p>' +
       '<footer class="sfoot"><picture><source srcset="assets/emblem-gold.png" media="(prefers-color-scheme: dark)"><img src="assets/emblem-purple.png" alt="" width="42" height="51"></picture>' +
@@ -255,19 +353,27 @@
     if (!opts.some(function (o) { return o.v === d.scope; })) d.scope = opts[0].v;
     var wd = PP.nextWorkdays(15), urgent = false;
     if (d.needBy) { var idx = wd.map(PP.iso).indexOf(d.needBy); urgent = idx > -1 && idx < 3; }
-    return '<h2 class="h">เลือกเอกสาร</h2>' +
-      '<div class="doc"><div class="doc-h"><div><b>ปพ.1</b><span>ใบรับรองผลการเรียน (ใบเกรด)</span></div>' + stepper('pp1', d.pp1) + '</div>' +
+    var g6 = PP.pp6Opts(c, lv()), n6 = d.pp6Sems.length, show6 = d.pp6Open || n6 > 0, ph = d.pp1 + d.pp7;
+    return '<h2 class="h">เลือกเอกสาร</h2><p class="p" style="margin-top:-6px">แตะภาพเอกสารเพื่อดูตัวอย่างว่าหน้าตาเป็นอย่างไร</p>' +
+      '<div class="doc' + (d.pp1 ? ' on' : '') + '"><div class="doc-h">' + docTh('pp1') + '<div class="doc-t"><b>ปพ.1</b><span>ใบรับรองผลการเรียน (ใบเกรด)</span>' + exLink('pp1') + '</div>' + stepper('pp1', d.pp1) + '</div>' +
       (d.pp1 > 0 ? '<fieldset class="sub"><legend>ช่วงผลการเรียน</legend>' + opts.map(function (o) { return '<label class="rad"><input type="radio" name="scope" value="' + o.v + '"' + (d.scope === o.v ? ' checked' : '') + ' data-change="scope"><span><b>' + o.l + '</b><small>' + o.s + '</small></span></label>'; }).join('') + '</fieldset>' +
         (c.allowEnglish ? '<fieldset class="sub"><legend>ภาษา</legend><div class="rads"><label class="rad"><input type="radio" name="lang" value="th"' + (d.lang !== 'en' ? ' checked' : '') + ' data-change="lang"><span>ภาษาไทย</span></label><label class="rad"><input type="radio" name="lang" value="en"' + (d.lang === 'en' ? ' checked' : '') + ' data-change="lang"><span>ภาษาอังกฤษ</span></label></div></fieldset>' : '') : '') +
       '</div>' +
-      '<div class="doc"><div class="doc-h"><div><b>ปพ.7</b><span>ใบรับรองสภาพการเป็นนักเรียน</span></div>' + stepper('pp7', d.pp7) + '</div></div>' +
-      '<p class="small">ขอได้ชนิดละไม่เกิน 2 ชุดต่อครั้ง</p>' +
+      '<div class="doc' + (n6 ? ' on' : '') + '" id="doc-pp6"><div class="doc-h">' + docTh('pp6') + '<div class="doc-t"><b>ปพ.6</b><span>รายงานผลการเรียนรายภาคเรียน · ไม่ต้องใช้รูป</span>' + exLink('pp6') + '</div><output class="cnt6' + (n6 ? '' : ' zero') + '" id="cnt6">' + n6 + ' แผ่น</output></div>' +
+      (show6 ? '<fieldset class="sub"><legend>เลือกภาคเรียนที่ต้องการ · 1 ภาคเรียน = 1 แผ่น</legend>' +
+        (g6.length ? g6.map(function (g) {
+          return '<div class="semg"><span>ปีการศึกษา ' + g.year + ' · ม.' + g.lv + '</span><div class="semc">' + g.sems.map(function (v) { var on = d.pp6Sems.indexOf(v) > -1; return '<button type="button" class="sem' + (on ? ' on' : '') + '" data-act="sem" data-v="' + v + '" aria-pressed="' + on + '">ภาคเรียนที่ ' + v.split('/')[0] + '</button>'; }).join('') + '</div></div>';
+        }).join('') : '<p class="small">ยังไม่มีภาคเรียนที่ผลการเรียนเข้าระบบ</p>') +
+        '<p class="small">เลือกเฉพาะภาคเรียนที่เรียนที่โรงเรียนพรตพิทยพยัต' + (c.pending ? ' · ภาคเรียนที่ ' + c.pending + ' ขอได้เมื่อผลการเรียนเข้าระบบแล้ว' : '') + '</p></fieldset>'
+        : '<button type="button" class="btn btn-sm btn-sec doc-open" data-act="pp6-open">ขอ ปพ.6 · เลือกภาคเรียน</button>') + '</div>' +
+      '<div class="doc' + (d.pp7 ? ' on' : '') + '"><div class="doc-h">' + docTh('pp7') + '<div class="doc-t"><b>ปพ.7</b><span>ใบรับรองสภาพการเป็นนักเรียน</span>' + exLink('pp7') + '</div>' + stepper('pp7', d.pp7) + '</div></div>' +
+      '<p class="small">ปพ.1 และ ปพ.7 ขอได้ชนิดละไม่เกิน 2 ชุดต่อครั้ง</p>' +
       '<fieldset style="display:grid;gap:8px"><legend class="lbl">เพื่อ</legend><div class="rads">' + PP.PURPOSES.map(function (p) { return '<label class="rad"><input type="radio" name="pur" value="' + p + '"' + (d.purpose === p ? ' checked' : '') + ' data-change="purpose"><span>' + p + '</span></label>'; }).join('') + '</div>' +
       (d.purpose === 'อื่น ๆ' ? '<input class="inp" id="in-other" placeholder="ระบุวัตถุประสงค์" maxlength="120" value="' + esc(d.other) + '" data-dbind="other">' : '') + '</fieldset>' +
       '<div><label class="lbl" for="in-need">วันที่ต้องใช้เอกสาร (ไม่บังคับ)</label><select class="inp" id="in-need" data-change="needBy"><option value="">ไม่ระบุ</option>' + wd.map(function (w) { return '<option value="' + PP.iso(w) + '"' + (d.needBy === PP.iso(w) ? ' selected' : '') + '>' + PP.fWeek(w) + '</option>'; }).join('') + '</select></div>' +
       (urgent ? '<div class="note n-alert"><b>ต้องใช้ภายใน 3 วันทำการ</b><span>ยื่นคำร้องแล้ว กรุณาติดต่อห้องสำนักงานวิชาการโดยตรงด้วย</span></div>' : '') +
       '<div><label class="lbl" for="in-tel">เบอร์โทรศัพท์ที่ติดต่อได้</label><input class="inp num" id="in-tel" type="tel" inputmode="tel" maxlength="12" value="' + esc(d.phone) + '" data-dbind="phone" placeholder="0XXXXXXXXX"></div>' +
-      '<div class="sumbar"><span>ต้องส่งรูปถ่าย 1.5 นิ้ว</span><b>' + (d.pp1 + d.pp7) + ' รูป</b></div>' +
+      '<div class="sumbar">' + (ph ? '<span>ต้องส่งรูปถ่าย 1.5 นิ้ว</span><b>' + ph + ' รูป</b>' : '<span>ไม่ต้องส่งรูปถ่าย</span><b>–</b>') + '</div>' +
       errNote(d.err) +
       '<div class="nav2"><button class="btn btn-sec" data-act="go" data-to="data">ย้อนกลับ</button><button class="btn btn-pri" data-act="docs-next">ถัดไป</button></div>';
   };
@@ -283,7 +389,9 @@
     function val(k, orig) { return c[k] ? (c[k].to || '(ไม่ระบุ)') : (orig || 'ไม่มีข้อมูล'); }
     var docs = [];
     if (d.pp1) docs.push('ปพ.1 จำนวน ' + d.pp1 + ' ชุด · ' + PP.scopeText(d.scope, lv(), P.cfg.year) + (d.lang === 'en' ? ' · ภาษาอังกฤษ' : ''));
+    if (d.pp6Sems.length) docs.push('ปพ.6 จำนวน ' + d.pp6Sems.length + ' แผ่น · ภาคเรียน ' + d.pp6Sems.join(', '));
     if (d.pp7) docs.push('ปพ.7 จำนวน ' + d.pp7 + ' ชุด');
+    var ph = d.pp1 + d.pp7;
     return '<h2 class="h">ตรวจทานคำร้อง</h2><div class="rv">' +
       '<div class="rv-r"><span>ชื่อ-สกุล</span><div>' + esc(c.name ? PP.fullName(c.name.to) : PP.fullName(s)) + was('name', PP.fullName(s)) + '</div></div>' +
       '<div class="rv-r"><span>ชั้น</span><div>ม.' + esc(s.level) + '/' + esc(s.room) + ' · ' + esc(s.sid) + '</div></div>' +
@@ -294,20 +402,25 @@
       '<div class="rv-r"><span>เพื่อ</span><div>' + esc(d.purpose === 'อื่น ๆ' ? d.other : d.purpose) + '</div></div>' +
       '<div class="rv-r"><span>ต้องใช้</span><div>' + (d.needBy ? PP.fWeek(PP.parseISO(d.needBy)) : 'ไม่ระบุ') + '</div></div>' +
       '<div class="rv-r"><span>โทรศัพท์</span><div class="num">' + esc(PP.telFmt(d.phone.replace(/\D/g, ''))) + '</div></div>' +
-      '<div class="rv-r"><span>รูปถ่าย</span><div><b>' + (d.pp1 + d.pp7) + ' รูป</b> ขนาด 1.5 นิ้ว</div></div></div>' +
+      '<div class="rv-r"><span>รูปถ่าย</span><div>' + (ph ? '<b>' + ph + ' รูป</b> ขนาด 1.5 นิ้ว' : 'ไม่ต้องใช้รูปถ่าย') + '</div></div></div>' +
       '<label class="chk"><input type="checkbox" id="in-agree"' + (d.agree ? ' checked' : '') + ' data-change="agree"><span>ข้าพเจ้าขอรับรองว่าข้อมูลข้างต้นถูกต้อง และยินยอมให้งานทะเบียนใช้ข้อมูลนี้เพื่อจัดทำเอกสารที่ขอเท่านั้น</span></label>' +
       errNote(d.err) +
       '<div class="nav2"><button class="btn btn-sec" data-act="go" data-to="docs"' + (P.busy ? ' disabled' : '') + '>ย้อนกลับ</button><button class="btn btn-pri" data-act="submit"' + (P.busy ? ' disabled' : '') + '>' + busyBtn('ยื่นคำร้อง') + '</button></div>';
   };
   S.done = function () {
     var r = findReq(P.lastNo); if (!r) return S.home();
+    var ph = nPhotos(r), c = P.cfg, drawer = 'ม.' + String(r.cls).split('/')[0];
+    var todo = ph
+      ? '<li>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียน<b>เลขคำร้อง ' + esc(r.no) + '</b> <b>รหัสนักเรียน ' + esc(r.sid) + '</b> แล้ว<b>ลงลายมือชื่อผู้ขอ</b></li>' +
+        '<li>เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ หนีบรูป <b>' + ph + ' รูป</b> กับใบนำส่ง</li>' +
+        '<li>ใส่ลิ้นชักที่ 2 ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</li>' + (r.pp6 ? '<li>ปพ.6 ไม่ต้องใช้รูป จัดทำพร้อมเอกสารอื่นในคำร้องนี้</li>' : '')
+      : '<li><b>ไม่ต้องส่งรูปถ่ายและใบนำส่ง</b> งานทะเบียนเริ่มจัดทำเอกสารได้ทันที</li>' +
+        '<li>ติดตามสถานะในหน้านี้ คาดว่าพร้อมรับระหว่าง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMin)) + '</b> ถึง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMax)) + '</b></li>' +
+        '<li>รับเอกสารที่<b>ลิ้นชัก ' + drawer + '</b> หน้าห้องสำนักงานวิชาการ แล้วกดยืนยันรับ</li>';
     return '<h2 class="h">ยื่นคำร้องเรียบร้อยแล้ว</h2>' +
       '<div class="bigno"><span>เลขคำร้อง</span><b>' + esc(r.no) + '</b><small class="small">ยื่นเมื่อ ' + PP.fDT(r.submittedAt) + '</small></div>' +
-      '<div class="card"><div class="card-h">สิ่งที่ต้องทำต่อ</div><ol class="ol">' +
-      '<li>หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 เขียน<b>เลขคำร้อง ' + esc(r.no) + '</b> <b>รหัสนักเรียน ' + esc(r.sid) + '</b> แล้ว<b>ลงชื่อผู้ขอ</b></li>' +
-      '<li>เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ เสียบรูป <b>' + nPhotos(r) + ' รูป</b> กับใบนำส่ง</li>' +
-      '<li>ใส่ลิ้นชักที่ 2 ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</li></ol></div>' +
-      '<div class="note n-info"><span>รูปถ่าย 1.5 นิ้ว ชุดนักเรียน ทรงผมถูกระเบียบ ไม่สวมเครื่องประดับ</span></div>' +
+      '<div class="card"><div class="card-h">สิ่งที่ต้องทำต่อ</div><ol class="ol">' + todo + '</ol></div>' +
+      (ph ? '<div class="note n-info"><span>รูปถ่าย 1.5 นิ้ว ชุดนักเรียน ทรงผมถูกระเบียบ ไม่สวมเครื่องประดับ</span></div>' : '') +
       '<button class="btn btn-pri btn-blk" data-act="open" data-no="' + esc(r.no) + '">ดูสถานะคำร้อง</button>' +
       '<p class="small" style="text-align:center">บันทึกภาพหน้าจอนี้ไว้ หรือเปิดดูภายหลังจากปุ่ม "ติดตามคำร้อง" ที่หน้าแรก</p>';
   };
@@ -321,15 +434,17 @@
   };
   S.detail = function () {
     var r = findReq(P.viewNo); if (!r) return S.list();
-    var c = P.cfg, stage = PP.stageOf(r), times = [r.submittedAt, r.photoAt, r.signAt, r.readyAt, r.doneAt], card = '';
-    var drawer = 'ม.' + String(r.cls).split('/')[0];
+    var ph = nPhotos(r), start = r.photoAt || (ph ? '' : r.submittedAt);
+    var c = P.cfg, stage = PP.stageOf(r), times = [r.submittedAt, start, r.signAt, r.readyAt, r.doneAt], card = '';
+    var drawer = 'ม.' + String(r.cls).split('/')[0], canCancel = r.status === 'photo' || (r.status === 'work' && !ph);
+    var confirmBox = canCancel && P.confirmCancel === r.no ? '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' หรือไม่</span><div><button class="btn btn-sm btn-warn" data-act="cancel-yes" data-no="' + esc(r.no) + '">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="cancel-no">ไม่ยกเลิก</button></div></div>' : '';
     if (r.status === 'photo') {
-      card = '<div class="note n-wait"><b>สิ่งที่ต้องทำ</b><span>ส่งรูปถ่าย 1.5 นิ้ว จำนวน ' + nPhotos(r) + ' รูป เสียบกับใบนำส่งที่เขียนเลขคำร้อง ' + esc(r.no) + ' และลงชื่อแล้ว ใส่ลิ้นชักที่ 2 ภายใน ' + PP.fD(r.photoDue) + '</span></div>';
-      if (P.confirmCancel === r.no) card += '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' หรือไม่</span><div><button class="btn btn-sm btn-warn" data-act="cancel-yes" data-no="' + esc(r.no) + '">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="cancel-no">ไม่ยกเลิก</button></div></div>';
+      card = '<div class="note n-wait"><b>สิ่งที่ต้องทำ</b><span>ส่งรูปถ่าย 1.5 นิ้ว จำนวน ' + ph + ' รูป หนีบกับใบนำส่งที่เขียนเลขคำร้อง ' + esc(r.no) + ' และลงลายมือชื่อแล้ว ใส่ลิ้นชักที่ 2 ภายใน ' + PP.fD(r.photoDue) + '</span></div>';
     }
     if (r.status === 'fix' && r.issue) card = '<div class="note n-alert"><b>ต้องแก้ไข: ' + esc(r.issue.reason) + '</b>' + (r.issue.todo ? '<span>' + esc(r.issue.todo) + '</span>' : '') + (r.issue.text ? '<span>หมายเหตุจากเจ้าหน้าที่: ' + esc(r.issue.text) + '</span>' : '') + '</div>';
     if (r.status === 'hold') card = '<div class="note n-wait"><b>รอผลการเรียนภาคเรียนที่ ' + esc(r.scope) + ' เข้าระบบ</b><span>งานทะเบียนได้รับรูปแล้ว จะจัดพิมพ์ต่อทันทีเมื่อผลการเรียนเข้าระบบ SGS</span></div>';
-    if ((r.status === 'work' || r.status === 'sign') && r.photoAt) card = '<div class="note n-info"><b>คาดว่าพร้อมรับ</b><span>ระหว่าง ' + PP.fD(PP.addWork(r.photoAt, c.workMin)) + ' ถึง ' + PP.fD(PP.addWork(r.photoAt, c.workMax)) + ' (นับเฉพาะวันทำการ)</span></div>';
+    if ((r.status === 'work' || r.status === 'sign') && start) card = '<div class="note n-info"><b>คาดว่าพร้อมรับ</b><span>ระหว่าง ' + PP.fD(PP.addWork(start, c.workMin)) + ' ถึง ' + PP.fD(PP.addWork(start, c.workMax)) + ' (นับเฉพาะวันทำการ)' + (ph ? '' : ' · คำร้องนี้ไม่ต้องใช้รูปถ่าย') + '</span></div>';
+    card += confirmBox;
     if (r.status === 'ready') {
       card = P.rateFor === r.no
         ? '<div class="card"><div class="card-h">ให้คะแนนบริการครั้งนี้</div><p class="small">1 = ควรปรับปรุง · 5 = ดีมาก</p><div class="rate">' + [1, 2, 3, 4, 5].map(function (n) { return '<button data-act="rate" data-no="' + esc(r.no) + '" data-v="' + n + '"' + (P.busy ? ' disabled' : '') + '>' + n + '</button>'; }).join('') + '</div><button class="link" data-act="rate" data-no="' + esc(r.no) + '" data-v="0">ข้ามการให้คะแนน</button></div>'
@@ -344,6 +459,7 @@
         var n = i + 1, cls = 'todo';
         if (r.status === 'done' || n < stage) cls = 'done'; else if (n === stage) cls = r.status === 'fix' ? 'alert' : 'cur';
         var sub = times[i] ? (cls === 'done' ? PP.fDT(times[i]) : (cls === 'cur' || cls === 'alert') ? 'เริ่ม ' + PP.fDT(times[i]) : '') : '';
+        if (n === 1 && !ph) t = 'ยื่นคำร้องแล้ว (ไม่ต้องใช้รูป)';
         if (n === 2 && r.status === 'hold') t = 'กำลังจัดทำ (รอผลการเรียน)';
         if (n === 4 && (cls === 'cur' || cls === 'done')) t = 'พร้อมรับ ลิ้นชัก ' + drawer;
         return '<li class="' + cls + '"><span class="dot">' + n + '</span><div class="vt"><b>' + t + (cls === 'cur' ? '<span class="cur-tag">ขั้นปัจจุบัน</span>' : '') + (cls === 'alert' ? '<span class="alert-tag">ต้องแก้ไข</span>' : '') + '</b><small>' + sub + '</small></div></li>';
@@ -351,7 +467,7 @@
     }
     return '<div class="req-t"><h2 class="h">คำร้อง ' + esc(r.no) + '</h2>' + PP.pill(r) + '</div><p class="small" style="margin-top:-8px">' + PP.docsText(r) + ' · ยื่นเมื่อ ' + PP.fDT(r.submittedAt) + '</p>' +
       card + (steps ? '<div class="card">' + steps + '</div>' : '') +
-      (r.status === 'photo' && P.confirmCancel !== r.no ? '<button class="link" data-act="cancel-ask" data-no="' + esc(r.no) + '" style="justify-self:start">ยกเลิกคำร้องนี้</button>' : '') +
+      (canCancel && P.confirmCancel !== r.no ? '<button class="link" data-act="cancel-ask" data-no="' + esc(r.no) + '" style="justify-self:start">ยกเลิกคำร้องนี้</button>' : '') +
       '<button class="btn btn-sec btn-blk" data-act="refresh-detail"' + (P.busy ? ' disabled' : '') + '>' + (P.busy ? '<span class="spin"></span> กำลังอัปเดต' : 'อัปเดตสถานะ') + '</button>' +
       contact() + '<button class="link" data-act="list" style="justify-self:center">คำร้องทั้งหมดของฉัน</button>';
   };
@@ -361,7 +477,7 @@
     var s = P.student;
     P.draft = { edits: { name: { open: false, pre: s.prefix, fn: s.fname, ln: s.lname, reason: '' }, dob: { open: false, val: PP.fLong(s.dob), reason: '' },
       fa: { open: false, val: s.father, reason: '' }, mo: { open: false, val: s.mother, reason: '' } },
-      pp1: 1, scope: PP.scopeOpts(P.cfg, s.level)[0].v, lang: 'th', pp7: 0, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', agree: false, err: '' };
+      pp1: 1, scope: PP.scopeOpts(P.cfg, s.level)[0].v, lang: 'th', pp7: 0, pp6Sems: [], pp6Open: false, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', agree: false, err: '' };
     go('data');
   }
   function saveToken(t) { P.token = t; PP.store.set(TOKEN_KEY, t, P.remember); }
@@ -388,6 +504,22 @@
   A['ed-open'] = function (a) { P.draft.edits[a.dataset.k].open = true; render(); var el = document.getElementById(a.dataset.k === 'name' ? 'ed-fn' : 'ed-' + a.dataset.k); if (el) el.focus(); };
   A.stp = function (a) { var d = P.draft, k = a.dataset.k; d[k] = Math.max(0, Math.min(2, d[k] + Number(a.dataset.d))); render(); };
   A.go = function (a) { go(a.dataset.to); };
+  A['pp6-open'] = function () { P.draft.pp6Open = true; render(); };
+  A.sem = function (a) {
+    var d = P.draft, v = a.dataset.v, i = d.pp6Sems.indexOf(v);
+    if (i > -1) d.pp6Sems.splice(i, 1);
+    else { if (d.pp6Sems.length >= 12) return PP.toast('ขอ ปพ.6 ได้ไม่เกิน 12 ภาคเรียนต่อครั้ง'); d.pp6Sems.push(v); }
+    d.pp6Sems.sort(function (x, y) { return PP.semKey(x) - PP.semKey(y); });
+    var on = i < 0, n = d.pp6Sems.length, cnt = $('cnt6'), dc = $('doc-pp6');
+    a.classList.toggle('on', on); a.setAttribute('aria-pressed', String(on));
+    a.classList.remove('pop'); void a.offsetWidth; if (on) a.classList.add('pop');
+    if (cnt) { cnt.textContent = n + ' แผ่น'; cnt.classList.toggle('zero', !n); }
+    if (dc) dc.classList.toggle('on', n > 0);
+  };
+  A.sample = function (a) { P.sample = { doc: a.dataset.doc || 'pp1', page: 0, anim: true }; renderModal(); var x = document.querySelector('.mdl-x'); if (x) x.focus(); };
+  A['sample-close'] = function () { P.sample = null; renderModal(); };
+  A['sample-tab'] = function (a) { P.sample.doc = a.dataset.doc; P.sample.page = 0; renderModal(); };
+  A['sample-page'] = function (a) { P.sample.page = Number(a.dataset.p) || 0; renderModal(); };
   A['data-next'] = function () {
     var e = P.draft.edits, s = P.student, m = '';
     ['name', 'dob', 'fa', 'mo'].some(function (k) {
@@ -409,7 +541,7 @@
   };
   A['docs-next'] = function () {
     var d = P.draft, m = '', tel = d.phone.replace(/\D/g, '');
-    if (d.pp1 + d.pp7 === 0) m = 'เลือกเอกสารอย่างน้อย 1 ชนิด';
+    if (d.pp1 + d.pp7 + d.pp6Sems.length === 0) m = 'เลือกเอกสารอย่างน้อย 1 ชนิด';
     else if (d.purpose === 'อื่น ๆ' && !d.other.trim()) m = 'ระบุวัตถุประสงค์';
     else if (!/^0\d{9}$/.test(tel)) m = 'เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก ขึ้นต้นด้วย 0';
     d.err = m; if (m) return render(); go('review');
@@ -419,7 +551,7 @@
     if (!d.agree) { d.err = 'ติ๊กรับรองความถูกต้องของข้อมูลก่อนยื่นคำร้อง'; return render(); }
     if (P.busy) return;
     P.busy = true; d.err = ''; render();
-    var req = { pp1: d.pp1, scope: d.scope, lang: d.lang, pp7: d.pp7, purpose: d.purpose, other: d.other, needBy: d.needBy, phone: d.phone.replace(/\D/g, ''), changes: collectChanges() };
+    var req = { pp1: d.pp1, scope: d.scope, lang: d.lang, pp7: d.pp7, pp6Sems: d.pp6Sems.slice(), purpose: d.purpose, other: d.other, needBy: d.needBy, phone: d.phone.replace(/\D/g, ''), changes: collectChanges() };
     PP.api('submit', { token: P.token, req: req }).then(function (r) {
       P.requests.unshift(r.request); P.lastNo = r.request.no; P.draft = null; P.busy = false; go('done');
     }).catch(function (e) { P.busy = false; if (!onAuthErr(e)) { d.err = e.message; render(); } });
@@ -461,9 +593,11 @@
   }
 
   document.addEventListener('click', function (e) {
+    if (e.target.classList && e.target.classList.contains('mdl')) { P.sample = null; renderModal(); return; }
     var a = e.target.closest('[data-act]'); if (!a) return;
     var fn = A[a.dataset.act]; if (fn) { e.preventDefault(); fn(a, e); }
   });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && P.sample) { P.sample = null; renderModal(); } });
   document.addEventListener('submit', function (e) { if (e.target.id === 'f-verify') { e.preventDefault(); doVerify(); } });
   document.addEventListener('change', function (e) {
     var t = e.target, k = t.dataset && t.dataset.change; if (!k) return;

@@ -87,7 +87,29 @@
   PP.isOpen = function (r) { return PP.OPEN.indexOf(r.status) > -1; };
   PP.pill = function (r) { var s = PP.ST[r.status] || { label: r.status, tone: 'done' }; return '<span class="pill t-' + s.tone + '">' + s.label + '</span>'; };
   PP.stageOf = function (r) { if (r.status === 'fix') return (PP.ST[r.resume] || PP.ST.work).stage; return (PP.ST[r.status] || { stage: 0 }).stage; };
-  PP.docsText = function (r) { var a = []; if (r.pp1) a.push('ปพ.1 × ' + r.pp1 + (r.lang === 'en' ? ' (อังกฤษ)' : '')); if (r.pp7) a.push('ปพ.7 × ' + r.pp7); return a.join(' · '); };
+  PP.photos = function (r) { return (r.pp1 || 0) + (r.pp7 || 0); };
+  PP.semsText = function (list) { return (list || []).join(', '); };
+  PP.docsText = function (r) {
+    var a = [];
+    if (r.pp1) a.push('ปพ.1 × ' + r.pp1 + (r.lang === 'en' ? ' (อังกฤษ)' : ''));
+    if (r.pp7) a.push('ปพ.7 × ' + r.pp7);
+    if (r.pp6) a.push('ปพ.6 × ' + r.pp6 + ' (' + PP.semsText(r.pp6Sems) + ')');
+    return a.join(' · ');
+  };
+  // ปพ.6 เลือกได้ทีละภาคเรียน ตั้งแต่ปีที่นักเรียนน่าจะเข้า ม.1 (ไม่เกิน 6 ปี) จนถึงภาคเรียนล่าสุดที่ผลเข้า SGS
+  PP.pp6Opts = function (cfg, level) {
+    var y = parseInt(cfg.year, 10), L = parseInt(level, 10) || 1, max = PP.semKey(cfg.latest), out = [];
+    for (var yr = y; yr >= y - (L - 1) && yr >= y - 5; yr--) {
+      var sems = [1, 2].map(function (t) { return t + '/' + yr; }).filter(function (v) { return PP.semKey(v) <= max; });
+      if (sems.length) out.push({ year: yr, lv: L - (y - yr), sems: sems });
+    }
+    return out;
+  };
+  PP.DOCS = {
+    pp1: { code: 'ปพ.1', name: 'ระเบียนแสดงผลการเรียน (ใบรับรองผลการเรียน)', note: 'แสดงผลการเรียนทุกรายวิชาตั้งแต่เข้าเรียนจนถึงภาคเรียนที่เลือก มี 2 หน้า ใช้รูปถ่าย 1 รูปต่อ 1 ชุด', imgs: ['assets/samples/pp1-1.jpg', 'assets/samples/pp1-2.jpg'], thumb: 'assets/samples/pp1-1-t.jpg' },
+    pp6: { code: 'ปพ.6', name: 'รายงานผลการเรียนรายภาคเรียน', note: 'แสดงผลการเรียนของภาคเรียนเดียว 1 ภาคเรียนได้ 1 แผ่น ไม่ต้องใช้รูปถ่าย', imgs: ['assets/samples/pp6.jpg'], thumb: 'assets/samples/pp6-t.jpg' },
+    pp7: { code: 'ปพ.7', name: 'ใบรับรองสภาพการเป็นนักเรียน', note: 'รับรองว่ากำลังศึกษาอยู่ที่โรงเรียนในภาคเรียนปัจจุบัน ใช้รูปถ่าย 1 รูปต่อ 1 ชุด', imgs: ['assets/samples/pp7.jpg'], thumb: 'assets/samples/pp7-t.jpg' }
+  };
   PP.semKey = function (v) { var m = String(v || '').match(/^(\d)\/(\d{4})$/); return m ? (+m[2]) * 10 + (+m[1]) : 0; };
   PP.fullName = function (o) { return (o.pre || o.prefix || '') + (o.fn || o.fname || '') + ' ' + (o.ln || o.lname || ''); };
   PP.isM6 = function (level) { return String(level) === '6'; };
