@@ -83,6 +83,13 @@
 .dv-v{font:600 16px/1.5 var(--f-head);overflow-wrap:anywhere}
 .dv-e{display:grid;gap:8px;padding-top:8px;border-top:1px dashed var(--line);margin-top:4px}
 .row2{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:8px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.row3.dob{grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr) minmax(0,1fr)}
+.fset{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
+.fset h3{font:600 14px var(--f-head);color:var(--teal-ink);margin:0}
+.idbox{display:flex;justify-content:space-between;align-items:center;background:var(--teal-soft);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--teal-ink)}
+.idbox b{font:700 18px var(--f-label);letter-spacing:.06em}
+.hint{font-size:12.5px;color:var(--ink-3);margin-top:3px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex:none}
 .seg button{border:0;background:var(--surface);padding:5px 10px;font:600 13px/1.4 var(--f-head);color:var(--ink-2);cursor:pointer}
 .seg button+button{border-left:1px solid var(--line)}
@@ -340,14 +347,19 @@
   'use strict';
   var esc = PP.esc;
   var TOKEN_KEY = 'pp_stu_token';
+  var OWN_KEY = 'pp_own';
   var P = { screen: 'loading', last: '', mode: 'new', cfg: null, token: null, student: null, requests: [], draft: null,
-    lastNo: null, viewNo: null, err: '', busy: false, confirmCancel: null, rateFor: null, sid: '', nid: '', remember: true };
+    lastNo: null, viewNo: null, err: '', busy: false, confirmCancel: null, rateFor: null, sid: '', remember: true };
 
   function $(id) { return document.getElementById(id); }
   function setMe(r) { P.student = r.student; P.requests = r.requests || []; if (r.config) setCfg(r.config); }
   function setCfg(c) { P.cfg = c; PP.cfg = c; PP.setHolidays(c.holidays); }
   function findReq(no) { for (var i = 0; i < P.requests.length; i++) if (P.requests[i].no === no) return P.requests[i]; return null; }
-  function lv() { return P.student ? String(P.student.level) : ''; }
+  function lv() { return P.draft && P.draft.stu ? String(P.draft.stu.level) : ''; }
+  // รหัสยืนยันว่าเป็นเครื่องที่ใช้ยื่นคำร้อง (ใช้ตอนยกเลิกและยืนยันรับเอกสาร)
+  function ownAll() { try { return JSON.parse(localStorage.getItem(OWN_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function ownKey(no) { var r = findReq(no); return r ? ownAll()[r.no + '/' + r.year] || '' : ''; }
+  function ownSet(no, k) { try { var m = ownAll(); m[no] = k; localStorage.setItem(OWN_KEY, JSON.stringify(m)); } catch (e) { } }
   function nPhotos(r) { return (r.pp1 || 0) + (r.pp7 || 0); }
   // เล่นแอนิเมชันภาพแนะนำครั้งแรกที่เปิด (รวมการแสดงผลซ้ำในช่วง 4.5 วินาทีแรก) แล้วแสดงแบบนิ่ง
   function playOnce(k) { P.played = P.played || {}; if (P.played[k] === 2) return false; if (!P.played[k]) { P.played[k] = 1; setTimeout(function () { P.played[k] = 2; }, 4500); } return true; }
@@ -431,8 +443,9 @@
       '</svg>';
   }
   function photoGuide(r, play) {
-    var s = P.student || {}, ph = nPhotos(r), cls = String(r.cls || '').split('/'), d = new Date(r.submittedAt || Date.now());
-    var o = { no: r.no, sid: r.sid, name: PP.fullName(s).trim() || '', lv: cls[0] || '', room: cls[1] || '', num: String(s.no || ''), photos: ph,
+    // ชื่อจริงแสดงเฉพาะหลังยื่นคำร้องบนเครื่องนี้ (เก็บไว้ในหน่วยความจำชั่วคราว) ไม่ได้มาจากระบบ
+    var s = P.lastStu && P.lastStu.no === r.no ? P.lastStu.s : {}, ph = nPhotos(r), cls = String(r.cls || '').split('/'), d = new Date(r.submittedAt || Date.now());
+    var o = { no: r.no, sid: r.sid, name: PP.fullName(s).trim() || 'ชื่อ-สกุลของนักเรียน', lv: cls[0] || '', room: cls[1] || '', num: String(s.no || ''), photos: ph,
       dd: String(d.getDate()), mm: String(d.getMonth() + 1), yy: String(d.getFullYear() + 543) };
     return '<div class="card guide' + (play ? ' play' : '') + '"><div class="card-h">ส่งรูปถ่าย ' + ph + ' รูป ตามขั้นตอนนี้<em>ภายใน ' + PP.fD(r.photoDue) + '</em></div>' +
       '<div class="g-step"><div class="g-n">1</div><div class="g-row"><div class="g-t"><b>หยิบใบนำส่งรูปถ่าย</b><span>ที่<b>ลิ้นชักที่ 1</b> ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ</span></div>' + drawerArt(1, 'out', false) + '</div></div>' +
@@ -502,7 +515,7 @@
     var steps = { data: 1, docs: 2, review: 3 }, st = steps[P.screen], el = $('steps');
     if (!st) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = '<div class="steps-bar"><i style="width:' + (st / 3 * 100) + '%"></i></div><span>ขั้นที่ ' + st + ' จาก 3 · ' + ['ตรวจข้อมูล', 'เลือกเอกสาร', 'ยืนยันคำร้อง'][st - 1] + '</span>';
+    el.innerHTML = '<div class="steps-bar"><i style="width:' + (st / 3 * 100) + '%"></i></div><span>ขั้นที่ ' + st + ' จาก 3 · ' + ['ข้อมูลนักเรียน', 'เลือกเอกสาร', 'ยืนยันคำร้อง'][st - 1] + '</span>';
   }
   function render() {
     $('btn-home').hidden = P.screen === 'home' || P.screen === 'loading' || P.screen === 'error';
@@ -557,7 +570,7 @@
       '<h1>ขอใบเกรด ปพ.1 · ปพ.6<br>และใบรับรอง ปพ.7 ออนไลน์</h1>' +
       '<p>กรอกคำร้องบนมือถือ ส่งรูปถ่ายที่ตู้ลิ้นชัก และดูได้ว่าเอกสารของตนเองถึงขั้นไหนแล้ว</p>' +
       '<div class="hero-acts"><button class="btn btn-gold btn-blk" data-act="start"' + (c.open ? '' : ' disabled') + '>ยื่นคำร้องใหม่</button><button class="btn btn-glass btn-blk" data-act="track">ติดตามคำร้อง</button></div>' +
-      (P.student ? '<div class="who-in">เข้าสู่ระบบเป็น ' + esc(PP.fullName(P.student)) + '<button data-act="list">คำร้องของฉัน</button></div>' : '') +
+      (P.student ? '<div class="who-in">เข้าระบบด้วยรหัสนักเรียน ' + esc(P.student.sid) + '<button data-act="list">คำร้องของฉัน</button></div>' : '') +
       '</div></section>' +
       (c.announce ? '<div class="note n-wait"><b>ประกาศจากงานทะเบียน</b><span>' + esc(c.announce) + '</span></div>' : '') +
       (c.open ? '' : '<div class="note n-alert"><b>ปิดรับคำร้องออนไลน์ชั่วคราว</b><span>ยังติดตามคำร้องเดิมได้ตามปกติ</span></div>') +
@@ -569,41 +582,40 @@
       '<b>โรงเรียนพรตพิทยพยัต</b><span class="en">PROT PITTAYAPAYAT SCHOOL</span><span>4 ถนนหลวงพรต แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520</span><span>งานทะเบียน สำนักงานวิชาการ โทร. <a href="tel:023264050">0-2326-4050</a></span></footer>';
   };
   S.verify = function () {
-    return '<h2 class="h">' + (P.mode === 'new' ? 'ยืนยันตัวตนก่อนยื่นคำร้อง' : 'ยืนยันตัวตนเพื่อดูคำร้อง') + '</h2>' +
-      '<p class="p">ใช้ข้อมูลเดียวกับในทะเบียนของโรงเรียน ระบบไม่เก็บและไม่แสดงเลขประจำตัวประชาชนของนักเรียน</p>' +
+    return '<h2 class="h">' + (P.mode === 'new' ? 'กรอกรหัสนักเรียนเพื่อยื่นคำร้อง' : 'กรอกรหัสนักเรียนเพื่อดูคำร้อง') + '</h2>' +
+      '<p class="p">ใช้รหัสนักเรียน 5 หลักของตนเอง หน้าติดตามคำร้องแสดงเฉพาะเลขคำร้อง เอกสาร และสถานะ ไม่แสดงข้อมูลส่วนตัว</p>' +
       '<form id="f-verify" novalidate style="display:grid;gap:14px">' +
       '<div><label class="lbl" for="in-sid">รหัสนักเรียน (5 หลัก)</label><input class="inp num" id="in-sid" inputmode="numeric" autocomplete="off" maxlength="5" value="' + esc(P.sid) + '" data-bind="sid"></div>' +
-      '<div><label class="lbl" for="in-nid">เลขประจำตัวประชาชน (13 หลัก)</label><input class="inp num" id="in-nid" inputmode="numeric" autocomplete="off" maxlength="17" value="' + esc(P.nid) + '" data-bind="nid"></div>' +
-      '<label class="chk"><input type="checkbox" id="in-remember"' + (P.remember ? ' checked' : '') + ' data-change="remember"><span>จำการเข้าสู่ระบบบนมือถือเครื่องนี้ 30 วัน (ไม่ต้องเลือกถ้าใช้เครื่องของผู้อื่น)</span></label>' +
+      '<label class="chk"><input type="checkbox" id="in-remember"' + (P.remember ? ' checked' : '') + ' data-change="remember"><span>จำรหัสนักเรียนบนมือถือเครื่องนี้ 30 วัน (ไม่ต้องเลือกถ้าใช้เครื่องของผู้อื่น)</span></label>' +
       errNote(P.err) +
       '<button class="btn btn-pri btn-blk" type="submit"' + (P.busy ? ' disabled' : '') + '>' + busyBtn('ถัดไป') + '</button></form>';
   };
-  function reasonSel(k) {
-    var e = P.draft.edits[k];
-    return '<div><label class="lbl" for="rs-' + k + '">เหตุผลที่ขอแก้ไข</label><select class="inp" id="rs-' + k + '" data-ebind="' + k + '.reason"><option value="">เลือกเหตุผล</option>' +
-      PP.REASONS[k].map(function (o) { return '<option' + (e.reason === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></div>';
-  }
+  function opt(v, l, cur) { return '<option value="' + esc(v) + '"' + (String(cur) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }
+  function selS(id, k, list, cur, ph) { return '<select class="inp" id="' + id + '" data-schange="' + k + '">' + (ph ? '<option value="">' + ph + '</option>' : '') + list.map(function (o) { return opt(o.v !== undefined ? o.v : o, o.l !== undefined ? o.l : o, cur); }).join('') + '</select>'; }
+  function inpS(id, k, v, extra) { return '<input class="inp" id="' + id + '" value="' + esc(v) + '" data-sbind="' + k + '"' + (extra || '') + '>'; }
   S.data = function () {
-    var s = P.student, e = P.draft.edits;
-    var open = P.requests.filter(PP.isOpen);
-    function row(key, label, val, edit) {
-      var o = e[key].open;
-      return '<div class="dv' + (o ? ' is-edit' : '') + '"><div class="dv-h"><span class="dv-l">' + label + '</span><div class="seg" role="group" aria-label="' + label + '"><button type="button" class="' + (o ? '' : 'on') + '" data-act="ed-ok" data-k="' + key + '">ถูกต้อง</button><button type="button" class="' + (o ? 'on edit' : '') + '" data-act="ed-open" data-k="' + key + '">ขอแก้ไข</button></div></div>' +
-        '<div class="dv-v">' + (val ? esc(val) : '<span class="muted">ไม่มีข้อมูลในทะเบียน</span>') + '</div>' + (o ? '<div class="dv-e">' + edit + reasonSel(key) + '</div>' : '') + '</div>';
-    }
-    var nameEdit = '<div class="row2"><div><label class="lbl" for="ed-pre">คำนำหน้า</label><select class="inp" id="ed-pre" data-ebind="name.pre">' +
-      PP.PREFIXES.map(function (o) { return '<option' + (e.name.pre === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></div>' +
-      '<div><label class="lbl" for="ed-fn">ชื่อ</label><input class="inp" id="ed-fn" value="' + esc(e.name.fn) + '" data-ebind="name.fn"></div></div>' +
-      '<div><label class="lbl" for="ed-ln">ชื่อสกุล</label><input class="inp" id="ed-ln" value="' + esc(e.name.ln) + '" data-ebind="name.ln"></div>';
-    function txt(k, ph) { return '<div><label class="lbl" for="ed-' + k + '">ข้อมูลที่ถูกต้อง</label><input class="inp" id="ed-' + k + '" placeholder="' + ph + '" value="' + esc(e[k].val) + '" data-ebind="' + k + '.val"></div>'; }
+    var t = P.draft.stu, open = P.requests.filter(PP.isOpen), days = [], rooms = [];
+    for (var i = 1; i <= 31; i++) days.push(i);
+    for (var j = 1; j <= 15; j++) rooms.push(j);
     return (open.length ? '<div class="note n-wait"><b>คุณมีคำร้องที่ยังไม่ปิด</b><span>คำร้อง ' + open.map(function (r) { return r.no + ' (' + PP.ST[r.status].label + ')'; }).join(', ') + ' ยื่นใหม่ได้ แต่ควรตรวจว่าไม่ได้ขอซ้ำ</span></div>' : '') +
-      '<h2 class="h">ตรวจข้อมูลในทะเบียน</h2><p class="p">ข้อมูลนี้จะพิมพ์ลงในเอกสาร ถ้าบรรทัดใดไม่ตรงกับความจริง กด "ขอแก้ไข"</p>' +
-      row('name', 'ชื่อ-สกุล', PP.fullName(s), nameEdit) +
-      '<div class="dv"><div class="dv-h"><span class="dv-l">ชั้น / รหัสนักเรียน</span></div><div class="dv-v">ม.' + esc(s.level) + '/' + esc(s.room) + ' · ' + esc(s.sid) + '</div><div class="small">ถ้าชั้นเรียนไม่ถูกต้อง แจ้งครูที่ปรึกษา</div></div>' +
-      row('dob', 'วันเกิด', PP.fLong(s.dob), txt('dob', 'เช่น 2 สิงหาคม 2552')) +
-      row('fa', 'ชื่อบิดา', s.father, txt('fa', 'คำนำหน้า ชื่อ ชื่อสกุล')) +
-      row('mo', 'ชื่อมารดา', s.mother, txt('mo', 'คำนำหน้า ชื่อ ชื่อสกุล')) +
-      '<p class="small">ข้อมูลที่ขอแก้ไข เจ้าหน้าที่จะตรวจกับหลักฐานก่อนแก้ในระบบทะเบียน และอาจขอให้นำหลักฐานมาแสดง</p>' +
+      '<h2 class="h">ข้อมูลนักเรียน</h2><p class="p" style="margin-top:-6px">กรอกให้ตรงกับทะเบียนของโรงเรียน ข้อมูลนี้ใช้พิมพ์ในใบคำร้อง</p>' +
+      '<div class="idbox"><span>รหัสนักเรียน</span><b>' + esc(P.student.sid) + '</b></div>' +
+      '<div class="fset"><h3>ชื่อ-สกุล</h3>' +
+        '<div><label class="lbl" for="st-pre">คำนำหน้า</label>' + selS('st-pre', 'prefix', PP.PREFIXES, t.prefix, 'เลือกคำนำหน้า') + '</div>' +
+        '<div class="row2"><div><label class="lbl" for="st-fn">ชื่อ</label>' + inpS('st-fn', 'fname', t.fname, ' maxlength="60" autocomplete="off"') + '</div>' +
+        '<div><label class="lbl" for="st-ln">ชื่อสกุล</label>' + inpS('st-ln', 'lname', t.lname, ' maxlength="60" autocomplete="off"') + '</div></div></div>' +
+      '<div class="fset"><h3>ชั้นเรียนปัจจุบัน</h3><div class="row3">' +
+        '<div><label class="lbl" for="st-lv">ชั้น</label>' + selS('st-lv', 'level', [1, 2, 3, 4, 5, 6].map(function (x) { return { v: x, l: 'ม.' + x }; }), t.level, 'เลือก') + '</div>' +
+        '<div><label class="lbl" for="st-rm">ห้อง</label>' + selS('st-rm', 'room', rooms, t.room, 'เลือก') + '</div>' +
+        '<div><label class="lbl" for="st-no">เลขที่</label>' + inpS('st-no', 'no', t.no, ' inputmode="numeric" maxlength="2" autocomplete="off"') + '</div></div></div>' +
+      '<div class="fset"><h3>วันเกิด</h3><div class="row3 dob">' +
+        '<div><label class="lbl" for="st-dd">วันที่</label>' + selS('st-dd', 'dd', days, t.dd, 'วัน') + '</div>' +
+        '<div><label class="lbl" for="st-mm">เดือน</label>' + selS('st-mm', 'mm', PP.MONTHS.map(function (m, k) { return { v: k + 1, l: m }; }), t.mm, 'เดือน') + '</div>' +
+        '<div><label class="lbl" for="st-yy">ปี พ.ศ.</label>' + selS('st-yy', 'yy', PP.birthYears(), t.yy, 'ปี') + '</div></div></div>' +
+      '<div class="fset"><h3>ชื่อบิดา-มารดา</h3>' +
+        '<div><label class="lbl" for="st-fa">ชื่อบิดา (คำนำหน้า ชื่อ ชื่อสกุล)</label>' + inpS('st-fa', 'father', t.father, ' maxlength="120" autocomplete="off" placeholder="เช่น นายสมชาย ใจดี"') + '</div>' +
+        '<div><label class="lbl" for="st-mo">ชื่อมารดา (คำนำหน้า ชื่อ ชื่อสกุล)</label>' + inpS('st-mo', 'mother', t.mother, ' maxlength="120" autocomplete="off" placeholder="เช่น นางสมศรี ใจดี"') + '</div>' +
+        '<p class="hint">ถ้าไม่มีข้อมูล พิมพ์เครื่องหมาย -</p></div>' +
       errNote(P.draft.err) + '<button class="btn btn-pri btn-blk" data-act="data-next">ถัดไป</button>';
   };
   function stepper(k, v) {
@@ -638,33 +650,30 @@
       errNote(d.err) +
       '<div class="nav2"><button class="btn btn-sec" data-act="go" data-to="data">ย้อนกลับ</button><button class="btn btn-pri" data-act="docs-next">ถัดไป</button></div>';
   };
-  function collectChanges() {
-    var e = P.draft.edits, c = {};
-    if (e.name.open) c.name = { to: { pre: e.name.pre, fn: e.name.fn.trim(), ln: e.name.ln.trim() }, reason: e.name.reason };
-    ['dob', 'fa', 'mo'].forEach(function (k) { if (e[k].open) c[k] = { to: e[k].val.trim(), reason: e[k].reason }; });
-    return c;
+  function stuOf(d) {
+    var t = d.stu;
+    return { prefix: t.prefix, fname: t.fname.trim(), lname: t.lname.trim(), level: String(t.level), room: String(t.room), no: String(t.no).replace(/\D/g, ''),
+      dob: PP.dobISO(t.dd, t.mm, t.yy), father: t.father.trim(), mother: t.mother.trim() };
   }
   S.review = function () {
-    var d = P.draft, s = P.student, c = collectChanges();
-    function was(k, orig) { return c[k] ? '<em>ขอแก้จาก: ' + esc(orig || 'ไม่มีข้อมูล') + ' · ' + esc(c[k].reason) + '</em>' : ''; }
-    function val(k, orig) { return c[k] ? (c[k].to || '(ไม่ระบุ)') : (orig || 'ไม่มีข้อมูล'); }
+    var d = P.draft, s = stuOf(d);
     var docs = [];
     if (d.pp1) docs.push('ปพ.1 จำนวน ' + d.pp1 + ' ชุด · ' + PP.scopeText(d.scope, lv(), P.cfg.year) + (d.lang === 'en' ? ' · ภาษาอังกฤษ' : ''));
     if (d.pp6Sems.length) docs.push('ปพ.6 จำนวน ' + d.pp6Sems.length + ' แผ่น · ภาคเรียน ' + d.pp6Sems.join(', '));
     if (d.pp7) docs.push('ปพ.7 จำนวน ' + d.pp7 + ' ชุด');
     var ph = d.pp1 + d.pp7;
     return '<h2 class="h">ตรวจทานคำร้อง</h2><div class="rv">' +
-      '<div class="rv-r"><span>ชื่อ-สกุล</span><div>' + esc(c.name ? PP.fullName(c.name.to) : PP.fullName(s)) + was('name', PP.fullName(s)) + '</div></div>' +
-      '<div class="rv-r"><span>ชั้น</span><div>ม.' + esc(s.level) + '/' + esc(s.room) + ' · ' + esc(s.sid) + '</div></div>' +
-      '<div class="rv-r"><span>วันเกิด</span><div>' + esc(val('dob', PP.fLong(s.dob))) + was('dob', PP.fLong(s.dob)) + '</div></div>' +
-      '<div class="rv-r"><span>ชื่อบิดา</span><div>' + esc(val('fa', s.father)) + was('fa', s.father) + '</div></div>' +
-      '<div class="rv-r"><span>ชื่อมารดา</span><div>' + esc(val('mo', s.mother)) + was('mo', s.mother) + '</div></div>' +
+      '<div class="rv-r"><span>ชื่อ-สกุล</span><div>' + esc(PP.fullName(s)) + '</div></div>' +
+      '<div class="rv-r"><span>ชั้น</span><div>ม.' + esc(s.level) + '/' + esc(s.room) + ' เลขที่ ' + esc(s.no) + ' · รหัส ' + esc(P.student.sid) + '</div></div>' +
+      '<div class="rv-r"><span>วันเกิด</span><div>' + esc(PP.fLong(s.dob)) + '</div></div>' +
+      '<div class="rv-r"><span>ชื่อบิดา</span><div>' + esc(s.father) + '</div></div>' +
+      '<div class="rv-r"><span>ชื่อมารดา</span><div>' + esc(s.mother) + '</div></div>' +
       '<div class="rv-r"><span>เอกสาร</span><div>' + docs.map(esc).join('<br>') + '</div></div>' +
       '<div class="rv-r"><span>เพื่อ</span><div>' + esc(d.purpose === 'อื่น ๆ' ? d.other : d.purpose) + '</div></div>' +
       '<div class="rv-r"><span>ต้องใช้</span><div>' + (d.needBy ? PP.fWeek(PP.parseISO(d.needBy)) : 'ไม่ระบุ') + '</div></div>' +
       '<div class="rv-r"><span>โทรศัพท์</span><div class="num">' + esc(PP.telFmt(d.phone.replace(/\D/g, ''))) + '</div></div>' +
       '<div class="rv-r"><span>รูปถ่าย</span><div>' + (ph ? '<b>' + ph + ' รูป</b> ขนาด 1.5 นิ้ว' : 'ไม่ต้องใช้รูปถ่าย') + '</div></div></div>' +
-      '<label class="chk"><input type="checkbox" id="in-agree"' + (d.agree ? ' checked' : '') + ' data-change="agree"><span>ข้าพเจ้าขอรับรองว่าข้อมูลข้างต้นถูกต้อง และยินยอมให้งานทะเบียนใช้ข้อมูลนี้เพื่อจัดทำเอกสารที่ขอเท่านั้น</span></label>' +
+      '<label class="chk"><input type="checkbox" id="in-agree"' + (d.agree ? ' checked' : '') + ' data-change="agree"><span>ข้าพเจ้าขอรับรองว่าข้อมูลข้างต้นถูกต้องตรงกับทะเบียนของโรงเรียน และยินยอมให้งานทะเบียนใช้ข้อมูลนี้เพื่อจัดทำเอกสารที่ขอเท่านั้น</span></label>' +
       errNote(d.err) +
       '<div class="nav2"><button class="btn btn-sec" data-act="go" data-to="docs"' + (P.busy ? ' disabled' : '') + '>ย้อนกลับ</button><button class="btn btn-pri" data-act="submit"' + (P.busy ? ' disabled' : '') + '>' + busyBtn('ยื่นคำร้อง') + '</button></div>';
   };
@@ -688,7 +697,7 @@
   };
   S.list = function () {
     var s = P.student;
-    return '<div class="req-t"><h2 class="h">คำร้องของฉัน</h2><button class="btn btn-sm btn-sec" data-act="refresh"' + (P.busy ? ' disabled' : '') + '>' + (P.busy ? '<span class="spin"></span>' : 'อัปเดต') + '</button></div><p class="p" style="margin-top:-8px">' + esc(PP.fullName(s)) + ' · ม.' + esc(s.level) + '/' + esc(s.room) + '</p>' +
+    return '<div class="req-t"><h2 class="h">คำร้องของฉัน</h2><button class="btn btn-sm btn-sec" data-act="refresh"' + (P.busy ? ' disabled' : '') + '>' + (P.busy ? '<span class="spin"></span>' : 'อัปเดต') + '</button></div><p class="p" style="margin-top:-8px">รหัสนักเรียน ' + esc(s.sid) + '</p>' +
       (P.requests.length ? P.requests.map(function (r) { return '<button class="req" data-act="open" data-no="' + esc(r.no) + '"><div class="req-t"><b>คำร้อง ' + esc(r.no) + '</b>' + PP.pill(r) + '</div><div class="req-d">' + PP.docsText(r) + '</div><div class="req-m">ยื่นเมื่อ ' + PP.fDT(r.submittedAt) + '</div></button>'; }).join('')
         : '<div class="card"><div class="card-h">ยังไม่มีคำร้อง</div><p class="small">ยื่นคำร้องใหม่ได้จากปุ่มด้านล่าง</p></div>') +
       '<button class="btn btn-pri btn-blk" data-act="new"' + (P.cfg.open ? '' : ' disabled') + '>ยื่นคำร้องใหม่</button>' +
@@ -698,7 +707,7 @@
     var r = findReq(P.viewNo); if (!r) return S.list();
     var ph = nPhotos(r), start = r.photoAt || (ph ? '' : r.submittedAt);
     var c = P.cfg, stage = PP.stageOf(r), times = [r.submittedAt, start, r.signAt, r.readyAt, r.doneAt], card = '';
-    var drawer = 'ม.' + esc(String(r.cls).split('/')[0]), canCancel = r.status === 'photo' || (r.status === 'work' && !ph);
+    var mine = !!ownKey(r.no), drawer = 'ม.' + esc(String(r.cls).split('/')[0]), canCancel = mine && (r.status === 'photo' || (r.status === 'work' && !ph));
     var confirmBox = canCancel && P.confirmCancel === r.no ? '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' หรือไม่</span><div><button class="btn btn-sm btn-warn" data-act="cancel-yes" data-no="' + esc(r.no) + '">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="cancel-no">ไม่ยกเลิก</button></div></div>' : '';
     if (r.status === 'photo') {
       var play = playOnce('g' + r.no);
@@ -712,7 +721,7 @@
     if (r.status === 'ready') {
       card = P.rateFor === r.no
         ? '<div class="card"><div class="card-h">ให้คะแนนบริการครั้งนี้</div><p class="small">1 = ควรปรับปรุง · 5 = ดีมาก</p><div class="rate">' + [1, 2, 3, 4, 5].map(function (n) { return '<button data-act="rate" data-no="' + esc(r.no) + '" data-v="' + n + '"' + (P.busy ? ' disabled' : '') + '>' + n + '</button>'; }).join('') + '</div><button class="link" data-act="rate" data-no="' + esc(r.no) + '" data-v="0">ข้ามการให้คะแนน</button></div>'
-        : stageCard('ready', 4, 'พร้อมรับที่ลิ้นชัก ' + drawer, 'ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ ได้รับแล้วกดปุ่มด้านล่าง', r) + '<button class="btn btn-pri btn-blk" data-act="got" data-no="' + esc(r.no) + '">ฉันได้รับเอกสารแล้ว</button>';
+        : stageCard('ready', 4, 'พร้อมรับที่ลิ้นชัก ' + drawer, 'ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ' + (mine ? ' ได้รับแล้วกดปุ่มด้านล่าง' : ' ได้รับแล้วแจ้งครูปรางทอง หรือกดยืนยันจากเครื่องที่ใช้ยื่นคำร้อง'), r) + (mine ? '<button class="btn btn-pri btn-blk" data-act="got" data-no="' + esc(r.no) + '">ฉันได้รับเอกสารแล้ว</button>' : '');
     }
     if (r.status === 'done') card = stageCard('done', 5, 'รับเอกสารเรียบร้อยแล้ว', (r.doneAt ? 'ปิดคำร้องเมื่อ ' + PP.fDT(r.doneAt) : 'ปิดคำร้องแล้ว') + (r.rating ? ' · ให้คะแนน ' + r.rating + ' จาก 5' : '') + ' · ขอบคุณที่ใช้บริการ', r);
     if (r.status === 'cancel') card = '<div class="note n-done"><b>คำร้องถูกยกเลิก</b><span>ยื่นคำร้องใหม่ได้จากหน้าแรก</span></div>';
@@ -738,14 +747,13 @@
 
   /* ---------- actions ---------- */
   function startDraft() {
-    var s = P.student;
-    P.draft = { edits: { name: { open: false, pre: s.prefix, fn: s.fname, ln: s.lname, reason: '' }, dob: { open: false, val: PP.fLong(s.dob), reason: '' },
-      fa: { open: false, val: s.father, reason: '' }, mo: { open: false, val: s.mother, reason: '' } },
-      pp1: 1, scope: PP.scopeOpts(P.cfg, s.level)[0].v, lang: 'th', pp7: 0, pp6Sems: [], pp6Open: false, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', agree: false, err: '' };
+    // ไม่มีข้อมูลเดิมเติมให้ นักเรียนกรอกเองทุกช่องในทุกคำร้อง
+    P.draft = { stu: { prefix: '', fname: '', lname: '', level: '', room: '', no: '', dd: '', mm: '', yy: '', father: '', mother: '' },
+      pp1: 1, scope: PP.scopeOpts(P.cfg, '')[0].v, lang: 'th', pp7: 0, pp6Sems: [], pp6Open: false, purpose: 'ศึกษาต่อ', other: '', needBy: '', phone: '', agree: false, err: '' };
     go('data');
   }
   function saveToken(t) { P.token = t; PP.store.set(TOKEN_KEY, t, P.remember); }
-  function onAuthErr(e) { if (e.code === 'AUTH') { PP.store.del(TOKEN_KEY); P.token = null; P.student = null; P.requests = []; P.mode = 'track'; go('verify'); PP.toast('กรุณายืนยันตัวตนอีกครั้ง'); return true; } return false; }
+  function onAuthErr(e) { if (e.code === 'AUTH') { PP.store.del(TOKEN_KEY); P.token = null; P.student = null; P.requests = []; P.mode = 'track'; go('verify'); PP.toast('กรุณากรอกรหัสนักเรียนอีกครั้ง'); return true; } return false; }
   function refresh(after) {
     if (!P.token) return Promise.resolve();
     P.busy = true; render();
@@ -759,13 +767,6 @@
   A.track = function () { P.mode = 'track'; if (P.student && P.token) refresh(function () { P.screen = 'list'; }); else go('verify'); };
   A.list = function () { if (P.student) go('list'); else A.track(); };
   A['new'] = function () { P.mode = 'new'; startDraft(); };
-  A['ed-ok'] = function (a) {
-    var k = a.dataset.k, s = P.student, e = P.draft.edits[k];
-    e.open = false; e.reason = '';
-    if (k === 'name') { e.pre = s.prefix; e.fn = s.fname; e.ln = s.lname; } else e.val = k === 'dob' ? PP.fLong(s.dob) : (k === 'fa' ? s.father : s.mother);
-    render();
-  };
-  A['ed-open'] = function (a) { P.draft.edits[a.dataset.k].open = true; render(); var el = document.getElementById(a.dataset.k === 'name' ? 'ed-fn' : 'ed-' + a.dataset.k); if (el) el.focus(); };
   A.stp = function (a) { var d = P.draft, k = a.dataset.k; d[k] = Math.max(0, Math.min(2, d[k] + Number(a.dataset.d))); render(); };
   A.go = function (a) { go(a.dataset.to); };
   A['pp6-open'] = function () { P.draft.pp6Open = true; render(); };
@@ -785,23 +786,20 @@
   A['sample-tab'] = function (a) { P.sample.doc = a.dataset.doc; P.sample.page = 0; renderModal(); };
   A['sample-page'] = function (a) { P.sample.page = Number(a.dataset.p) || 0; renderModal(); };
   A['data-next'] = function () {
-    var e = P.draft.edits, s = P.student, m = '';
-    ['name', 'dob', 'fa', 'mo'].some(function (k) {
-      if (!e[k].open) return false;
-      var lab = { name: 'ชื่อ-สกุล', dob: 'วันเกิด', fa: 'ชื่อบิดา', mo: 'ชื่อมารดา' }[k];
-      if (!e[k].reason) { m = 'เลือกเหตุผลที่ขอแก้ไข' + lab; return true; }
-      if (k === 'name') {
-        if (!e.name.fn.trim() || !e.name.ln.trim()) { m = 'กรอกชื่อและชื่อสกุลให้ครบ'; return true; }
-        if (e.name.pre === s.prefix && e.name.fn.trim() === s.fname && e.name.ln.trim() === s.lname) { m = 'ชื่อ-สกุลที่กรอกยังเหมือนในทะเบียน ถ้าถูกต้องแล้วให้กด "ถูกต้อง"'; return true; }
-        return false;
-      }
-      if (e[k].reason === 'ไม่มีข้อมูลหรือไม่ประสงค์ระบุ') { e[k].val = ''; return false; }
-      if (!e[k].val.trim()) { m = 'กรอก' + lab + 'ที่ถูกต้อง'; return true; }
-      var orig = k === 'dob' ? PP.fLong(s.dob) : (k === 'fa' ? s.father : s.mother);
-      if (e[k].val.trim() === orig) { m = lab + 'ที่กรอกยังเหมือนในทะเบียน ถ้าถูกต้องแล้วให้กด "ถูกต้อง"'; return true; }
-      return false;
-    });
-    P.draft.err = m; if (m) return render(); go('docs');
+    var t = P.draft.stu, m = '', no = String(t.no).replace(/\D/g, '');
+    if (!t.prefix) m = 'เลือกคำนำหน้าชื่อ';
+    else if (!t.fname.trim() || !t.lname.trim()) m = 'กรอกชื่อและชื่อสกุลให้ครบ';
+    else if (!t.level || !t.room) m = 'เลือกชั้นและห้องเรียน';
+    else if (!no || +no < 1) m = 'กรอกเลขที่ในห้องเรียน';
+    else if (!t.dd || !t.mm || !t.yy) m = 'เลือกวัน เดือน และปีเกิดให้ครบ';
+    else if (!PP.dobISO(t.dd, t.mm, t.yy)) m = 'วันเกิดไม่ถูกต้อง เดือนที่เลือกไม่มีวันที่นี้';
+    else if (!t.father.trim() || !t.mother.trim()) m = 'กรอกชื่อบิดาและชื่อมารดา ถ้าไม่มีข้อมูลพิมพ์เครื่องหมาย -';
+    P.draft.err = m; if (m) return render();
+    // ช่วงผลการเรียนและภาคเรียน ปพ.6 ขึ้นกับระดับชั้นที่กรอก
+    var d = P.draft, ok6 = [].concat.apply([], PP.pp6Opts(P.cfg, t.level).map(function (g) { return g.sems; }));
+    d.pp6Sems = d.pp6Sems.filter(function (v) { return ok6.indexOf(v) > -1; });
+    if (!PP.scopeOpts(P.cfg, t.level).some(function (o) { return o.v === d.scope; })) d.scope = PP.scopeOpts(P.cfg, t.level)[0].v;
+    go('docs');
   };
   A['docs-next'] = function () {
     var d = P.draft, m = '', tel = d.phone.replace(/\D/g, '');
@@ -815,8 +813,10 @@
     if (!d.agree) { d.err = 'ติ๊กรับรองความถูกต้องของข้อมูลก่อนยื่นคำร้อง'; return render(); }
     if (P.busy) return;
     P.busy = true; d.err = ''; render();
-    var req = { pp1: d.pp1, scope: d.scope, lang: d.lang, pp7: d.pp7, pp6Sems: d.pp6Sems.slice(), purpose: d.purpose, other: d.other, needBy: d.needBy, phone: d.phone.replace(/\D/g, ''), changes: collectChanges() };
-    PP.api('submit', { token: P.token, req: req }).then(function (r) {
+    var req = { pp1: d.pp1, scope: d.scope, lang: d.lang, pp7: d.pp7, pp6Sems: d.pp6Sems.slice(), purpose: d.purpose, other: d.other, needBy: d.needBy, phone: d.phone.replace(/\D/g, '') };
+    PP.api('submit', { token: P.token, student: stuOf(d), req: req }).then(function (r) {
+      if (r.ownerKey) ownSet(r.request.no + '/' + r.request.year, r.ownerKey);
+      P.lastStu = { no: r.request.no, s: stuOf(d) };
       P.requests.unshift(r.request); P.lastNo = r.request.no; P.draft = null; P.busy = false; go('done');
     }).catch(function (e) { P.busy = false; if (!onAuthErr(e)) { d.err = e.message; render(); } });
   };
@@ -827,14 +827,14 @@
   A['cancel-no'] = function () { P.confirmCancel = null; render(); };
   A['cancel-yes'] = function (a) {
     P.busy = true; render();
-    PP.api('cancel', { token: P.token, no: a.dataset.no }).then(function () { P.busy = false; P.confirmCancel = null; PP.toast('ยกเลิกคำร้องแล้ว'); refresh(); })
+    PP.api('cancel', { token: P.token, no: a.dataset.no, key: ownKey(a.dataset.no) }).then(function () { P.busy = false; P.confirmCancel = null; PP.toast('ยกเลิกคำร้องแล้ว'); refresh(); })
       .catch(function (e) { P.busy = false; if (!onAuthErr(e)) { PP.toast(e.message); render(); } });
   };
   A.got = function (a) { P.rateFor = a.dataset.no; render(); };
   A.rate = function (a) {
     if (P.busy) return;
     P.busy = true; render();
-    PP.api('received', { token: P.token, no: a.dataset.no, rating: Number(a.dataset.v) || 0 }).then(function () { P.busy = false; P.rateFor = null; PP.toast('ปิดคำร้องแล้ว ขอบคุณครับ/ค่ะ'); refresh(); })
+    PP.api('received', { token: P.token, no: a.dataset.no, key: ownKey(a.dataset.no), rating: Number(a.dataset.v) || 0 }).then(function () { P.busy = false; P.rateFor = null; PP.toast('ปิดคำร้องแล้ว ขอบคุณครับ/ค่ะ'); refresh(); })
       .catch(function (e) { P.busy = false; if (!onAuthErr(e)) { PP.toast(e.message); render(); } });
   };
   A.logout = function () {
@@ -843,15 +843,13 @@
   };
 
   function doVerify() {
-    var sid = P.sid.replace(/\D/g, ''), nid = P.nid.replace(/\D/g, '');
+    var sid = P.sid.replace(/\D/g, '');
     P.err = '';
     if (!/^\d{5}$/.test(sid)) P.err = 'รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก';
-    else if (!/^\d{13}$/.test(nid)) P.err = 'เลขประจำตัวประชาชนต้องเป็นตัวเลข 13 หลัก';
-    else if (!PP.nidOk(nid)) P.err = 'เลขประจำตัวประชาชนไม่ถูกต้อง ลองตรวจทีละหลักอีกครั้ง';
     if (P.err) return render();
     P.busy = true; render();
-    PP.api('verify', { sid: sid, nid: nid, remember: P.remember }).then(function (r) {
-      saveToken(r.token); setMe(r); P.busy = false; P.nid = '';
+    PP.api('verify', { sid: sid, remember: P.remember }).then(function (r) {
+      saveToken(r.token); setMe(r); P.busy = false;
       if (P.mode === 'new') startDraft(); else go('list');
     }).catch(function (e) { P.busy = false; P.err = e.message; render(); });
   }
@@ -872,11 +870,15 @@
     else if (k === 'purpose') { P.draft.purpose = t.value; render(); }
     else if (k === 'needBy') { P.draft.needBy = t.value; render(); }
   });
+  document.addEventListener('change', function (e) {
+    var t = e.target, k = t.dataset && t.dataset.schange; if (!k || !P.draft) return;
+    P.draft.stu[k] = t.value;
+  });
   document.addEventListener('input', function (e) {
     var t = e.target; if (!t.dataset) return;
     if (t.dataset.bind) P[t.dataset.bind] = t.value;
     if (t.dataset.dbind && P.draft) P.draft[t.dataset.dbind] = t.value;
-    if (t.dataset.ebind && P.draft) { var p = t.dataset.ebind.split('.'); P.draft.edits[p[0]][p[1]] = t.value; }
+    if (t.dataset.sbind && P.draft) P.draft.stu[t.dataset.sbind] = t.value;
   });
 
   function init() {

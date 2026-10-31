@@ -4,28 +4,23 @@
  * Google Apps Script เว็บแอป (Deploy: Execute as "Me", Who has access "Anyone")
  * - หน้าเว็บนักเรียนและหลังบ้านอยู่บน GitHub Pages เรียกใช้ผ่าน doPost (JSON)
  * - ฐานข้อมูลคือ Google Sheets ที่ฟังก์ชัน setup() สร้างให้ (เก็บ ID ไว้ใน Script Properties: SS_ID)
- * - เลขประจำตัวประชาชนไม่ถูกเก็บแบบอ่านได้ เก็บเป็นค่าแฮช SHA-256 ผสมค่าลับ (Script Properties: PEPPER)
+ * - ไม่เก็บฐานข้อมูลนักเรียนทั้งโรงเรียน และไม่ใช้เลขประจำตัวประชาชน นักเรียนเข้าระบบด้วยรหัสนักเรียน
+ *   แล้วกรอกข้อมูลของตนเองในแต่ละคำร้อง ระบบเก็บเฉพาะข้อมูลของผู้ที่ยื่นคำร้อง
  *
  * ฟังก์ชันที่ผู้ดูแลกด Run เองในหน้าแก้ไขสคริปต์ได้
- *   setup()        สร้าง/ซ่อมฐานข้อมูล ค่าเริ่มต้น และตัวตั้งเวลารายวัน (รันซ้ำได้ ไม่ลบข้อมูล)
- *   dailyJob()     งานรายวัน: หมดอายุคำร้องที่ไม่ส่งรูป ปิดคำร้องที่พร้อมรับนานเกินกำหนด ลบข้อมูลเก่า
- *   openStaging()  เปิดรับการนำเข้ารายชื่อนักเรียนจาก SGS (ต้นภาคเรียน)
+ *   setup()               สร้าง/ซ่อมฐานข้อมูล ค่าเริ่มต้น และตัวตั้งเวลารายวัน (รันซ้ำได้ ไม่ลบข้อมูล)
+ *   dailyJob()            งานรายวัน: หมดอายุคำร้องที่ไม่ส่งรูป ปิดคำร้องที่พร้อมรับนานเกินกำหนด ลบข้อมูลเก่า
+ *   removeStudentRoster() ลบชีตรายชื่อนักเรียนที่เคยนำเข้าจาก SGS (ระบบเวอร์ชันแรก) ออกจากฐานข้อมูล
  */
-var VERSION = '1.0.0';
+var VERSION = '2.0.0';
 
 var SHEETS = {
-  STU: 'นักเรียน', REQ: 'คำร้อง', LOG: 'ประวัติ', SET: 'ตั้งค่า',
-  USR: 'ผู้ใช้หลังบ้าน', STG: 'นำเข้า', SES: 'เซสชัน'
+  REQ: 'คำร้อง', LOG: 'ประวัติ', SET: 'ตั้งค่า', USR: 'ผู้ใช้หลังบ้าน', SES: 'เซสชัน'
 };
+var OLD_SHEETS = ['นักเรียน', 'นำเข้า'];
 
 // [key, หัวคอลัมน์ภาษาไทย, รูปแบบ ('@' = ข้อความ)] — ห้ามสลับลำดับคอลัมน์ในชีต
 var COLS = {
-  STU: [
-    ['sid', 'รหัสนักเรียน', '@'], ['nidHash', 'รหัสยืนยันตัวตน (แฮช)', '@'],
-    ['prefix', 'คำนำหน้า', '@'], ['fname', 'ชื่อ', '@'], ['lname', 'นามสกุล', '@'],
-    ['dob', 'วันเกิด (ค.ศ. ปปปป-ดด-วว)', '@'], ['father', 'ชื่อบิดา', '@'], ['mother', 'ชื่อมารดา', '@'],
-    ['level', 'ชั้น ม.', '@'], ['room', 'ห้อง', '@'], ['no', 'เลขที่', '@'], ['updatedAt', 'ปรับปรุงเมื่อ', '']
-  ],
   REQ: [
     ['no', 'เลขคำร้อง', '@'], ['year', 'ปีการศึกษา', '@'], ['sid', 'รหัสนักเรียน', '@'],
     ['name', 'ชื่อ-สกุล', '@'], ['cls', 'ชั้น/ห้อง', '@'], ['status', 'รหัสสถานะ', '@'], ['statusTh', 'สถานะ', '@'],
@@ -38,7 +33,10 @@ var COLS = {
     ['issueReason', 'เหตุผลที่ต้องแก้ไข', '@'], ['issueTodo', 'สิ่งที่นักเรียนต้องทำ', '@'], ['issueText', 'ข้อความถึงนักเรียน', '@'],
     ['note', 'บันทึกภายใน', '@'], ['rating', 'คะแนนความพึงพอใจ', ''], ['reprint', 'พิมพ์ใหม่ (ครั้ง)', ''],
     ['fixCount', 'ส่งกลับ (ครั้ง)', ''], ['createdBy', 'ผู้บันทึก', '@'], ['updatedAt', 'แก้ไขล่าสุด', ''],
-    ['pp6', 'ปพ.6 (แผ่น)', ''], ['pp6Sems', 'ปพ.6 ภาคเรียนที่ขอ', '@']
+    ['pp6', 'ปพ.6 (แผ่น)', ''], ['pp6Sems', 'ปพ.6 ภาคเรียนที่ขอ', '@'],
+    ['prefix', 'คำนำหน้า', '@'], ['fname', 'ชื่อ', '@'], ['lname', 'ชื่อสกุล', '@'], ['stuNo', 'เลขที่', '@'],
+    ['dob', 'วันเกิด (ค.ศ. ปปปป-ดด-วว)', '@'], ['father', 'ชื่อบิดา', '@'], ['mother', 'ชื่อมารดา', '@'],
+    ['ownerHash', 'รหัสเครื่องผู้ยื่น (ระบบใช้)', '@']
   ],
   LOG: [['time', 'เวลา', ''], ['no', 'เลขคำร้อง', '@'], ['who', 'ผู้ทำ', '@'], ['action', 'การกระทำ', '@'], ['detail', 'รายละเอียด', '@']],
   SET: [['key', 'ชื่อค่า', '@'], ['value', 'ค่า', '@'], ['desc', 'คำอธิบาย', '@']],
@@ -49,7 +47,6 @@ var COLS = {
   ],
   SES: [['tokenHash', 'tokenHash', '@'], ['kind', 'ประเภท', '@'], ['subject', 'ผู้ใช้', '@'], ['expires', 'หมดอายุ', ''], ['created', 'สร้างเมื่อ', '']]
 };
-COLS.STG = COLS.STU.concat([['batch', 'ชุดนำเข้า', '@']]);
 
 var ST = {
   photo: 'รอรูปถ่าย', work: 'กำลังจัดทำ', hold: 'รอผลการเรียน', sign: 'เสนอลงนาม', ready: 'พร้อมรับ',
@@ -58,17 +55,11 @@ var ST = {
 var OPEN = ['photo', 'work', 'hold', 'sign', 'ready', 'fix'];
 var PURPOSES = ['ขอทุนการศึกษา', 'ศึกษาต่อ', 'สมัครงาน', 'อื่น ๆ'];
 var PREFIXES = ['เด็กชาย', 'เด็กหญิง', 'นาย', 'นางสาว', 'นาง'];
-var REASONS = {
-  name: ['เปลี่ยนชื่อหรือชื่อสกุล', 'เปลี่ยนคำนำหน้า', 'สะกดไม่ถูกต้อง', 'อื่น ๆ'],
-  dob: ['ข้อมูลในทะเบียนไม่ถูกต้อง', 'อื่น ๆ'],
-  fa: ['เปลี่ยนชื่อหรือชื่อสกุล', 'สะกดไม่ถูกต้อง', 'ในทะเบียนยังไม่มีข้อมูล', 'ไม่มีข้อมูลหรือไม่ประสงค์ระบุ', 'อื่น ๆ'],
-  mo: ['เปลี่ยนชื่อหรือชื่อสกุล', 'สะกดไม่ถูกต้อง', 'ในทะเบียนยังไม่มีข้อมูล', 'ไม่มีข้อมูลหรือไม่ประสงค์ระบุ', 'อื่น ๆ']
-};
 var FIX = [
   { r: 'รูปถ่ายไม่ถูกระเบียบ', todo: 'นำรูปถ่ายใหม่ (ชุดนักเรียน ทรงผมถูกระเบียบ ไม่สวมเครื่องประดับ) ใส่ลิ้นชักที่ 2 พร้อมใบนำส่งที่เขียนเลขคำร้องและลงชื่อแล้ว' },
   { r: 'รูปถ่ายไม่ครบจำนวน', todo: 'นำรูปถ่ายที่ยังขาดใส่ลิ้นชักที่ 2 พร้อมใบนำส่งที่เขียนเลขคำร้อง' },
   { r: 'ยังไม่ได้ลงชื่อในใบนำส่งรูปถ่าย', todo: 'ติดต่อครูปรางทองที่หน้าห้องสำนักงานวิชาการ เพื่อลงชื่อผู้ขอ' },
-  { r: 'ต้องแสดงหลักฐานการเปลี่ยนชื่อหรือชื่อสกุล', todo: 'นำหลักฐานการเปลี่ยนชื่อหรือชื่อสกุลฉบับจริงมาแสดงที่ครูปรางทอง หน้าห้องสำนักงานวิชาการ' },
+  { r: 'ข้อมูลในคำร้องไม่ตรงกับทะเบียน', todo: 'ติดต่อครูปรางทองที่หน้าห้องสำนักงานวิชาการ เพื่อตรวจสอบข้อมูล ถ้าเปลี่ยนชื่อหรือชื่อสกุล ให้นำหลักฐานฉบับจริงมาด้วย' },
   { r: 'ข้อมูลในคำร้องไม่ชัดเจน', todo: 'ติดต่อครูปรางทองที่หน้าห้องสำนักงานวิชาการ เพื่อยืนยันข้อมูล' },
   { r: 'อื่น ๆ', todo: '' }
 ];
@@ -96,9 +87,10 @@ var DEFAULTS = [
   ['registrarName', 'นางสาวประภาภรณ์ พรมศรี', 'ชื่อนายทะเบียนในใบคำร้อง'],
   ['approverName', 'นายเอกรินทร์ นิรันดร์', 'ผู้ลงนามเห็นควรในใบคำร้อง'],
   ['approverTitle', 'ผู้ช่วยผู้อำนวยการกลุ่มบริหารวิชาการ', 'ตำแหน่งผู้ลงนามเห็นควร'],
+  ['directorName', 'นางอาภาพร วรรณสุนธยา', 'ผู้อำนวยการ (ผู้ลงนามอนุมัติในใบคำร้อง)'],
+  ['directorTitle', 'ผู้อำนวยการโรงเรียนพรตพิทยพยัต', 'ตำแหน่งผู้ลงนามอนุมัติ'],
   ['studentUrl', 'https://watpolprot-cloud.github.io/prot-pp-request/', 'ลิงก์หน้าเว็บนักเรียน (ใช้ทำ QR)'],
-  ['adminUrl', 'https://watpolprot-cloud.github.io/prot-pp-request/admin.html', 'ลิงก์หน้าหลังบ้าน'],
-  ['stagingOpen', 'TRUE', 'เปิดรับการนำเข้ารายชื่อนักเรียน (ระบบปิดเองหลังนำเข้าเสร็จ)']
+  ['adminUrl', 'https://watpolprot-cloud.github.io/prot-pp-request/admin.html', 'ลิงก์หน้าหลังบ้าน']
 ];
 
 /* ===================== HTTP ===================== */
@@ -131,8 +123,7 @@ var ROUTES = {
   login: login_, setPassword: setPassword_, adminLogout: logout_,
   adminList: adminList_, adminAct: adminAct_, adminFix: adminFix_, adminNote: adminNote_,
   adminSaveSettings: adminSaveSettings_, adminFindStudent: adminFindStudent_, adminCreate: adminCreate_,
-  adminReport: adminReport_,
-  stage: stage_, stageCommit: stageCommit_
+  adminReport: adminReport_
 };
 
 function json_(o) {
@@ -246,21 +237,6 @@ function config_() {
 function sha_(s) {
   return Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8));
 }
-var _pepper = null;
-function pepper_() {
-  if (_pepper) return _pepper;
-  var p = PropertiesService.getScriptProperties().getProperty('PEPPER');
-  if (!p) throw new Error('missing PEPPER');
-  _pepper = p;
-  return p;
-}
-function nidHash_(nid) { return sha_('nid|' + pepper_() + '|' + nid); }
-function nidOk_(n) {
-  if (!/^\d{13}$/.test(n)) return false;
-  var s = 0;
-  for (var i = 0; i < 12; i++) s += (+n.charAt(i)) * (13 - i);
-  return (11 - s % 11) % 10 === +n.charAt(12);
-}
 function newToken_() { return Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); }
 function pwHash_(pw, salt) { var h = salt + '|' + pw; for (var i = 0; i < 300; i++) h = sha_(h + '|' + salt); return h; }
 function cache_() { return CacheService.getScriptCache(); }
@@ -313,25 +289,13 @@ function reqBy_(no) {
   return null;
 }
 
-function studentRow_(sid) {
-  var sh = sh_('STU'), n = sh.getLastRow() - 1;
-  if (n < 1) return null;
-  var cell = sh.getRange(2, 1, n, 1).createTextFinder(sid).matchEntireCell(true).findNext();
-  if (!cell) return null;
-  var v = sh.getRange(cell.getRow(), 1, 1, COLS.STU.length).getValues()[0];
-  var o = { _row: cell.getRow() };
-  COLS.STU.forEach(function (c, j) { o[c[0]] = v[j]; });
-  return o;
-}
-function studentsMap_() {
-  var m = {};
-  rows_('STU').forEach(function (s) { m[String(s.sid)] = s; });
-  return m;
-}
-function pubStudent_(s) {
+// ข้อมูลนักเรียนที่กรอกไว้ในคำร้อง (คำร้องเวอร์ชันแรกที่ไม่มีช่องเหล่านี้ จะมีเฉพาะชื่อ-สกุลรวมและชั้น/ห้อง)
+function reqStudent_(r) {
+  var cls = String(r.cls || '').split('/');
   return {
-    sid: String(s.sid), prefix: String(s.prefix), fname: String(s.fname), lname: String(s.lname), dob: String(s.dob),
-    father: String(s.father), mother: String(s.mother), level: String(s.level), room: String(s.room), no: String(s.no)
+    sid: String(r.sid), prefix: String(r.prefix || ''), fname: String(r.fname || ''), lname: String(r.lname || ''),
+    full: String(r.name || ''), level: cls[0] || '', room: cls[1] || '', no: String(r.stuNo || ''),
+    dob: String(r.dob || ''), father: String(r.father || ''), mother: String(r.mother || '')
   };
 }
 function pubReq_(r) {
@@ -343,7 +307,7 @@ function pubReq_(r) {
     submittedAt: iso_(r.submittedAt), photoDue: iso_(r.photoDue), photoAt: iso_(r.photoAt), signAt: iso_(r.signAt),
     readyAt: iso_(r.readyAt), doneAt: iso_(r.doneAt), fixAt: iso_(r.fixAt), resume: String(r.resume || ''),
     issue: r.status === 'fix' ? { reason: String(r.issueReason || ''), todo: String(r.issueTodo || ''), text: String(r.issueText || '') } : null,
-    rating: +r.rating || null, changes: parseJson_(r.changes), channel: String(r.channel || 'online')
+    rating: +r.rating || null, channel: String(r.channel || 'online')
   };
 }
 function adminReq_(r) {
@@ -351,40 +315,57 @@ function adminReq_(r) {
   o.name = String(r.name); o.phone = String(r.phone || ''); o.note = String(r.note || '');
   o.reprint = +r.reprint || 0; o.fixCount = +r.fixCount || 0; o.createdBy = String(r.createdBy || '');
   o.lastIssue = { reason: String(r.issueReason || ''), text: String(r.issueText || '') };
+  o.student = reqStudent_(r); o.changes = parseJson_(r.changes);
   return o;
 }
 
 /* ===================== Student API ===================== */
 function needStudent_(tok) {
   var sid = session_(tok, 'student');
-  if (!sid) throw userErr_('กรุณายืนยันตัวตนอีกครั้ง', 'AUTH');
+  if (!sid) throw userErr_('กรุณากรอกรหัสนักเรียนอีกครั้ง', 'AUTH');
   return sid;
 }
 function meData_(sid) {
-  var s = studentRow_(sid);
-  if (!s) throw userErr_('ไม่พบข้อมูลนักเรียน', 'AUTH');
+  // ไม่ส่งข้อมูลส่วนบุคคลกลับไปที่หน้านักเรียน แสดงเฉพาะเลขคำร้อง เอกสาร และสถานะ
   var reqs = rows_('REQ').filter(function (r) { return String(r.sid) === sid; }).map(pubReq_)
     .sort(function (a, b) { return a.submittedAt < b.submittedAt ? 1 : -1; });
-  return { student: pubStudent_(s), requests: reqs, config: config_() };
+  return { student: { sid: sid }, requests: reqs, config: config_() };
 }
+function sidOk_(v) { var sid = String(v || '').replace(/\D/g, ''); if (!/^\d{5}$/.test(sid)) throw userErr_('รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก'); return sid; }
 function verify_(b) {
-  var sid = String(b.sid || '').replace(/\D/g, ''), nid = String(b.nid || '').replace(/\D/g, '');
-  if (!/^\d{5}$/.test(sid)) throw userErr_('รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก');
-  if (!nidOk_(nid)) throw userErr_('เลขประจำตัวประชาชนไม่ถูกต้อง ลองตรวจทีละหลักอีกครั้ง');
-  var c = cache_(), fk = 'fail|' + sid, fails = +(c.get(fk) || 0);
-  if (fails >= 5) throw userErr_('ลองผิดหลายครั้งเกินไป กรุณารอ 15 นาทีแล้วลองใหม่');
-  var s = studentRow_(sid);
-  if (!s || !s.nidHash || String(s.nidHash) !== nidHash_(nid)) {
-    c.put(fk, String(fails + 1), 900);
-    throw userErr_('รหัสนักเรียนหรือเลขประจำตัวประชาชนไม่ตรงกับข้อมูลในทะเบียน ถ้ามั่นใจว่าถูกต้อง กรุณาติดต่อครูปรางทอง หรือใช้ใบคำร้องกระดาษในลิ้นชักที่ 1');
-  }
-  c.remove(fk);
+  var sid = sidOk_(b.sid);
+  var c = cache_(), fk = 'vlim|' + String(b.client || '').slice(0, 40), n = +(c.get(fk) || 0);
+  if (b.client && n >= 30) throw userErr_('เข้าระบบบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
+  if (b.client) c.put(fk, String(n + 1), 600);
   var tok = lock_(function () { return createSession_('student', sid, b.remember ? 24 * 30 : 6); });
   var res = meData_(sid);
   res.token = tok;
   return res;
 }
 function me_(b) { return meData_(needStudent_(b.token)); }
+
+var MONTHS_ = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+// ตรวจข้อมูลนักเรียนที่กรอกเอง (ไม่มีข้อมูลจากทะเบียนให้เทียบ)
+function validateStudent_(x, sid) {
+  x = x || {};
+  var o = {
+    sid: sid, prefix: str_(x.prefix, 20), fname: str_(x.fname, 60), lname: str_(x.lname, 60),
+    level: str_(x.level, 2), room: str_(x.room, 3), no: str_(x.no, 3), dob: str_(x.dob, 10),
+    father: str_(x.father, 120), mother: str_(x.mother, 120)
+  };
+  if (PREFIXES.indexOf(o.prefix) < 0) throw userErr_('เลือกคำนำหน้าชื่อ');
+  if (!o.fname || !o.lname) throw userErr_('กรอกชื่อและชื่อสกุลให้ครบ');
+  if (!/^[1-6]$/.test(o.level)) throw userErr_('เลือกระดับชั้น');
+  if (!/^\d{1,2}$/.test(o.room) || +o.room < 1) throw userErr_('เลือกห้องเรียน');
+  if (!/^\d{1,2}$/.test(o.no) || +o.no < 1) throw userErr_('กรอกเลขที่ในห้องเรียน');
+  var m = o.dob.match(/^(\d{4})-(\d{2})-(\d{2})$/), d = m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  if (!d || d.getMonth() !== +m[2] - 1 || d.getDate() !== +m[3]) throw userErr_('เลือกวัน เดือน ปีเกิดให้ครบ');
+  var age = (new Date() - d) / 3.15576e10;
+  if (age < 9 || age > 30) throw userErr_('ปีเกิดไม่ถูกต้อง กรุณาตรวจอีกครั้ง');
+  if (!o.father || !o.mother) throw userErr_('กรอกชื่อบิดาและชื่อมารดา (ถ้าไม่มีข้อมูล พิมพ์เครื่องหมาย -)');
+  o.room = String(+o.room); o.no = String(+o.no);
+  return o;
+}
 
 function validateReq_(p, s) {
   var pp1 = clampInt_(p.pp1, 0, 2), pp7 = clampInt_(p.pp7, 0, 2);
@@ -415,66 +396,52 @@ function validateReq_(p, s) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(needBy)) needBy = '';
   var phone = String(p.phone || '').replace(/\D/g, '');
   if (!/^0\d{9}$/.test(phone)) throw userErr_('เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก ขึ้นต้นด้วย 0');
-  var ch = {}, src = p.changes || {};
-  ['name', 'dob', 'fa', 'mo'].forEach(function (k) {
-    var c = src[k];
-    if (!c || !s) return;
-    var reason = str_(c.reason, 60);
-    if (REASONS[k].indexOf(reason) < 0) throw userErr_('เลือกเหตุผลที่ขอแก้ไขข้อมูลให้ครบ');
-    if (k === 'name') {
-      var to = { pre: str_(c.to && c.to.pre, 20), fn: str_(c.to && c.to.fn, 60), ln: str_(c.to && c.to.ln, 60) };
-      if (PREFIXES.indexOf(to.pre) < 0 || !to.fn || !to.ln) throw userErr_('กรอกชื่อ-สกุลที่ขอแก้ไขให้ครบ');
-      ch.name = { from: { pre: String(s.prefix), fn: String(s.fname), ln: String(s.lname) }, to: to, reason: reason };
-    } else {
-      var t = str_(c.to, 120);
-      if (!t && reason.indexOf('ไม่มีข้อมูล') < 0) throw userErr_('กรอกข้อมูลที่ขอแก้ไขให้ครบ');
-      var from = k === 'dob' ? String(s.dob) : String(k === 'fa' ? s.father : s.mother);
-      ch[k] = { from: from, to: t, reason: reason };
-    }
-  });
-  return { pp1: pp1, pp7: pp7, pp6: sems.length, pp6Sems: sems.join(','), scope: scope, lang: lang, purpose: purpose, other: other, needBy: needBy, phone: phone, changes: ch };
+  return { pp1: pp1, pp7: pp7, pp6: sems.length, pp6Sems: sems.join(','), scope: scope, lang: lang, purpose: purpose, other: other, needBy: needBy, phone: phone };
 }
 function nextNo_() {
   var n = int_('nextNo', 1);
   setSv_('nextNo', n + 1);
   return String(n).padStart(4, '0');
 }
-function newRequest_(s, v, channel, who, manual) {
+function newRequest_(s, v, channel, who, owner) {
   var now = new Date();
   var r = {
-    no: nextNo_(), year: sv_('year'), sid: s ? String(s.sid) : String(manual.sid),
-    name: s ? fullName_(s) : fullName_(manual), cls: s ? s.level + '/' + s.room : manual.level + '/' + manual.room,
+    no: nextNo_(), year: sv_('year'), sid: s.sid, name: fullName_(s), cls: s.level + '/' + s.room,
+    prefix: s.prefix, fname: s.fname, lname: s.lname, stuNo: s.no, dob: s.dob, father: s.father, mother: s.mother,
     pp1: v.pp1, scope: v.scope, lang: v.lang, pp7: v.pp7, pp6: v.pp6, pp6Sems: v.pp6Sems, purpose: v.purpose, other: v.other, needBy: v.needBy,
-    phone: v.phone, changes: JSON.stringify(v.changes), channel: channel, submittedAt: now,
+    phone: v.phone, changes: '', channel: channel, submittedAt: now, ownerHash: owner ? sha_('own|' + owner) : '',
     photoDue: '', reprint: 0, fixCount: 0, createdBy: who, updatedAt: now
   };
   if (photosOf_(r) > 0) { r.photoDue = new Date(now.getTime() + int_('photoDays', 7) * 864e5); setStatus_(r, 'photo'); }
   else setStatus_(r, 'work');
   add_('REQ', r);
-  log_(r.no, who, 'ยื่นคำร้อง', (channel === 'online' ? 'ยื่นผ่านระบบออนไลน์' : 'บันทึกจากใบคำร้องกระดาษ' + (s ? '' : ' (ไม่พบในทะเบียน)')) + (photosOf_(r) ? '' : ' · ไม่ต้องใช้รูปถ่าย'));
+  log_(r.no, who, 'ยื่นคำร้อง', (channel === 'online' ? 'ยื่นผ่านระบบออนไลน์' : 'บันทึกจากใบคำร้องกระดาษ') + (photosOf_(r) ? '' : ' · ไม่ต้องใช้รูปถ่าย'));
   return r;
 }
 function submit_(b) {
   var sid = needStudent_(b.token);
   if (!bool_('open')) throw userErr_('ขณะนี้ปิดรับคำร้องออนไลน์ชั่วคราว');
-  var s = studentRow_(sid);
-  if (!s) throw userErr_('ไม่พบข้อมูลนักเรียน', 'AUTH');
+  var s = validateStudent_(b.student, sid);
   var v = validateReq_(b.req || {}, s);
+  var owner = newToken_();
   var r = lock_(function () {
     var now = new Date();
     var mine = rows_('REQ').filter(function (x) { return String(x.sid) === sid; });
     var today = mine.filter(function (x) { return x.submittedAt instanceof Date && (now - x.submittedAt) < 864e5; }).length;
     if (today >= 3) throw userErr_('ยื่นคำร้องได้ไม่เกิน 3 ครั้งต่อวัน');
     if (mine.filter(function (x) { return OPEN.indexOf(String(x.status)) > -1; }).length >= 3) throw userErr_('มีคำร้องที่ยังไม่ปิด 3 รายการแล้ว กรุณารอให้เสร็จก่อน');
-    return newRequest_(s, v, 'online', 'นักเรียน');
+    return newRequest_(s, v, 'online', 'นักเรียน', owner);
   });
-  return { request: pubReq_(r) };
+  return { request: pubReq_(r), ownerKey: owner };
 }
+// ยกเลิกและยืนยันรับเอกสาร ทำได้จากเครื่องที่ใช้ยื่นคำร้อง (มีรหัสเครื่องผู้ยื่น) เพราะเข้าระบบด้วยรหัสนักเรียนอย่างเดียว
+function ownerOk_(r, key) { return !!(r.ownerHash && key && String(r.ownerHash) === sha_('own|' + String(key))); }
 function studentCancel_(b) {
   var sid = needStudent_(b.token);
   return lock_(function () {
     var r = reqBy_(b.no);
     if (!r || String(r.sid) !== sid) throw userErr_('ไม่พบคำร้องนี้');
+    if (!ownerOk_(r, b.key)) throw userErr_('ยกเลิกได้จากเครื่องที่ใช้ยื่นคำร้องเท่านั้น ถ้าต้องการยกเลิก กรุณาติดต่อครูปรางทอง');
     if (!(r.status === 'photo' || (r.status === 'work' && photosOf_(r) === 0))) throw userErr_('ยกเลิกเองได้เฉพาะคำร้องที่ยังไม่ได้ส่งรูปถ่ายหรือยังไม่เริ่มจัดทำ ถ้าต้องการยกเลิก กรุณาติดต่อครูปรางทอง');
     setStatus_(r, 'cancel'); r.doneAt = new Date(); put_('REQ', r);
     log_(r.no, 'นักเรียน', 'ยกเลิกคำร้อง', '');
@@ -486,6 +453,7 @@ function received_(b) {
   return lock_(function () {
     var r = reqBy_(b.no);
     if (!r || String(r.sid) !== sid) throw userErr_('ไม่พบคำร้องนี้');
+    if (!ownerOk_(r, b.key)) throw userErr_('ยืนยันรับได้จากเครื่องที่ใช้ยื่นคำร้องเท่านั้น หรือแจ้งครูปรางทองเมื่อรับเอกสาร');
     if (r.status !== 'ready') throw userErr_('คำร้องนี้ยังไม่อยู่ในสถานะพร้อมรับ');
     var rating = clampInt_(b.rating, 0, 5);
     setStatus_(r, 'done'); r.doneAt = new Date(); r.rating = rating || ''; put_('REQ', r);
@@ -547,11 +515,11 @@ function needAdmin_(b) {
 function settingsObj_() {
   var s = settings_(), o = {};
   Object.keys(s).forEach(function (k) { if (k !== 'stagingOpen') o[k] = s[k].value; });
+  DEFAULTS.forEach(function (d) { if (!(d[0] in o)) o[d[0]] = d[1]; });
   return o;
 }
 function adminList_(b) {
   var me = needAdmin_(b), now = new Date();
-  var stu = studentsMap_();
   var list = rows_('REQ').filter(function (r) {
     if (OPEN.indexOf(String(r.status)) > -1) return true;
     var t = r.doneAt instanceof Date && r.doneAt.getTime() > 0 ? r.doneAt : r.updatedAt;
@@ -566,12 +534,11 @@ function adminList_(b) {
     (logs[k] = logs[k] || []).push({ t: iso_(l.time), who: String(l.who), action: String(l.action), detail: String(l.detail) });
   });
   var out = list.map(function (r) {
-    var o = adminReq_(r), s = stu[String(r.sid)];
-    o.student = s ? pubStudent_(s) : null;
+    var o = adminReq_(r);
     o.log = logs[String(r.no)] || [];
     return o;
   });
-  return { requests: out, config: config_(), settings: settingsObj_(), me: me, fixReasons: FIX, students: Object.keys(stu).length, serverTime: iso_(now) };
+  return { requests: out, config: config_(), settings: settingsObj_(), me: me, fixReasons: FIX, serverTime: iso_(now) };
 }
 function canDo_(r, act) {
   var s = String(r.status);
@@ -657,7 +624,8 @@ function adminNote_(b) {
 var SETTING_RULES = {
   open: 'bool', allowEnglish: 'bool', announce: 'text300', year: 'year', latest: 'sem', pending: 'sem0',
   photoDays: 'int1-30', workMin: 'int1-30', workMax: 'int1-30', autoCloseDays: 'int3-90',
-  holidays: 'text4000', staffName: 'text80', registrarName: 'text80', approverName: 'text80', approverTitle: 'text80'
+  holidays: 'text4000', staffName: 'text80', registrarName: 'text80', approverName: 'text80', approverTitle: 'text80',
+  directorName: 'text80', directorTitle: 'text80'
 };
 function adminSaveSettings_(b) {
   var me = needAdmin_(b), patch = b.patch || {};
@@ -698,25 +666,18 @@ function adminSaveSettings_(b) {
     return { settings: settingsObj_(), config: config_(), released: released, changed: changed };
   });
 }
+// ตรวจว่ารหัสนักเรียนนี้มีคำร้องที่ยังไม่ปิดหรือไม่ (ไม่มีฐานข้อมูลนักเรียนให้ค้นแล้ว)
 function adminFindStudent_(b) {
   needAdmin_(b);
-  var sid = String(b.sid || '').replace(/\D/g, '');
-  var s = /^\d{5}$/.test(sid) ? studentRow_(sid) : null;
+  var sid = sidOk_(b.sid);
   var open = rows_('REQ').filter(function (r) { return String(r.sid) === sid && OPEN.indexOf(String(r.status)) > -1; }).map(function (r) { return String(r.no); });
-  return { student: s ? pubStudent_(s) : null, open: open };
+  return { open: open };
 }
 function adminCreate_(b) {
   var me = needAdmin_(b);
-  var sid = String(b.sid || '').replace(/\D/g, '');
-  if (!/^\d{4,6}$/.test(sid)) throw userErr_('รหัสนักเรียนไม่ถูกต้อง');
-  var s = studentRow_(sid), manual = null;
-  if (!s) {
-    var m = b.manual || {};
-    manual = { sid: sid, prefix: str_(m.prefix, 20), fname: str_(m.fname, 60), lname: str_(m.lname, 60), level: str_(m.level, 2), room: str_(m.room, 3) };
-    if (PREFIXES.indexOf(manual.prefix) < 0 || !manual.fname || !manual.lname || !/^[1-6]$/.test(manual.level) || !/^\d{1,2}$/.test(manual.room)) throw userErr_('ไม่พบรหัสนี้ในทะเบียน กรุณากรอกคำนำหน้า ชื่อ นามสกุล ชั้น และห้องให้ครบ');
-  }
-  var v = validateReq_(b.req || {}, s || manual);
-  var r = lock_(function () { return newRequest_(s, v, 'paper', me.displayName, manual); });
+  var s = validateStudent_(b.student, sidOk_(b.sid));
+  var v = validateReq_(b.req || {}, s);
+  var r = lock_(function () { return newRequest_(s, v, 'paper', me.displayName, null); });
   return { request: adminReq_(r) };
 }
 function adminReport_(b) {
@@ -761,49 +722,6 @@ function workBetween_(a, b, hol) {
   return n;
 }
 
-/* ===================== Import from SGS (staging) ===================== */
-function stage_(b) {
-  if (!bool_('stagingOpen')) throw userErr_('ปิดรับการนำเข้ารายชื่ออยู่');
-  var rows = b.rows, batch = str_(b.batch, 40);
-  if (!batch || !Array.isArray(rows) || rows.length > 800) throw userErr_('ข้อมูลนำเข้าไม่ถูกต้อง');
-  return lock_(function () {
-    var now = new Date(), out = [], bad = 0;
-    rows.forEach(function (x) {
-      var sid = String(x.sid || '').replace(/\D/g, ''), nid = String(x.nid || '').replace(/\D/g, '');
-      if (!/^\d{4,6}$/.test(sid)) { bad++; return; }
-      var ok = nidOk_(nid);
-      if (!ok) bad++;
-      out.push({
-        sid: sid, nidHash: ok ? nidHash_(nid) : '', prefix: str_(x.prefix, 20), fname: str_(x.fname, 60), lname: str_(x.lname, 60),
-        dob: /^\d{4}-\d{2}-\d{2}$/.test(String(x.dob)) ? String(x.dob) : '', father: str_(x.father, 120), mother: str_(x.mother, 120),
-        level: str_(x.level, 2), room: str_(x.room, 3), no: str_(x.no, 3), updatedAt: now, batch: batch
-      });
-    });
-    addMany_('STG', out);
-    return { staged: out.length, invalid: bad };
-  });
-}
-function stageCommit_(b) {
-  if (!bool_('stagingOpen')) throw userErr_('ปิดรับการนำเข้ารายชื่ออยู่');
-  var batch = str_(b.batch, 40), total = +b.total || 0;
-  return lock_(function () {
-    var st = rows_('STG').filter(function (x) { return String(x.batch) === batch; });
-    if (!st.length || st.length !== total) throw userErr_('จำนวนรายการไม่ตรง: ได้รับ ' + st.length + ' จาก ' + total);
-    var map = {};
-    st.forEach(function (x) { map[String(x.sid)] = x; });
-    var list = Object.keys(map).sort().map(function (k) { var o = map[k]; delete o.batch; delete o._row; return o; });
-    var stu = sh_('STU');
-    if (stu.getLastRow() > 1) stu.getRange(2, 1, stu.getLastRow() - 1, COLS.STU.length).clearContent();
-    addMany_('STU', list);
-    var sg = sh_('STG');
-    if (sg.getLastRow() > 1) sg.getRange(2, 1, sg.getLastRow() - 1, COLS.STG.length).clearContent();
-    setSv_('stagingOpen', 'FALSE');
-    log_('', 'ระบบ', 'นำเข้ารายชื่อนักเรียนจาก SGS', list.length + ' คน');
-    return { students: list.length };
-  });
-}
-function openStaging() { _set = null; setSv_('stagingOpen', 'TRUE'); }
-
 /* ===================== Maintenance ===================== */
 function dailyJob() {
   lock_(function () {
@@ -816,7 +734,9 @@ function dailyJob() {
         setStatus_(r, 'done'); r.doneAt = now; put_('REQ', r);
         logs.push({ time: now, no: String(r.no), who: 'ระบบ', action: 'ปิดคำร้องอัตโนมัติ', detail: 'พร้อมรับเกิน ' + auto + ' วัน' });
       } else if (OPEN.indexOf(String(r.status)) < 0 && r.doneAt instanceof Date && r.doneAt.getTime() > 0 && (now - r.doneAt) > keep * 864e5 && r.name !== '(ลบข้อมูลแล้ว)') {
-        r.name = '(ลบข้อมูลแล้ว)'; r.phone = ''; r.changes = ''; r.note = ''; r.other = ''; r.issueText = ''; put_('REQ', r);
+        r.name = '(ลบข้อมูลแล้ว)'; r.phone = ''; r.changes = ''; r.note = ''; r.other = ''; r.issueText = '';
+        r.prefix = ''; r.fname = ''; r.lname = ''; r.dob = ''; r.father = ''; r.mother = ''; r.stuNo = ''; r.ownerHash = '';
+        put_('REQ', r);
       }
     });
     addMany_('LOG', logs);
@@ -834,8 +754,7 @@ function setup() {
   else { ss = SpreadsheetApp.create('ระบบคำร้อง ปพ. งานทะเบียน (ฐานข้อมูล)'); props.setProperty('SS_ID', ss.getId()); }
   _ss = ss; _set = null;
   ss.setSpreadsheetTimeZone('Asia/Bangkok');
-  if (!props.getProperty('PEPPER')) props.setProperty('PEPPER', newToken_() + newToken_());
-  var order = ['REQ', 'STU', 'LOG', 'SET', 'USR', 'STG', 'SES'];
+  var order = ['REQ', 'LOG', 'SET', 'USR', 'SES'];
   order.forEach(function (k) {
     var sh = ss.getSheetByName(SHEETS[k]) || ss.insertSheet(SHEETS[k]);
     var cols = COLS[k];
@@ -861,4 +780,18 @@ function setup() {
   if (!has) ScriptApp.newTrigger('dailyJob').timeBased().atHour(6).everyDays(1).inTimezone('Asia/Bangkok').create();
   Logger.log('ฐานข้อมูล: ' + ss.getUrl());
   return ss.getUrl();
+}
+
+/* ===================== ลบข้อมูลจากระบบเวอร์ชันแรก ===================== */
+// ลบชีตรายชื่อนักเรียนทั้งโรงเรียนที่เคยนำเข้าจาก SGS และค่าลับที่ใช้แฮชเลขประจำตัวประชาชน
+// ผู้ดูแลกด Run ฟังก์ชันนี้เองในหน้าแก้ไขสคริปต์ (ไม่กระทบคำร้องที่มีอยู่)
+function removeStudentRoster() {
+  var ss = ss_(), removed = [];
+  OLD_SHEETS.forEach(function (n) { var sh = ss.getSheetByName(n); if (sh) { ss.deleteSheet(sh); removed.push(n); } });
+  PropertiesService.getScriptProperties().deleteProperty('PEPPER');
+  _set = null;
+  var st = settings_().stagingOpen;
+  if (st) sh_('SET').deleteRow(st._row);
+  log_('', 'ระบบ', 'ลบรายชื่อนักเรียนที่นำเข้าจาก SGS', removed.length ? 'ลบชีต ' + removed.join(', ') : 'ไม่มีชีตให้ลบ');
+  Logger.log(removed.length ? 'ลบชีตแล้ว: ' + removed.join(', ') : 'ไม่มีชีตรายชื่อนักเรียนเหลืออยู่');
 }

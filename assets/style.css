@@ -126,6 +126,15 @@ legend{padding:0}
 .sig{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;font-size:14px;line-height:1.6}
 .sig div{text-align:center}
 .sig .dots{display:block;color:#666;letter-spacing:1px}
+.sig4{grid-template-columns:1fr 1fr;row-gap:10px;border-top:1px solid #bbb;padding-top:8px}
+.sig4 b{color:#151515}
+/* ป้ายคำร้องที่หัวใบคำร้อง (แทนป้ายหน้าชุดเอกสารเดิม) */
+.tag{border:2px solid #151515;border-radius:6px;padding:4px 12px 5px;line-height:1.15;min-width:118px;color:#151515}
+.tag span{display:block;font-size:11px}
+.tag b{font-family:var(--f-label);font-size:30px;letter-spacing:.05em;color:#151515}
+.tag em{font-style:normal;font-size:13px;font-weight:600}
+.tag i{display:block;font-style:normal;font-size:12px;font-weight:700;margin-top:2px}
+.sheet-mid{display:grid;justify-items:center;text-align:center;gap:3px;font-size:11px;line-height:1.35;color:#333}
 #print-root{display:none}
 @media print{
   body{background:#fff!important}
@@ -141,6 +150,13 @@ legend{padding:0}
   .pg-land .sheet-note{font-size:10.5pt;line-height:1.4;padding:3px 8px;margin-top:3px}
   .pg-land .sig{margin-top:3mm;font-size:11pt;line-height:1.38;gap:8px}
   .pg-land .sig .dots{margin-top:2.5mm}
+  .pg-land .sig4{row-gap:2.5mm;padding-top:2mm}
+  .pg-land .tag{padding:1mm 3.5mm 1.4mm;min-width:32mm}
+  .pg-land .tag span{font-size:8.5pt}
+  .pg-land .tag b{font-size:24pt}
+  .pg-land .tag em{font-size:10pt}
+  .pg-land .tag i{font-size:9.5pt}
+  .pg-land .sheet-mid{font-size:8.5pt}
   .pg-land .sheet:last-child{border-right:0}
   .pg-land.slips{display:grid;grid-template-columns:1fr 1fr}
   .pg-port{page:a4port;width:210mm;height:296mm;break-after:page;overflow:hidden}
@@ -185,10 +201,6 @@ legend{padding:0}
 .slip-qr ol{margin:.8mm 0 1mm;padding-left:4.6mm;font-size:9.5pt;line-height:1.38}
 .slip-qr .url{font-family:var(--f-label);font-size:7.5pt;word-break:break-all;display:block}
 .slip-staff{border-top:.25mm dashed #000;padding-top:2mm;font-size:9.5pt;display:flex;gap:1.5mm;align-items:flex-end;white-space:nowrap}
-.labels{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:49.3mm;height:100%}
-.label{font-family:var(--f-doc);color:#151515;border:1px dashed #aaa;padding:5mm 7mm;display:grid;align-content:center;gap:1mm;font-size:13pt;line-height:1.35}
-.label b{font-size:22pt;font-family:var(--f-label);letter-spacing:.04em}
-.label .big{font-size:15pt;font-weight:700}
 /* โปสเตอร์ QR: พื้นขาว แถบม่วงด้านบน ประหยัดหมึก */
 .poster{height:100%;background:#fff;color:#2A0E4F;display:grid;grid-template-rows:auto 1fr auto auto;font-family:var(--f-head);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .poster-top{background:linear-gradient(135deg,#2E0F57,#5B2A9E);color:#fff;display:flex;align-items:center;justify-content:center;gap:7mm;padding:9mm 16mm;border-bottom:3mm solid #F5B700}
