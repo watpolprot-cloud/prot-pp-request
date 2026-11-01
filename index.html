@@ -278,7 +278,22 @@
 .dw-out{animation:slipOut 3.4s ease-in-out infinite}
 @keyframes slipOut{0%{transform:translateY(46px);opacity:1}48%,82%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
 .dw-bob{animation:nudge 1.6s ease-in-out infinite}
-@media (prefers-reduced-motion: reduce){.guide *{animation:none!important}.play .hw-sig{stroke-dashoffset:0}}
+.g-row.cab-row{grid-template-columns:minmax(0,1fr) 92px}
+.cab-art{display:block;width:100%;height:auto;overflow:visible}
+.cab-in{animation:cabIn 3s ease-in-out infinite}
+@keyframes cabIn{0%{transform:translateX(16px);opacity:0}15%{opacity:1}65%{transform:translateX(-14px);opacity:1}80%,100%{transform:translateX(-14px);opacity:0}}
+.cab-out{animation:cabOut 3s ease-in-out infinite}
+@keyframes cabOut{0%{transform:translateX(-14px);opacity:0}15%{opacity:1}65%,85%{transform:translateX(10px);opacity:1}100%{transform:translateX(10px);opacity:0}}
+.cab-map{display:grid;grid-template-columns:118px minmax(0,1fr);gap:14px;align-items:start}
+.cab-map svg{width:100%;height:auto;display:block}
+.cab-list{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.cab-list li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;align-items:center;font-size:13.5px;line-height:1.4;color:var(--ink-2)}
+.cab-list li i{font:700 13px/26px "Chakra Petch",sans-serif;font-style:normal;white-space:nowrap;text-align:center;border-radius:6px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.cab-list li b{font:600 14px var(--f-head);color:var(--ink);display:block}
+.cab-list li.key i{background:#F5B700;color:#2A1300;border-color:#E2A800}
+.cab-list li.off{opacity:.55}
+@media (max-width:360px){.cab-map{grid-template-columns:96px minmax(0,1fr)}}
+@media (prefers-reduced-motion: reduce){.guide *,.cab-in,.cab-out,.dw-bob{animation:none!important}.play .hw-sig{stroke-dashoffset:0}}
 /* ภาพประจำขั้นสถานะ */
 .stage{padding:0;gap:0;overflow:hidden}
 .st-art{display:block;width:100%;height:auto;max-height:180px;background:linear-gradient(180deg,var(--teal-soft),var(--surface));overflow:hidden}
@@ -364,25 +379,6 @@
   // เล่นแอนิเมชันภาพแนะนำครั้งแรกที่เปิด (รวมการแสดงผลซ้ำในช่วง 4.5 วินาทีแรก) แล้วแสดงแบบนิ่ง
   function playOnce(k) { P.played = P.played || {}; if (P.played[k] === 2) return false; if (!P.played[k]) { P.played[k] = 1; setTimeout(function () { P.played[k] = 2; }, 4500); } return true; }
   // ---------- ภาพแนะนำการส่งรูปถ่าย (ใบนำส่งจำลอง + ลิ้นชัก) ----------
-  function drawerInner(id, label, badge, mode, photo) {
-    var inn = mode === 'in';
-    var paper = '<g class="' + (inn ? 'dw-in' : 'dw-out') + '"><rect class="dw-paper" x="50" y="4" width="48" height="60" rx="2"/>' +
-      '<path class="dw-pl" d="M56 16h22M56 24h30M56 32h30M56 40h24"/>' +
-      (photo ? '<rect x="80" y="7" width="14" height="17" rx="1.5" fill="#cfd8ec" stroke="#9fb0cf"/><circle cx="87" cy="13" r="3" fill="#9fb0cf"/><path d="M81.5 24c1-4 3-5.5 5.5-5.5s4.5 1.5 5.5 5.5z" fill="#9fb0cf"/><path d="M86 5v9" stroke="#555" stroke-width="1.4" stroke-linecap="round"/>' : '') + '</g>';
-    var arw = inn ? '<g class="dw-bob"><path class="dw-arw" d="M122 6v28M114 26l8 9 8-9"/></g>' : '<g class="dw-bob"><path class="dw-arw" d="M122 36V8M114 16l8-9 8 9"/></g>';
-    return '<defs><clipPath id="' + id + '"><rect x="0" y="-40" width="150" height="88"/></clipPath></defs>' +
-      '<rect class="dw-cab" x="4" y="40" width="142" height="76" rx="9"/>' +
-      '<g clip-path="url(#' + id + ')">' + paper + '</g>' +
-      '<rect class="dw-slot" x="20" y="44" width="110" height="7" rx="3"/>' +
-      '<rect class="dw-front" x="12" y="50" width="126" height="60" rx="7"/>' +
-      '<rect class="dw-plate" x="40" y="60" width="70" height="22" rx="4"/><text class="dw-plate-t" x="75" y="75.5" text-anchor="middle">' + label + '</text>' +
-      '<rect class="dw-handle" x="57" y="90" width="36" height="7" rx="3.5"/>' +
-      '<circle class="dw-num" cx="126" cy="66" r="' + (badge.length > 1 ? 14 : 12) + '"/><text class="dw-num-t" x="126" y="' + (badge.length > 1 ? 70 : 71) + '" text-anchor="middle" font-size="' + (badge.length > 1 ? 10.5 : 14) + '">' + badge + '</text>' +
-      arw;
-  }
-  function drawerArt(n, mode, photo) {
-    return '<svg class="g-art" viewBox="0 0 150 118" role="img" aria-label="ลิ้นชักที่ ' + n + '">' + drawerInner('dwc' + n, 'ลิ้นชักที่ ' + n, String(n), mode, photo) + '</svg>';
-  }
   function slipArt(o) {
     function boxes(x0, w, n, y) { var s = '<rect x="' + x0 + '" y="' + y + '" width="' + (w * n) + '" height="34" fill="#fff" stroke="#1b1b1b" stroke-width="1.6"/>'; for (var i = 1; i < n; i++) s += '<path d="M' + (x0 + w * i) + ' ' + y + 'v34" stroke="#1b1b1b" stroke-width="1.2"/>'; return s; }
     function digits(x0, w, str, y, d0) { return String(str).split('').map(function (ch, i) { return '<text class="hw" style="--d:' + (d0 + i * 0.12).toFixed(2) + 's" x="' + (x0 + w * i + w / 2) + '" y="' + y + '" font-size="23" text-anchor="middle">' + esc(ch) + '</text>'; }).join(''); }
@@ -448,7 +444,7 @@
     var o = { no: r.no, sid: r.sid, name: PP.fullName(s).trim() || 'ชื่อ-สกุลของนักเรียน', lv: cls[0] || '', room: cls[1] || '', num: String(s.no || ''), photos: ph,
       dd: String(d.getDate()), mm: String(d.getMonth() + 1), yy: String(d.getFullYear() + 543) };
     return '<div class="card guide' + (play ? ' play' : '') + '"><div class="card-h">ส่งรูปถ่าย ' + ph + ' รูป ตามขั้นตอนนี้<em>ภายใน ' + PP.fD(r.photoDue) + '</em></div>' +
-      '<div class="g-step"><div class="g-n">1</div><div class="g-row"><div class="g-t"><b>หยิบใบนำส่งรูปถ่าย</b><span>ที่<b>ลิ้นชักที่ 1</b> ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ</span></div>' + drawerArt(1, 'out', false) + '</div></div>' +
+      '<div class="g-step"><div class="g-n">1</div><div class="g-row cab-row"><div class="g-t"><b>หยิบใบนำส่งรูปถ่าย</b><span>ที่<b>ลิ้นชักที่ 1</b> (ชั้นบนสุด) ของตู้ลิ้นชัก 10 ชั้น หน้าห้องสำนักงานวิชาการ</span></div>' + PP.cabinetSVG(1, 'out') + '</div></div>' +
       '<div class="g-flow" aria-hidden="true"><svg viewBox="0 0 14 30"><path class="fl" d="M7 1v22"/><path d="M1.5 18.5 7 25l5.5-6.5"/></svg></div>' +
       '<div class="g-step"><div class="g-n">2</div><div class="g-t"><b>กรอกใบนำส่งตามตัวอย่าง</b><span>ลูกศรชี้ช่องที่ต้องเขียนเลขคำร้องและรหัสนักเรียน</span></div>' +
         '<div class="g-slip">' + slipArt(o) + '<p class="g-cap"><b>ตัวอักษรสีน้ำเงิน</b> คือสิ่งที่นักเรียนเขียนเอง</p></div>' +
@@ -460,7 +456,7 @@
           '<li><i>5</i><span>หนีบรูป 1.5 นิ้ว <b>' + ph + ' รูป</b> ที่มุมขวาบน เขียนชื่อและรหัสนักเรียนด้านหลังรูปทุกใบ</span></li>' +
         '</ol></div>' +
       '<div class="g-flow" aria-hidden="true"><svg viewBox="0 0 14 30"><path class="fl" d="M7 1v22"/><path d="M1.5 18.5 7 25l5.5-6.5"/></svg></div>' +
-      '<div class="g-step"><div class="g-n">3</div><div class="g-row"><div class="g-t"><b>ใส่ลิ้นชักที่ 2</b><span>ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</span></div>' + drawerArt(2, 'in', true) + '</div></div>' +
+      '<div class="g-step"><div class="g-n">3</div><div class="g-row cab-row"><div class="g-t"><b>ใส่ลิ้นชักที่ 2</b><span>ชั้นที่ 2 จากด้านบน ภายใน <b>' + PP.fD(r.photoDue) + '</b> ถ้าเลยกำหนด คำร้องจะหมดอายุ</span></div>' + PP.cabinetSVG(2, 'in') + '</div></div>' +
       '</div>';
   }  // ---------- ภาพประจำขั้นสถานะ (ขั้นที่ 2–5) ----------
   var SA_PL = 'stroke="#d3cbe0" stroke-width="3.2" stroke-linecap="round"';
@@ -495,7 +491,7 @@
         '<g class="sa-stamp"><circle cx="120" cy="99" r="18" fill="none" stroke="#B5362E" stroke-width="2.6"/><circle cx="120" cy="99" r="13" fill="none" stroke="#B5362E" stroke-width="1.1"/><text x="120" y="102" text-anchor="middle" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="7" fill="#B5362E">ทะเบียน</text></g>' +
         '<g class="sa-pen"><g transform="translate(222 99) rotate(32)"><rect class="sa-navy" x="-4.5" y="-50" width="9" height="42" rx="3.5"/><rect x="-4.5" y="-50" width="9" height="9" rx="3" fill="#F5B700"/><path d="M-4.5 -8 0 1 4.5 -8z" fill="#333"/></g></g>';
     } else if (kind === 'ready') {
-      a = floor + '<g transform="translate(85 8)">' + drawerInner('dwcR', 'ลิ้นชัก ม.' + esc(String(r.cls).split('/')[0]), 'ม.' + esc(String(r.cls).split('/')[0]), 'out', false) + '</g>' +
+      a = floor + '<g transform="translate(117 1) scale(.53)">' + PP.cabinetG(PP.drawerNo(String(r.cls).split('/')[0]), 'out') + '</g>' +
         [[64, 36, 0], [256, 30, .6], [240, 92, 1.1], [74, 96, 1.6]].map(function (s) { return '<path class="sa-spark" style="--d:' + s[2] + 's" d="M' + s[0] + ' ' + (s[1] - 9) + 'q2 7 9 9-7 2-9 9-2-7-9-9 7-2 9-9z"/>'; }).join('');
     } else if (kind === 'done') {
       a = floor + '<rect x="110" y="12" width="98" height="114" rx="4" fill="#fff" stroke="#c9c0d8" stroke-width="1.4"/><image href="assets/emblem-bw.png" x="147" y="18" width="24" height="30"/><path d="M124 58h70M124 68h58M124 78h66M124 88h44" ' + SA_PL + '/>' +
@@ -560,6 +556,16 @@
     return '<div class="note n-alert"><b>เชื่อมต่อระบบไม่ได้</b><span>' + esc(P.err || 'กรุณาลองใหม่อีกครั้ง') + '</span></div><button class="btn btn-pri btn-blk" data-act="retry">ลองใหม่</button>' +
       '<p class="small">ถ้ายังใช้ไม่ได้ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 หน้าห้องสำนักงานวิชาการได้ตามเดิม หรือโทร. <a href="tel:023264050">0-2326-4050</a></p>';
   };
+  function cabinetCard() {
+    return '<div class="card"><div class="card-h">ตู้ลิ้นชัก 10 ชั้น หน้าห้องสำนักงานวิชาการ</div><div class="cab-map">' + PP.cabinetSVG(0) +
+      '<ul class="cab-list">' + PP.DRAWERS.filter(function (d) { return d.n <= 3 || d.n >= 8; }).map(function (d) {
+        if (d.n === 3) return '<li class="key"><i>3–8</i><span><b>รับเอกสาร ม.1 – ม.6</b>ลิ้นชักที่ 3 = ม.1 ไล่ลงไปถึงลิ้นชักที่ 8 = ม.6</span></li>';
+        if (d.n === 8) return '';
+        if (d.n === 9) return '<li class="off"><i>9–10</i><span>ว่าง</span></li>';
+        if (d.n === 10) return '';
+        return '<li class="key"><i>' + d.n + '</i><span><b>' + d.label + '</b>' + d.sub + '</span></li>';
+      }).join('') + '</ul></div><p class="small">นับจากชั้นบนสุดลงมา ทั้ง 10 ชั้นอยู่ในแถวเดียวกัน</p></div>';
+  }
   S.home = function () {
     var c = P.cfg || {};
     return '<section class="hero"><div class="hero-fx" aria-hidden="true"><i class="rays"></i><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div><div class="hero-in">' +
@@ -574,7 +580,8 @@
       '</div></section>' +
       (c.announce ? '<div class="note n-wait"><b>ประกาศจากงานทะเบียน</b><span>' + esc(c.announce) + '</span></div>' : '') +
       (c.open ? '' : '<div class="note n-alert"><b>ปิดรับคำร้องออนไลน์ชั่วคราว</b><span>ยังติดตามคำร้องเดิมได้ตามปกติ</span></div>') +
-      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="olx"><li><span>กรอกคำร้องในระบบ ได้<b>เลขคำร้อง 4 หลัก</b></span></li><li><span>ถ้าขอ ปพ.1 หรือ ปพ.7 หยิบ<b>ใบนำส่งรูปถ่าย</b>จากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ หนีบรูปถ่าย 1.5 นิ้ว แล้วใส่<b>ลิ้นชักที่ 2</b> (ปพ.6 ไม่ต้องใช้รูป)</span></li><li><span>ติดตามสถานะในหน้านี้</span></li><li><span>รับเอกสารที่<b>ลิ้นชักระดับชั้น</b>ของตนเอง แล้วกดยืนยันรับ</span></li></ol></div>' +
+      '<div class="card"><div class="card-h">ขั้นตอนโดยย่อ</div><ol class="olx"><li><span>กรอกคำร้องในระบบ ได้<b>เลขคำร้อง 4 หลัก</b></span></li><li><span>ถ้าขอ ปพ.1 หรือ ปพ.7 หยิบ<b>ใบนำส่งรูปถ่าย</b>จากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ หนีบรูปถ่าย 1.5 นิ้ว แล้วใส่<b>ลิ้นชักที่ 2</b> (ปพ.6 ไม่ต้องใช้รูป)</span></li><li><span>ติดตามสถานะในหน้านี้</span></li><li><span>รับเอกสารที่<b>ลิ้นชักระดับชั้น</b>ของตนเอง (ลิ้นชักที่ 3–8) แล้วกดยืนยันรับ</span></li></ol></div>' +
+      cabinetCard() +
       '<div class="card"><div class="card-h">ตัวอย่างเอกสารที่ขอได้</div><div class="exs">' + [['pp1', 'ผลการเรียนทุกภาคเรียน'], ['pp6', 'ผลการเรียนรายภาคเรียน'], ['pp7', 'รับรองการเป็นนักเรียน']].map(function (x) { return '<button class="ex" data-act="sample" data-doc="' + x[0] + '"><img src="' + PP.DOCS[x[0]].thumb + '" alt="" loading="lazy" width="240" height="351"><b>' + PP.DOCS[x[0]].code + '</b><span>' + x[1] + '</span></button>'; }).join('') + '</div><p class="small" style="text-align:center">แตะเพื่อดูตัวอย่างขนาดใหญ่</p></div>' +
       contact() +
       '<p class="foot">ไม่มีมือถือ ใช้ใบคำร้องกระดาษในลิ้นชักที่ 1 ได้ตามเดิม<br>ข้อมูลใช้เพื่อจัดทำเอกสารของงานทะเบียนเท่านั้น</p>' +
@@ -679,7 +686,7 @@
   };
   S.done = function () {
     var r = findReq(P.lastNo); if (!r) return S.home();
-    var ph = nPhotos(r), c = P.cfg, drawer = 'ม.' + esc(String(r.cls).split('/')[0]);
+    var ph = nPhotos(r), c = P.cfg, drawer = esc(PP.drawerName(String(r.cls).split('/')[0]));
     var play = playOnce('g' + r.no);
     var after = ph
       ? photoGuide(r, play) +
@@ -688,7 +695,7 @@
       : '<div class="card"><div class="card-h">สิ่งที่ต้องทำต่อ</div><ol class="ol">' +
         '<li><b>ไม่ต้องส่งรูปถ่ายและใบนำส่ง</b> งานทะเบียนเริ่มจัดทำเอกสารได้ทันที</li>' +
         '<li>ติดตามสถานะในหน้านี้ คาดว่าพร้อมรับระหว่าง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMin)) + '</b> ถึง <b>' + PP.fD(PP.addWork(r.submittedAt, c.workMax)) + '</b></li>' +
-        '<li>รับเอกสารที่<b>ลิ้นชัก ' + drawer + '</b> หน้าห้องสำนักงานวิชาการ แล้วกดยืนยันรับ</li></ol></div>';
+        '<li>รับเอกสารที่<b>' + drawer + '</b> ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ แล้วกดยืนยันรับ</li></ol></div>';
     return '<h2 class="h">ยื่นคำร้องเรียบร้อยแล้ว</h2>' +
       '<div class="bigno"><span>เลขคำร้อง</span><b>' + esc(r.no) + '</b><small class="small">ยื่นเมื่อ ' + PP.fDT(r.submittedAt) + '</small></div>' +
       after +
@@ -707,7 +714,7 @@
     var r = findReq(P.viewNo); if (!r) return S.list();
     var ph = nPhotos(r), start = r.photoAt || (ph ? '' : r.submittedAt);
     var c = P.cfg, stage = PP.stageOf(r), times = [r.submittedAt, start, r.signAt, r.readyAt, r.doneAt], card = '';
-    var mine = !!ownKey(r.no), drawer = 'ม.' + esc(String(r.cls).split('/')[0]), canCancel = mine && (r.status === 'photo' || (r.status === 'work' && !ph));
+    var mine = !!ownKey(r.no), drawer = esc(PP.drawerName(String(r.cls).split('/')[0])), canCancel = mine && (r.status === 'photo' || (r.status === 'work' && !ph));
     var confirmBox = canCancel && P.confirmCancel === r.no ? '<div class="confirm"><span>ยืนยันยกเลิกคำร้อง ' + esc(r.no) + ' หรือไม่</span><div><button class="btn btn-sm btn-warn" data-act="cancel-yes" data-no="' + esc(r.no) + '">ยืนยันยกเลิก</button><button class="btn btn-sm btn-sec" data-act="cancel-no">ไม่ยกเลิก</button></div></div>' : '';
     if (r.status === 'photo') {
       var play = playOnce('g' + r.no);
@@ -721,7 +728,7 @@
     if (r.status === 'ready') {
       card = P.rateFor === r.no
         ? '<div class="card"><div class="card-h">ให้คะแนนบริการครั้งนี้</div><p class="small">1 = ควรปรับปรุง · 5 = ดีมาก</p><div class="rate">' + [1, 2, 3, 4, 5].map(function (n) { return '<button data-act="rate" data-no="' + esc(r.no) + '" data-v="' + n + '"' + (P.busy ? ' disabled' : '') + '>' + n + '</button>'; }).join('') + '</div><button class="link" data-act="rate" data-no="' + esc(r.no) + '" data-v="0">ข้ามการให้คะแนน</button></div>'
-        : stageCard('ready', 4, 'พร้อมรับที่ลิ้นชัก ' + drawer, 'ตู้ลิ้นชักหน้าห้องสำนักงานวิชาการ' + (mine ? ' ได้รับแล้วกดปุ่มด้านล่าง' : ' ได้รับแล้วแจ้งครูปรางทอง หรือกดยืนยันจากเครื่องที่ใช้ยื่นคำร้อง'), r) + (mine ? '<button class="btn btn-pri btn-blk" data-act="got" data-no="' + esc(r.no) + '">ฉันได้รับเอกสารแล้ว</button>' : '');
+        : stageCard('ready', 4, 'พร้อมรับที่' + drawer, 'ตู้ลิ้นชัก 10 ชั้น หน้าห้องสำนักงานวิชาการ' + (mine ? ' ได้รับแล้วกดปุ่มด้านล่าง' : ' ได้รับแล้วแจ้งครูปรางทอง หรือกดยืนยันจากเครื่องที่ใช้ยื่นคำร้อง'), r) + (mine ? '<button class="btn btn-pri btn-blk" data-act="got" data-no="' + esc(r.no) + '">ฉันได้รับเอกสารแล้ว</button>' : '');
     }
     if (r.status === 'done') card = stageCard('done', 5, 'รับเอกสารเรียบร้อยแล้ว', (r.doneAt ? 'ปิดคำร้องเมื่อ ' + PP.fDT(r.doneAt) : 'ปิดคำร้องแล้ว') + (r.rating ? ' · ให้คะแนน ' + r.rating + ' จาก 5' : '') + ' · ขอบคุณที่ใช้บริการ', r);
     if (r.status === 'cancel') card = '<div class="note n-done"><b>คำร้องถูกยกเลิก</b><span>ยื่นคำร้องใหม่ได้จากหน้าแรก</span></div>';
@@ -734,7 +741,7 @@
         var sub = times[i] ? (cls === 'done' ? PP.fDT(times[i]) : (cls === 'cur' || cls === 'alert') ? 'เริ่ม ' + PP.fDT(times[i]) : '') : '';
         if (n === 1 && !ph) t = 'ยื่นคำร้องแล้ว (ไม่ต้องใช้รูป)';
         if (n === 2 && r.status === 'hold') t = 'กำลังจัดทำ (รอผลการเรียน)';
-        if (n === 4 && (cls === 'cur' || cls === 'done')) t = 'พร้อมรับ ลิ้นชัก ' + drawer;
+        if (n === 4 && (cls === 'cur' || cls === 'done')) t = 'พร้อมรับที่' + drawer;
         return '<li class="' + cls + '"><span class="dot">' + n + '</span><div class="vt"><b>' + t + (cls === 'cur' ? '<span class="cur-tag">ขั้นปัจจุบัน</span>' : '') + (cls === 'alert' ? '<span class="alert-tag">ต้องแก้ไข</span>' : '') + '</b><small>' + sub + '</small></div></li>';
       }).join('') + '</ol>';
     }

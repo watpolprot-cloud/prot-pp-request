@@ -143,6 +143,40 @@
   PP.PREFIXES = ['เด็กชาย', 'เด็กหญิง', 'นาย', 'นางสาว', 'นาง'];
   PP.MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
   // ปีเกิด (พ.ศ.) ที่เลือกได้ในแบบฟอร์ม: อายุประมาณ 10 ถึง 25 ปี
+  // ตู้ลิ้นชัก 10 ชั้น แถวเดียว (นับจากบนลงล่าง): 1 รับแบบฟอร์ม · 2 ส่งเอกสาร · 3–8 รับเอกสาร ม.1–ม.6 · 9–10 ว่าง
+  PP.DRAWERS = [
+    { n: 1, short: 'รับแบบฟอร์ม', label: 'รับแบบฟอร์ม', sub: 'ใบนำส่งรูปถ่าย และแบบคำร้องกระดาษ' },
+    { n: 2, short: 'ส่งเอกสาร', label: 'ส่งเอกสาร', sub: 'ใบนำส่งที่กรอกแล้วพร้อมรูปถ่าย' }
+  ].concat([1, 2, 3, 4, 5, 6].map(function (lv) { return { n: lv + 2, lv: lv, short: 'รับ ม.' + lv, label: 'รับเอกสาร ม.' + lv, sub: 'เอกสาร ปพ. ที่พร้อมรับของนักเรียนชั้น ม.' + lv }; }))
+    .concat([{ n: 9, short: '', label: 'ว่าง', sub: '' }, { n: 10, short: '', label: 'ว่าง', sub: '' }]);
+  PP.drawerNo = function (level) { var lv = parseInt(level, 10); return lv >= 1 && lv <= 6 ? lv + 2 : 0; };
+  PP.drawerName = function (level) { var n = PP.drawerNo(level); return n ? 'ลิ้นชักที่ ' + n + ' (ม.' + (n - 2) + ')' : 'ลิ้นชักระดับชั้น'; };
+  // ภาพตู้ลิ้นชัก 10 ชั้น เน้นชั้นที่ hi; mode 'in' = ใส่เอกสาร, 'out' = หยิบออก; คืนค่าเป็นกลุ่ม SVG ขนาด 160 x 262
+  PP.cabinetG = function (hi, mode, id) {
+    var g = '', H = 22, top = 10, x = 26, w = 92;
+    g += '<rect x="' + (x - 7) + '" y="' + (top - 6) + '" width="' + (w + 14) + '" height="' + (10 * H + 10) + '" rx="7" fill="#EFE8FA" stroke="#3A1468" stroke-width="2"/>';
+    PP.DRAWERS.forEach(function (d) {
+      var y = top + (d.n - 1) * H, on = d.n === hi;
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + (H - 3) + '" rx="3" fill="' + (on ? '#F5B700' : '#fff') + '" stroke="' + (on ? '#8A5A00' : '#b9b0c9') + '" stroke-width="' + (on ? 2 : 1.2) + '"/>' +
+        '<text x="' + (x + 9) + '" y="' + (y + 14) + '" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="11" fill="' + (on ? '#2A1300' : '#3A1468') + '">' + d.n + '</text>' +
+        (d.short ? '<text x="' + (x + 20) + '" y="' + (y + 13.5) + '" font-family="IBM Plex Sans Thai,sans-serif" font-weight="' + (on ? 700 : 500) + '" font-size="9" fill="' + (on ? '#2A1300' : '#6b6380') + '">' + d.short + '</text>' : '') +
+        '<rect x="' + (x + w - 14) + '" y="' + (y + 7) + '" width="9" height="5" rx="2.5" fill="' + (on ? '#2A1300' : '#b9b0c9') + '"/>';
+    });
+    g += '<rect x="' + (x - 3) + '" y="' + (top + 10 * H + 4) + '" width="7" height="10" fill="#3A1468"/><rect x="' + (x + w - 4) + '" y="' + (top + 10 * H + 4) + '" width="7" height="10" fill="#3A1468"/>';
+    if (hi) {
+      var cy = top + (hi - 1) * H + (H - 3) / 2;
+      var paper = '<rect x="0" y="-10" width="18" height="22" rx="1.5" fill="#fff" stroke="#8d84a3" stroke-width="1.2"/><path d="M4 -3h10M4 2h10M4 7h7" stroke="#c9c2d6" stroke-width="1.6" stroke-linecap="round"/>';
+      g += mode === 'in'
+        ? '<g class="cab-in" style="--cy:' + cy + 'px"><g transform="translate(132 ' + cy + ')">' + paper + '</g></g><g class="dw-bob"><path d="M156 ' + cy + 'h-30M134 ' + (cy - 7) + 'l-8 7 8 7" fill="none" stroke="#E2A800" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>'
+        : mode === 'out'
+          ? '<g class="cab-out"><g transform="translate(132 ' + cy + ')">' + paper + '</g></g><g class="dw-bob"><path d="M124 ' + cy + 'h30M146 ' + (cy - 7) + 'l8 7-8 7" fill="none" stroke="#E2A800" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>'
+          : '<path d="M156 ' + cy + 'h-30M134 ' + (cy - 7) + 'l-8 7 8 7" fill="none" stroke="#E2A800" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    return g;
+  };
+  PP.cabinetSVG = function (hi, mode, cls) {
+    return '<svg class="' + (cls || 'cab-art') + '" viewBox="0 0 162 252" role="img" aria-label="ตู้ลิ้นชัก 10 ชั้น' + (hi ? ' ลิ้นชักที่ ' + hi : '') + '">' + PP.cabinetG(hi, mode) + '</svg>';
+  };
   PP.birthYears = function () { var y = new Date().getFullYear() + 543, out = []; for (var i = y - 10; i >= y - 25; i--) out.push(i); return out; };
   // วันเกิดจากช่องเลือก วัน/เดือน/ปี พ.ศ. → ปปปป-ดด-วว (ค.ศ.) หรือ '' ถ้ายังไม่ครบหรือไม่มีวันนั้นจริง
   PP.dobISO = function (d, m, yBE) {

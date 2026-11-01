@@ -110,6 +110,15 @@ legend{padding:0}
 .vstep .alert-tag{font:600 11px var(--f-head);color:var(--red);margin-left:6px}
 
 /* paper: request form, slips, labels, poster (print) */
+.dlabels{font-family:var(--f-doc);color:#000;background:#fff;height:296mm;padding:8mm 10mm;display:grid;grid-template-rows:repeat(10,1fr);gap:0}
+.dlabel{display:grid;grid-template-columns:30mm minmax(0,1fr) auto;align-items:center;gap:5mm;border:.3mm dashed #000;border-top:0;padding:0 6mm 0 0}
+.dlabel:first-child{border-top:.3mm dashed #000}
+.dl-n{height:100%;display:grid;place-content:center;text-align:center;background:#000;color:#fff;line-height:1}
+.dl-n span{font-size:10pt}.dl-n b{font-size:34pt;font-weight:700;line-height:1.05}
+.dl-t{display:grid;gap:1mm;min-width:0}.dl-t b{font-size:21pt;font-weight:700;line-height:1.15}.dl-t span{font-size:11.5pt}
+.dl-free{display:block;border-bottom:.3mm dotted #000;height:11mm;width:90%}
+.dl-lv{font-size:30pt;font-weight:700;border:.6mm solid #000;border-radius:3mm;padding:0 4mm;line-height:1.3}
+.dlabel.blank .dl-n{background:#fff;color:#000;border-right:.3mm solid #000}
 .sheet{background:#fff;color:#151515;font-family:var(--f-doc);font-size:15px;line-height:1.7;padding:24px 28px 20px;position:relative}
 .sheet-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12.5px;line-height:1.45;color:#333}
 .sheet-top b{font-size:14px;color:#151515}

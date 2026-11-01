@@ -318,7 +318,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     if (r.status === 'photo') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="recv">ได้รับรูปแล้ว</button>';
     if (r.status === 'work') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="sign">เสนอลงนาม</button>';
     if (r.status === 'hold') next = '<button class="btn btn-sm btn-pri" disabled>รอผลการเรียน ' + esc(r.scope) + '</button>';
-    if (r.status === 'sign') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="ready">พร้อมรับ (ลิ้นชัก ม.' + lvOf(r) + ')</button>';
+    if (r.status === 'sign') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="ready">พร้อมรับ (' + esc(PP.drawerName(lvOf(r))) + ')</button>';
     if (r.status === 'ready') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="staffdone">บันทึกว่านักเรียนรับแล้ว</button>';
     if (r.status === 'fix') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="resume">นักเรียนแก้ไขแล้ว ดำเนินการต่อ</button>';
     if (r.status === 'cancel' || r.status === 'expired') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="reopen">เปิดคำร้องอีกครั้ง</button>';
@@ -362,7 +362,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     function signer(head, nm, title) { return '<div>' + head + '<span class="dots">ลงชื่อ ....................................</span>(' + esc(nm || '') + ')<br>' + esc(title || '') + '</div>'; }
     var p = r.purpose, qr = qrSvg((S.adminUrl || '') + '#no=' + r.no, 3);
     return '<div class="sheet"><div class="sheet-top">' +
-        '<div class="tag"><span>คำร้องเลขที่</span><b>' + esc(r.no) + '</b><em>/' + esc(r.year) + '</em><i>ม.' + esc(r.cls) + ' · ลิ้นชัก ม.' + lvOf(r) + '</i></div>' +
+        '<div class="tag"><span>คำร้องเลขที่</span><b>' + esc(r.no) + '</b><em>/' + esc(r.year) + '</em><i>ม.' + esc(r.cls) + ' · ลิ้นชักที่ ' + PP.drawerNo(lvOf(r)) + '</i></div>' +
         '<div class="sheet-mid"><img class="sheet-emb" src="assets/emblem-bw.png" alt=""><span>' + (r.channel === 'paper' ? 'บันทึกจากใบคำร้องกระดาษ' : 'ยื่นผ่านระบบออนไลน์') + '<br>' + PP.fDT(r.submittedAt) + '</span></div>' +
         (qr ? '<div class="sheet-qr">' + qr + 'สแกนเปิดคำร้อง</div>' : '<div class="sheet-qr"></div>') + '</div>' +
       '<div class="sheet-title">แบบคำร้องขอใบรับรอง</div>' +
@@ -404,17 +404,25 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
       '<div class="slip-sign"><p>ข้าพเจ้าขอยืนยันคำร้องที่ยื่นผ่านระบบออนไลน์ และขอรับรองว่าข้อมูลถูกต้อง</p>' +
         '<div class="sg"><div class="ln2">ลงลายมือชื่อ <span class="dl w50"></span> ผู้ขอ</div><div class="ln2">วันที่ <span class="dl w10"></span>/<span class="dl w10"></span>/<span class="dl w16"></span></div></div></div>' +
       '<div class="slip-qr">' + (qr ? '<div class="q">' + qr + '</div>' : '') + '<div><b>ยังไม่ได้ยื่นคำร้อง สแกนที่นี่</b>' +
-        '<ol><li>ยื่นคำร้องออนไลน์ ได้เลขคำร้อง 4 หลัก</li><li>กรอกใบนี้ หนีบรูป ใส่ลิ้นชักที่ 2 ภายใน ' + esc(A.cfg && A.cfg.photoDays || 7) + ' วัน</li><li>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</li></ol>' +
+        '<ol><li>ยื่นคำร้องออนไลน์ ได้เลขคำร้อง 4 หลัก</li><li>กรอกใบนี้ หนีบรูป ใส่ลิ้นชักที่ 2 ภายใน ' + esc(A.cfg && A.cfg.photoDays || 7) + ' วัน</li><li>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักที่ 3–8 ตามระดับชั้น</li></ol>' +
         '<span class="url">' + esc(String(url).replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</span></div></div>' +
       '<div class="slip-staff">สำหรับเจ้าหน้าที่ &nbsp; รับรูปเมื่อ <span class="dl"></span> ลงชื่อ <span class="dl"></span></div>' +
       '</div>';
+  }
+  // ป้ายติดหน้าลิ้นชัก 10 ชั้น (A4 แนวตั้ง 1 แผ่น ตัดตามเส้นประ)
+  function drawerLabelsHTML() {
+    return '<div class="dlabels">' + PP.DRAWERS.map(function (d) {
+      return '<div class="dlabel' + (d.short ? '' : ' blank') + '"><div class="dl-n"><span>ลิ้นชักที่</span><b>' + d.n + '</b></div><div class="dl-t">' +
+        (d.short ? '<b>' + esc(d.label) + '</b><span>' + esc(d.sub) + '</span>' : '<b class="dl-free"></b>') + '</div>' +
+        (d.lv ? '<div class="dl-lv">ม.' + d.lv + '</div>' : '') + '</div>';
+    }).join('') + '</div>';
   }
   function posterHTML() {
     var url = A.settings.studentUrl || '', qr = qrSvg(url, 8);
     return '<div class="poster"><div class="poster-top"><img src="assets/emblem-gold.png" alt=""><div><b>โรงเรียนพรตพิทยพยัต</b><span>PROT PITTAYAPAYAT SCHOOL</span></div></div>' +
       '<div class="poster-b"><span class="ey">งานทะเบียน สำนักงานวิชาการ</span><h1>ขอใบเกรด ปพ.1 · ปพ.6<br>และใบรับรอง ปพ.7 ออนไลน์</h1><p>สแกนเพื่อยื่นคำร้องและติดตามสถานะเอกสารของตนเอง</p>' +
       '<div class="poster-qr">' + (qr || '') + '</div><div class="poster-url">' + esc(url) + '</div></div>' +
-      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</div><div><b>2</b>ขอ ปพ.1 หรือ ปพ.7 หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ</div><div><b>3</b>หนีบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2 (ปพ.6 ไม่ต้องใช้รูป)</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น</div></div>' +
+      '<div class="poster-steps"><div><b>1</b>กรอกคำร้องในระบบ ได้เลขคำร้อง 4 หลัก</div><div><b>2</b>ขอ ปพ.1 หรือ ปพ.7 หยิบใบนำส่งรูปถ่ายจากลิ้นชักที่ 1 กรอกและลงลายมือชื่อ</div><div><b>3</b>หนีบรูปถ่าย 1.5 นิ้ว ใส่ลิ้นชักที่ 2 (ปพ.6 ไม่ต้องใช้รูป)</div><div><b>4</b>ติดตามสถานะ แล้วรับเอกสารที่ลิ้นชักระดับชั้น (ลิ้นชักที่ 3 = ม.1 ถึงลิ้นชักที่ 8 = ม.6)</div></div>' +
       '<div class="poster-foot">สอบถาม สำนักงานวิชาการ โทร. 0-2326-4050</div></div>';
   }
   function signListHTML(list) {
@@ -505,7 +513,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   function mediaHTML() {
     var url = A.settings.studentUrl || '', qr = qrSvg(url, 6);
     return '<div class="panel"><h3>ลิงก์และ QR หน้าเว็บนักเรียน</h3><div class="qrbox"><div class="qr">' + (qr || '<span class="muted">โหลดตัวสร้าง QR ไม่ได้</span>') + '</div><div style="display:grid;gap:8px;min-width:0;flex:1"><div class="urlbox">' + esc(url) + '</div><div class="acts"><button class="btn btn-sm btn-sec" data-act="copy" data-v="' + esc(url) + '">คัดลอกลิงก์</button><a class="btn btn-sm btn-sec" href="' + esc(url) + '" target="_blank" rel="noopener">เปิดหน้าเว็บนักเรียน</a></div></div></div></div>' +
-      '<div class="panel"><h3>พิมพ์สื่อสำหรับตู้ลิ้นชัก</h3><p class="hint">ใบนำส่งรูปถ่ายวางในลิ้นชักที่ 1 พิมพ์เป็นต้นฉบับขาวดำ A4 แนวนอน 1 แผ่นได้ 2 ใบ ถ่ายเอกสารแล้วตัดครึ่งตามเส้นประ ส่วนโปสเตอร์ QR ติดที่ตู้ลิ้นชัก</p><div class="acts"><button class="btn btn-pri" data-act="print-slips">พิมพ์ใบนำส่งรูปถ่าย</button><button class="btn btn-sec" data-act="print-poster">พิมพ์โปสเตอร์ QR (A4)</button></div></div>';
+      '<div class="panel"><h3>พิมพ์สื่อสำหรับตู้ลิ้นชัก</h3><p class="hint">ตู้ลิ้นชัก 10 ชั้น แถวเดียว นับจากบนลงล่าง: ลิ้นชักที่ 1 รับแบบฟอร์ม · ลิ้นชักที่ 2 ส่งเอกสาร · ลิ้นชักที่ 3–8 รับเอกสาร ม.1–ม.6 · ลิ้นชักที่ 9–10 ว่าง</p><p class="hint">ใบนำส่งรูปถ่ายวางในลิ้นชักที่ 1 พิมพ์เป็นต้นฉบับขาวดำ A4 แนวนอน 1 แผ่นได้ 2 ใบ ถ่ายเอกสารแล้วตัดครึ่งตามเส้นประ ป้ายหน้าลิ้นชักพิมพ์ A4 1 แผ่นได้ครบ 10 ชั้น ส่วนโปสเตอร์ QR ติดที่ตู้ลิ้นชัก</p><div class="acts"><button class="btn btn-pri" data-act="print-slips">พิมพ์ใบนำส่งรูปถ่าย</button><button class="btn btn-sec" data-act="print-dlabels">พิมพ์ป้ายหน้าลิ้นชัก 10 ชั้น</button><button class="btn btn-sec" data-act="print-poster">พิมพ์โปสเตอร์ QR (A4)</button></div></div>';
   }
 
   /* ===================== Events ===================== */
@@ -552,6 +560,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   ACT['print-forms'] = function (a) { var list = a.dataset.v === 'one' ? [find(A.open)] : selList().map(find); list = list.filter(Boolean); if (!list.length) return; printForms2(list); };
   ACT['print-signlist'] = function () { var list = selList().map(find).filter(Boolean); if (!list.length) return; doPrint('<div class="pg-port">' + signListHTML(list) + '</div>'); };
   ACT['print-slips'] = function () { var u = A.settings.studentUrl || ''; doPrint('<div class="pg-land slips">' + slipHTML(u) + slipHTML(u) + '</div>'); };
+  ACT['print-dlabels'] = function () { doPrint('<div class="pg-port">' + drawerLabelsHTML() + '</div>'); };
   ACT['print-poster'] = function () { doPrint('<div class="pg-port">' + posterHTML() + '</div>'); };
   ACT['report-reload'] = function () { A.report = null; renderBody(); };
   ACT['man-reset'] = function () { manReset(); renderBody(); };
