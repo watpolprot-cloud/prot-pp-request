@@ -318,7 +318,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
     if (r.status === 'photo') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="recv">ได้รับรูปแล้ว</button>';
     if (r.status === 'work') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="sign">เสนอลงนาม</button>';
     if (r.status === 'hold') next = '<button class="btn btn-sm btn-pri" disabled>รอผลการเรียน ' + esc(r.scope) + '</button>';
-    if (r.status === 'sign') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="ready">พร้อมรับ (' + esc(PP.drawerName(lvOf(r))) + ')</button>';
+    if (r.status === 'sign') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="ready">พร้อมรับ · ' + esc(PP.drawerName(lvOf(r))) + '</button>';
     if (r.status === 'ready') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="staffdone">บันทึกว่านักเรียนรับแล้ว</button>';
     if (r.status === 'fix') next = '<button class="btn btn-sm btn-pri" data-act="act" data-v="resume">นักเรียนแก้ไขแล้ว ดำเนินการต่อ</button>';
     if (r.status === 'cancel' || r.status === 'expired') next = '<button class="btn btn-sm btn-sec" data-act="act" data-v="reopen">เปิดคำร้องอีกครั้ง</button>';

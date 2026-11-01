@@ -561,7 +561,7 @@ function doAct_(r, act) {
     r.photoAt = now;
     if (needsHold_(r)) { setStatus_(r, 'hold'); detail = 'พักรอผลการเรียน ' + r.scope; } else setStatus_(r, 'work');
   } else if (act === 'sign') { r.signAt = now; setStatus_(r, 'sign'); }
-  else if (act === 'ready') { r.readyAt = now; setStatus_(r, 'ready'); detail = 'ลิ้นชัก ม.' + String(r.cls).split('/')[0]; }
+  else if (act === 'ready') { r.readyAt = now; setStatus_(r, 'ready'); var lv = parseInt(String(r.cls).split('/')[0], 10); detail = lv >= 1 && lv <= 6 ? 'ลิ้นชักที่ ' + (lv + 2) + ' (ม.' + lv + ')' : 'ลิ้นชักระดับชั้น'; }
   else if (act === 'staffdone') { r.doneAt = now; setStatus_(r, 'done'); }
   else if (act === 'resume') {
     var back = String(r.resume || 'work');
