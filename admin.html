@@ -521,7 +521,7 @@ table.qt{width:100%;border-collapse:collapse;font-size:14.5px;min-width:900px}
   ACT.reload = function () { if (!$('body')) return load(true); A.busy = true; renderBody(); load(false).then(function () { A.busy = false; renderBody(); }); };
   ACT.logout = function () { var t = A.token; PP.store.del(TOKEN_KEY); A.token = null; A.open = null; renderLogin(); if (t) PP.api('adminLogout', { token: t }).catch(function () { }); };
   ACT.view = function (a) { A.view = a.dataset.v; A.open = null; if (A.view === 'report') A.report = null; A.setErr = ''; renderDrawer(); renderNav(); renderBody(); };
-  ACT.filter = function (a) { A.filter = a.dataset.v; renderBody(); };
+  ACT.filter = function (a) { if (A.filter !== a.dataset.v) A.sel = {}; A.filter = a.dataset.v; renderBody(); };
   ACT.open = function (a) { A.open = a.dataset.no; A.fixOpen = false; A.fixText = ''; A.fixIdx = 0; A.confirm = null; renderDrawer(); renderBody(); try { history.replaceState(null, '', '#no=' + A.open); } catch (e) { } };
   ACT.close = function () { A.open = null; renderDrawer(); renderBody(); try { history.replaceState(null, '', location.pathname); } catch (e) { } };
   ACT.clear = function () { A.sel = {}; renderBody(); };

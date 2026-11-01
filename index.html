@@ -424,17 +424,17 @@
       '<text class="sl-t" x="156" y="568" font-size="13" font-weight="700">ยังไม่ได้ยื่นคำร้อง สแกนที่นี่</text>' +
       // สิ่งที่นักเรียนเขียน (ลายมือสีน้ำเงิน)
       digits(32, 30.25, o.no, 229, 0.35) + digits(175, 30.4, o.sid, 229, 0.85) +
-      '<text class="hw" style="--d:1.6s" x="98" y="327" font-size="20"' + nameFit + '>' + esc(o.name) + '</text>' +
+      '<text class="hw" style="--d:1.6s" x="98" y="329" font-size="20"' + nameFit + '>' + esc(o.name) + '</text>' +
       hw(o.lv, 91, 373, 20, 1.75, 'middle') + hw(o.room, 137, 373, 20, 1.8, 'middle') + (o.num ? hw(o.num, 224, 373, 20, 1.85, 'middle') : '') + hw(String(o.photos), 385, 373, 20, 1.9, 'middle') +
       sig + hw(o.dd, 296, 506, 19, 2.3, 'middle') + hw(o.mm, 347, 506, 19, 2.35, 'middle') + hw(o.yy, 412, 506, 19, 2.4, 'middle') +
       '</g>' +
       // ป้ายชี้ + ลูกศร (เลขคำร้อง / รหัสนักเรียน)
-      '<g class="sl-pill-g" style="--d:.15s"><g class="sl-arw-g"><path class="sl-arw2" d="M92 264V246"/><path class="sl-arw" d="M92 264V246M83 254l9-10 9 10"/></g>' +
-      '<g class="sl-pill"><rect x="20" y="266" width="170" height="44" rx="22" fill="#3A1468"/><circle cx="42" cy="288" r="13" fill="#F5B700"/><text x="42" y="293.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">1</text>' +
-      '<text x="62" y="293" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">เลขคำร้อง</text><text x="178" y="295" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.no) + '</text></g></g>' +
-      '<g class="sl-pill-g" style="--d:.65s"><g class="sl-arw-g"><path class="sl-arw2" d="M251 264V246"/><path class="sl-arw" d="M251 264V246M242 254l9-10 9 10"/></g>' +
-      '<g class="sl-pill"><rect x="186" y="266" width="202" height="44" rx="22" fill="#3A1468"/><circle cx="208" cy="288" r="13" fill="#F5B700"/><text x="208" y="293.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">2</text>' +
-      '<text x="228" y="293" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">รหัสนักเรียน</text><text x="376" y="295" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.sid) + '</text></g></g>' +
+      '<g class="sl-pill-g" style="--d:.15s"><g class="sl-arw-g"><path class="sl-arw2" d="M92 259V246"/><path class="sl-arw" d="M92 259V246M83 254l9-10 9 10"/></g>' +
+      '<g class="sl-pill"><rect x="20" y="261" width="170" height="40" rx="20" fill="#3A1468"/><circle cx="42" cy="281" r="13" fill="#F5B700"/><text x="42" y="286.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">1</text>' +
+      '<text x="62" y="286" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">เลขคำร้อง</text><text x="178" y="288" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.no) + '</text></g></g>' +
+      '<g class="sl-pill-g" style="--d:.65s"><g class="sl-arw-g"><path class="sl-arw2" d="M251 259V246"/><path class="sl-arw" d="M251 259V246M242 254l9-10 9 10"/></g>' +
+      '<g class="sl-pill"><rect x="186" y="261" width="202" height="40" rx="20" fill="#3A1468"/><circle cx="208" cy="281" r="13" fill="#F5B700"/><text x="208" y="286.5" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="15" fill="#2A1300">2</text>' +
+      '<text x="228" y="286" font-family="IBM Plex Sans Thai,sans-serif" font-weight="600" font-size="12.5" fill="#E9DFFB">รหัสนักเรียน</text><text x="376" y="288" text-anchor="end" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="21" letter-spacing="1" fill="#FFD54F">' + esc(o.sid) + '</text></g></g>' +
       mk(3, 16, 326, 1.5) + mk(4, 179, 460, 1.95) + mk(5, 396, 30, 1.25) +
       '</svg>';
   }
